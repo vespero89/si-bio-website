@@ -147,3 +147,13 @@ oil = "Olio"
 visits = "Visite e pacchetti"
 contact = "Come contattarci"
 farm = "La fattoria di famiglia"
+
+[error]
+title_404 = "Pagina non trovata"
+text_404 = "Questa pagina non esiste o è stata spostata. Puoi guardare i nostri vini o scriverci."
+title_405 = "Richiesta non consentita"
+text_405 = "Questa pagina non accetta questo tipo di richiesta. Puoi guardare i nostri vini o scriverci."
+title_410 = "Pagina non più disponibile"
+text_410 = "Questo indirizzo non esiste più. Puoi guardare i nostri vini o scriverci."
+title_500 = "Qualcosa non ha funzionato"
+text_500 = "Riprova tra poco. Se il problema resta, scrivici."

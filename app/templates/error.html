@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ t('error.title_' ~ kind) }} | Si Bio{% endblock %}
+{% block content %}
+<div class="wrap error-page">
+  <h1>{{ t('error.title_' ~ kind) }}</h1>
+  <p class="lead">{{ t('error.text_' ~ kind) }}</p>
+  <p>
+    <a class="button" href="{{ localize('/vini', request.state.lang) }}">{{ t('nav.wines') }}</a>
+    <a class="button" href="{{ localize('/contatti', request.state.lang) }}">{{ t('nav.contact') }}</a>
+  </p>
+</div>
+{% endblock %}

@@ -6,15 +6,18 @@
   <title>{% block title %}Si Bio{% endblock %}</title>
   {%- set description = meta_description|default('') or t('meta.default') %}
   <meta name="description" content="{{ description }}">
-  {%- if is_preview() %}
+  <meta name="htmx-config" content='{"includeIndicatorStyles": false}'>
+  {%- if is_preview() or noindex %}
   <meta name="robots" content="noindex, nofollow">
   {%- endif %}
-  <link rel="canonical" href="{{ canonical() }}">
   {%- set alts = alternates() %}
+  {%- if not noindex %}
+  <link rel="canonical" href="{{ canonical() }}">
   {%- for alt in alts %}
   <link rel="alternate" hreflang="{{ alt.code }}" href="{{ base_url }}{{ alt.url }}">
   {%- endfor %}
   <link rel="alternate" hreflang="x-default" href="{{ base_url }}{{ localize(request.state.path, x_default_lang()) }}">
+  {%- endif %}
   <meta property="og:site_name" content="Si Bio">
   <meta property="og:type" content="website">
   <meta property="og:title" content="{{ self.title()|trim }}">

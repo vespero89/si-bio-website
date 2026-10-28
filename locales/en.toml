@@ -146,3 +146,13 @@ oil = "Oil"
 visits = "Visits and packages"
 contact = "How to reach us"
 farm = "The family farm"
+
+[error]
+title_404 = "Page not found"
+text_404 = "This page does not exist or has moved. You can look at our wines or write to us."
+title_405 = "Request not allowed"
+text_405 = "This page does not accept this kind of request. You can look at our wines or write to us."
+title_410 = "Page no longer available"
+text_410 = "This address no longer exists. You can look at our wines or write to us."
+title_500 = "Something went wrong"
+text_500 = "Please try again shortly. If the problem continues, write to us."

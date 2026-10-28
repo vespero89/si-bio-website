@@ -139,7 +139,8 @@ class NoindexMiddleware:
 
         async def send_wrapper(message):
             if message["type"] == "http.response.start":
-                message["headers"] = [*message["headers"], (b"x-robots-tag", b"noindex")]
+                if not any(k.lower() == b"x-robots-tag" for k, _ in message["headers"]):
+                    message["headers"] = [*message["headers"], (b"x-robots-tag", b"noindex")]
             await send(message)
 
         await self.app(scope, receive, send_wrapper)

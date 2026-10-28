@@ -41,6 +41,7 @@ app/pages.py        routes `/`, `/olio`, `/chi-siamo` (helper `oil_sheet`)
 app/wines.py        routes `/vini` and `/vini/<slug>` (fragment for HTMX, `Vary`), helpers `sheet`, `photo`, `pdf` for the wine page
 app/templating.py   Jinja2 environment, globals `t(key, **values)` and `num(value, decimals)` (language of the request), `canonical()`, `alternates()` (selector and hreflang), `farm_url()`, `menu`, `localize`, `site()`, `mailto(address, subject)`, `has_marker`
 app/cookies.py      cookie choice (POST /cookie-choice, `choice(request)`)
+app/errors.py       error pages (404, 405, 410, 500), `SecurityHeadersMiddleware` (headers, CSP, cache)
 app/seo.py          `/robots.txt`, `/sitemap.xml`, `/llms.txt` (per language), `NoindexMiddleware` (preview)
 app/jsonld.py       JSON-LD builders: `clean`, `dumps`, `organization`, `website`, `product`, `breadcrumbs`
 app/legal.py        legal pages `/info/note-legali|privacy|cookie` (templates in `templates/legal/<lang>/`, `company(lang)`)
@@ -167,7 +168,7 @@ SameSite=Lax, Secure when `BASE_URL` is https (`config.COOKIE_SECURE`); no ident
 path (`safe_next`: one leading `/`, no `//`, backslash or control character; else the home). Answers 303; the language middleware
 puts the prefix back on the Location. `GET` is 405. The body is read by hand (no python-multipart). `partials/cookie_notice.html`
 (band before `</body>`, only while there is no choice, on every full page, not in HTMX fragments) holds `partials/cookie_form.html`
-(two `.button`s, same style). `partials/cookie_choice.html` (`#scelta`: current choice sentence + the form) is included by the `/info/cookie` page. No `Vary: Cookie` from the app: the proxy must vary on `Cookie` or not cache HTML. Tests: `tests/test_cookies.py`;
+(two `.button`s, same style). `partials/cookie_choice.html` (`#scelta`: current choice sentence + the form) is included by the `/info/cookie` page. HTML carries `Vary: Cookie` and `Cache-Control: no-cache` (see "Errors and security"). Tests: `tests/test_cookies.py`;
 other tests that forbid forms or buttons strip the notice with `NOTICE`.
 
 ## Video
@@ -223,6 +224,28 @@ known. Riva dei Martin never appears. When the content flow changes, check it st
 Tests: `tests/test_seo.py` (files, head, JSON-LD, llms), `tests/test_seo_structure.py` walks every public page in every published
 language (one h1, heading order, img alt/width/height, links with text, one canonical, hreflang for each language plus x-default, title,
 description).
+
+## Errors and security
+`app/errors.py`. No redirects from the old WordPress (Fabio, 29/10): `/info/`, `/info2/`, `/blog/` answer a normal 404. Errors are
+`templates/error.html` (title and text from `error.title_<status>` / `error.text_<status>`, links to Vini and Contatti), in the language of
+the request (the language middleware has stripped the prefix, so `/en/anything` is English; an unpublished prefix is Italian 404), always
+`noindex` (header `X-Robots-Tag` plus meta robots, no canonical or hreflang). Same page for HTMX requests (htmx does not swap 4xx, so the
+carousel stays as it is). 404 on feeds and the old API (`errors.GONE`: `/feed`, `/comments/feed`, `/wp-json`, `/xmlrpc.php`) becomes 410;
+`errors.PLAIN` (`/wp-login.php`, `/wp-admin`, `/wp-content`, `/wp-includes`) gets a 7 byte plain text 404. 405 keeps its `Allow`.
+An unexpected error is logged and answers the 500 page (caught in `SecurityHeadersMiddleware`, since Starlette's own 500 handler sits
+outside the middleware and would skip the headers); no detail is shown.
+`SecurityHeadersMiddleware` is the outermost middleware, so every response has: `Content-Security-Policy` (`default-src 'self'`; script,
+style, font `'self'`; `img-src 'self' data:`; `frame-src https://www.youtube-nocookie.com` always, it is only a permission and the iframe
+is rendered only after the choice; `frame-ancestors 'none'`; `object-src 'none'`; `base-uri` and `form-action` `'self'`), `X-Frame-Options:
+DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` (camera, microphone,
+geolocation, payment, usb, topics off; fullscreen and encrypted-media are not listed, so the video iframe `allow` still works),
+`Strict-Transport-Security: max-age=31536000` only when `BASE_URL` is https. Nothing inline is allowed: no `<style>`, `style=""`, `on*=`
+or inline script (`test_pages_work_under_the_csp` checks every page); the `application/ld+json` blocks are data, not executed, so the
+CSP does not apply to them; htmx would inject a `<style>` for indicators, so `base.html` sets `htmx-config` `includeIndicatorStyles:
+false`. When adding JS or CSS, put it in `app/static/`. Cache: HTML gets `Vary: Cookie` (merged with `HX-Request` on the wine pages;
+the cookie notice and the video depend on `cookie_choice`) and `Cache-Control: no-cache`; `/static/` gets `Cache-Control: no-cache`
+(ETag revalidation) because file names are not versioned yet: if names get a hash or `?v=`, a year of cache can be set for them.
+Tests: `tests/test_security.py`.
 
 ## Texts to review before deploy
 Provisional, to be read by Fabio and the family before launch:
