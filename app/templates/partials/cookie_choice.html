@@ -1,0 +1,6 @@
+{#- Current choice and the form to change it: for the cookie page (anchor #scelta). -#}
+<section id="scelta" class="cookie-choice">
+  {%- set current = cookie_choice(request) %}
+  <p>{{ t('cookie.current_' ~ ({'accepted': 'accepted', 'rejected': 'rejected'}.get(current, 'none'))) }}</p>
+  {% include "partials/cookie_form.html" %}
+</section>

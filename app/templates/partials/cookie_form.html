@@ -1,0 +1,6 @@
+{#- The choice form: the two buttons carry the same weight. Expects `request`; `next` returns to the current page. -#}
+<form method="post" action="{{ localize('/cookie-choice', request.state.lang) }}" class="cookie-form">
+  <input type="hidden" name="next" value="{{ request.state.path }}{% if request.url.query %}?{{ request.url.query }}{% endif %}">
+  <button class="button" type="submit" name="choice" value="accept">{{ t('cookie.accept') }}</button>
+  <button class="button" type="submit" name="choice" value="reject">{{ t('cookie.reject') }}</button>
+</form>

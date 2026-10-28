@@ -1,0 +1,6 @@
+<section class="cookie-notice" aria-label="{{ t('cookie.label') }}">
+  <div class="wrap">
+    <p>{{ t('cookie.notice') }} <a href="{{ localize('/info/cookie', request.state.lang) }}">{{ t('cookie.more') }}</a></p>
+    {% include "partials/cookie_form.html" %}
+  </div>
+</section>

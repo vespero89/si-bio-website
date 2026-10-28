@@ -30,6 +30,7 @@ family_before = "Behind Si Bio is the family of "
 family_link = "Fattoria nel Ciafone"
 family_after = ", farming in Offida since 1915."
 legal = "Legal information"
+cookies = "Manage cookies"
 
 [wines]
 title = "Our wines"
@@ -95,3 +96,13 @@ invitation = "By invitation"
 buyers_button = "Contact our sales manager"
 organizer = "Organised and sold by Fuselli e Filari, a travel agency in Offida."
 package_button = "Ask for the programme"
+
+[cookie]
+notice = "We only use technical cookies. If you accept, we can show you our video from YouTube, which uses Google cookies."
+label = "Cookies"
+accept = "Accept"
+reject = "Reject"
+more = "More about cookies"
+current_accepted = "You have accepted: the video can be loaded from YouTube."
+current_rejected = "You have rejected: the video is not loaded from YouTube."
+current_none = "You have not chosen yet: the video is not loaded from YouTube."

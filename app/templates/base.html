@@ -50,7 +50,7 @@
       <p class="footer-family">{{ t('footer.family_before') }}
         {%- if farm_url() %}<a href="{{ farm_url() }}" rel="noopener">{{ t('footer.family_link') }}</a>{% else %}{{ t('footer.family_link') }}{% endif %}
         {{- t('footer.family_after') }}</p>
-      {#- Reserved: legal pages (/info/note-legali, /info/privacy) and "Gestisci i cookie" (/info/cookie), wired in the legal pages task #}
+      {#- Reserved: legal pages (/info/note-legali, /info/privacy), wired in the legal pages task #}
       {%- set legal_links = [] %}
       {%- if legal_links %}
       <nav class="footer-legal" aria-label="{{ t('footer.legal') }}">
@@ -61,8 +61,12 @@
         </ul>
       </nav>
       {%- endif %}
+      <p class="footer-cookies"><a href="{{ localize('/info/cookie', request.state.lang) }}#scelta">{{ t('footer.cookies') }}</a></p>
     </div>
   </footer>
+  {%- if not cookie_choice(request) %}
+  {%- include "partials/cookie_notice.html" %}
+  {%- endif %}
   <script src="/static/js/contact.js" defer></script>
 </body>
 </html>

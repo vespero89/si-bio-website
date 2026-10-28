@@ -31,6 +31,7 @@ family_before = "Dietro Si Bio c'è la famiglia della "
 family_link = "Fattoria nel Ciafone"
 family_after = ", che dal 1915 alleva e coltiva a Offida."
 legal = "Informazioni legali"
+cookies = "Gestisci i cookie"
 
 [wines]
 title = "I nostri vini"
@@ -96,3 +97,13 @@ invitation = "Su invito"
 buyers_button = "Contatta la nostra responsabile commerciale"
 organizer = "Organizzato e venduto da Fuselli e Filari, agenzia di Offida."
 package_button = "Chiedi il programma"
+
+[cookie]
+notice = "Usiamo solo cookie tecnici. Se accetti, possiamo mostrarti il nostro video da YouTube, che usa cookie di Google."
+label = "Cookie"
+accept = "Accetta"
+reject = "Rifiuta"
+more = "Maggiori informazioni sui cookie"
+current_accepted = "Hai accettato: il video può essere caricato da YouTube."
+current_rejected = "Hai rifiutato: il video non viene caricato da YouTube."
+current_none = "Non hai ancora scelto: il video non viene caricato da YouTube."

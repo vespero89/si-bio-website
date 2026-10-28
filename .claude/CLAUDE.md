@@ -40,6 +40,7 @@ app/contact.py      route `/contatti` (mailto block, company data, sales manager
 app/pages.py        routes `/`, `/olio`, `/chi-siamo` (helper `oil_sheet`)
 app/wines.py        routes `/vini` and `/vini/<slug>` (fragment for HTMX, `Vary`), helpers `sheet`, `photo`, `pdf` for the wine page
 app/templating.py   Jinja2 environment, globals `t(key, **values)` and `num(value, decimals)` (language of the request), `canonical()`, `alternates()` (selector and hreflang), `farm_url()`, `menu`, `localize`, `site()`, `mailto(address, subject)`, `has_marker`
+app/cookies.py      cookie choice (POST /cookie-choice, `choice(request)`)
 app/templates/      base.html (header, menu, selector, canonical/hreflang, footer), home.html, oil.html, about.html, wines.html (page), wine_fragment.html (HTMX), partials/wine_row|wine_stage|wine_intro|contact_block.html
 app/static/         css/sibio.css (the only stylesheet), fonts/ (woff2 + OFL files), js/htmx.min.js (2.0.4, same file as ecommerce-fattoria), js/wines.js (focus), js/contact.js (Copy button, loaded by base.html), img/vini (bottle photos), schede (PDF)
 content/            site.toml (settings), wines/<slug>.toml and oil.toml (neutral), <lang>/wines, <lang>/oil.toml, <lang>/pages (texts)
@@ -95,7 +96,7 @@ localized by `localize`, `aria-current` on the current page), language selector 
 language that can be shown, `/path?lang=xx` so the cookie follows the choice, name of each language from
 `language.name` of its own file), footer (company data from `site.toml`; the farm link needs `farm.url`, without
 it the name is plain text; legal links area reserved: `legal_links` in the footer, wired in the legal pages
-task). Head: `canonical` and `hreflang` (every language that can be shown plus `x-default` on English) from
+task; "Gestisci i cookie" link to `/info/cookie#scelta`, always shown, the page comes with the legal pages task). Head: `canonical` and `hreflang` (every language that can be shown plus `x-default` on English) from
 `request.state.path`, absolute from `BASE_URL`. One stylesheet, mobile first, palette only in `:root`. Fonts
 self hosted in `app/static/fonts/` with their OFL files (Cormorant Garamond 500 for headings, Source Sans 3
 400 and 600 for text, latin subset only); never Google Fonts. Pages put their text in `{% block content %}`
@@ -154,3 +155,16 @@ nothing is loaded from outside), contact block to `export_email` with subject `c
 The whole package section is left out in production unless `partner_email` AND `package_name` are verified (markers). The partial
 `contact_block.html` takes optional `contact_address` and `contact_button`. Riva dei Martin lines (`buyers_riva_dei_martin`,
 `package_riva_dei_martin`) are in `content.GATED`: only with the switch on (and still markers until agreed). Tests: `tests/test_visits.py`.
+
+## Cookie choice
+`app/cookies.py`. The site sets only technical cookies (`lang`, `cookie_choice`); the choice exists for the YouTube video (task 12),
+which loads only when `cookie_choice(request)` is `"accepted"` (template global, same function as `cookies.choice`: `accepted`,
+`rejected` or None; any other value counts as no choice). Cookie `cookie_choice`: 183 days (`cookies.MAX_AGE`), Path=/, HttpOnly,
+SameSite=Lax, Secure when `BASE_URL` is https (`config.COOKIE_SECURE`); no identifier; nothing in JavaScript reads or writes it.
+`POST /cookie-choice` (also `/en/cookie-choice`): urlencoded `choice` = `accept`|`reject` (else 400, no cookie) and `next`, a local
+path (`safe_next`: one leading `/`, no `//`, backslash or control character; else the home). Answers 303; the language middleware
+puts the prefix back on the Location. `GET` is 405. The body is read by hand (no python-multipart). `partials/cookie_notice.html`
+(band before `</body>`, only while there is no choice, on every full page, not in HTMX fragments) holds `partials/cookie_form.html`
+(two `.button`s, same style). `partials/cookie_choice.html` (`#scelta`: current choice sentence + the form) is for the `/info/cookie`
+page of the legal pages task. No `Vary: Cookie` from the app: the proxy must vary on `Cookie` or not cache HTML. Tests: `tests/test_cookies.py`;
+other tests that forbid forms or buttons strip the notice with `NOTICE`.

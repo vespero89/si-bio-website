@@ -148,6 +148,20 @@ ul { list-style: none; margin: 0; padding: 0; }
 .footer-name { font-family: var(--font-head); font-size: 1.35rem; color: var(--paper); }
 .footer-legal ul { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
 
+/* Cookie notice: a band at the end of the page, both buttons the same */
+.footer-cookies { margin: 1rem 0 0; }
+.cookie-notice { padding: 1.25rem 0; background: var(--paper-deep); border-top: 1px solid var(--line); }
+.cookie-notice p { margin: 0 0 0.9rem; }
+.cookie-form { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.cookie-form .button { min-width: 8rem; }
+
+/* Cookie notice: a band at the end of the page, both buttons the same */
+.footer-cookies { margin: 1rem 0 0; }
+.cookie-notice { padding: 1.25rem 0; background: var(--paper-deep); border-top: 1px solid var(--line); }
+.cookie-notice p { margin: 0 0 0.9rem; }
+.cookie-form { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.cookie-form .button { min-width: 8rem; }
+
 @media (min-width: 52rem) {
   .header-row { grid-template-columns: auto 1fr auto; gap: 1rem 2.5rem; }
   .menu { grid-column: auto; grid-row: auto; justify-self: end; }

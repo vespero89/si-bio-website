@@ -8,6 +8,8 @@ from fastapi.testclient import TestClient
 from app import config, content
 from app.main import app
 
+NOTICE = re.compile(r'<section class="cookie-notice".*?</section>', re.S)
+
 SLUGS = ["offida-pecorino", "offida-passerina", "offida-rosso", "armide", "passacaille-brut"]
 
 
@@ -228,7 +230,7 @@ def test_mailto_encodes_accents_apostrophes_and_ampersands(client, tree):
 
 def test_no_copy_button_in_the_html_but_script_and_labels_are_there(client):
     html = client.get("/vini/armide").text
-    assert "<button" not in html
+    assert "<button" not in NOTICE.sub("", html)
     assert "/static/js/contact.js" in html
     assert 'data-copy="Copia"' in html and 'data-copied="Copiato"' in html
 
@@ -236,7 +238,7 @@ def test_no_copy_button_in_the_html_but_script_and_labels_are_there(client):
 def test_no_inline_script_and_no_form(client):
     html = client.get("/vini/armide").text
     assert not [s for s in re.findall(r"<script\b([^>]*)>", html) if "src=" not in s]
-    assert "<form" not in html
+    assert "<form" not in NOTICE.sub("", html)  # only the cookie choice posts
 
 
 def test_wine_without_photo_shows_a_graphic_placeholder(client, production):

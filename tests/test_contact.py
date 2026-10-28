@@ -7,6 +7,8 @@ from fastapi.testclient import TestClient
 from app import config, content
 from app.main import app
 
+NOTICE = re.compile(r'<section class="cookie-notice".*?</section>', re.S)
+
 
 @pytest.fixture
 def client():
@@ -35,7 +37,7 @@ def test_contact_page_it(client):
     assert href == "mailto:export@si-bio.it?subject=Si%20Bio%3A%20informazioni"
     assert "+" not in href
     assert 'aria-current="page"' in response.text
-    assert "<form" not in response.text
+    assert "<form" not in NOTICE.sub("", response.text)  # only the cookie choice posts
 
 
 def test_contact_page_en_subject(client):
