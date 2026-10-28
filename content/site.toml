@@ -1,0 +1,4 @@
+# Site settings. Languages listed here are published; a language in config.LANGS that is not
+# listed answers 404 (it shows with PREVIEW=1). Italian must be listed.
+[languages]
+published = ["it", "en"]

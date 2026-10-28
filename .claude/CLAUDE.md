@@ -19,7 +19,7 @@ spec and task list live outside the repo, in the notes folder of the communicati
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/uvicorn app.main:app --reload --reload-dir app   # http://127.0.0.1:8000
 ```
-Environment variables (names only): `BASE_URL`. Secrets only in `.env`, never in code or commits.
+Environment variables (names only): `BASE_URL`, `PREVIEW`. Secrets only in `.env`, never in code or commits.
 
 ## Checks (run all before every commit)
 ```bash
@@ -31,12 +31,13 @@ A local git `pre-commit` hook runs ruff check and pytest; never bypass it.
 
 ## File map (grows task by task)
 ```
-app/config.py       settings from environment / .env, paths
+app/config.py       settings from environment / .env, paths, `LANGS`, `PUBLISHED`, `PREVIEW`
+app/lang.py         language middleware: Italian at the root, others under /<code>/, root redirect
 app/main.py         FastAPI app, static files, routers
 app/templating.py   Jinja2 environment
 app/templates/      base.html, pages, partials
 app/static/         css, js, img, schede (PDF)
-content/            site.toml, wines, pages (planned)
+content/            site.toml (published languages for now), wines, pages (planned)
 locales/            interface texts per language (planned)
 scripts/            photos, pre-launch content check (planned)
 tests/              pytest
@@ -53,3 +54,11 @@ tests/              pytest
 - No em dashes or en dashes in any text.
 - Write code like the code around it: same naming, same comment density.
 - Commits are local, never pushed; no remote.
+
+## Languages
+`config.LANGS` lists the languages the code knows; `content/site.toml` (`[languages] published`) the
+published ones (Italian always). Italian is at the root, the others under `/<code>/`; the middleware
+strips the prefix and sets `request.state.lang`. An unpublished language answers 404, unless
+`PREVIEW=1`. `/` goes by cookie `lang`, then `Accept-Language`: a published language goes to its
+prefix, any other language to `/en/`, empty header stays Italian. `?lang=xx` (the selector) sets the
+cookie (1 year, Path=/) and redirects to the same page without the parameter.
