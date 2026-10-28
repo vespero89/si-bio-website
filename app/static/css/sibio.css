@@ -258,3 +258,13 @@ ul { list-style: none; margin: 0; padding: 0; }
 .video-play { position: absolute; top: 50%; left: 50%; width: 4.5rem; height: 4.5rem; margin: -2.25rem 0 0 -2.25rem; border-radius: 50%; background: rgba(247, 243, 236, 0.9); }
 .video-play::after { content: ""; position: absolute; top: 50%; left: 50%; margin: -0.8rem 0 0 -0.55rem; border-style: solid; border-width: 0.8rem 0 0.8rem 1.4rem; border-color: transparent transparent transparent var(--wine); }
 .video-placeholder { padding: 2rem 1rem; background: var(--paper-deep); color: var(--ink-soft); }
+
+/* Legal pages */
+.legal-page { padding-bottom: 2rem; }
+.legal-tabs ul { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin: 1.5rem 0 0; padding: 0 0 0.5rem; border-bottom: 1px solid var(--line); list-style: none; }
+.legal-tabs a[aria-current="page"] { font-weight: 600; text-decoration: none; color: var(--ink); }
+.legal-provisional { padding: 0.6rem 0.9rem; background: var(--paper-deep); color: var(--ink-soft); }
+.legal-page h2 { margin-top: 2rem; }
+.legal-table { width: 100%; border-collapse: collapse; }
+.legal-table th, .legal-table td { padding: 0.5rem 0.75rem 0.5rem 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; font-weight: 400; }
+.legal-table thead th { font-weight: 600; }

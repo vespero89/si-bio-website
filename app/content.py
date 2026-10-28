@@ -59,6 +59,11 @@ def site() -> dict:
     return _resolve(read(config.CONTENT_DIR / "site.toml"))
 
 
+def site_raw() -> dict:
+    """The settings as written, markers included: the legal pages show them in production too."""
+    return read(config.CONTENT_DIR / "site.toml")
+
+
 def _slugs() -> list[str]:
     return sorted(p.stem for p in (config.CONTENT_DIR / "wines").glob("*.toml"))
 
@@ -99,7 +104,7 @@ def page(lang: str, name: str) -> dict:
 # planned, lists them). Returns one line per problem; empty means the content is sound.
 
 SITE_FIELDS = {
-    "company": {"name": str, "vat": str, "address": str, "pec": str},
+    "company": {"name": str, "vat": str, "address": str, "pec": str, "rea": str},
     "contact": {"export_email": str, "partner_email": str, "phone": str},
     "farm": {"url": str},
     "social": {"instagram": str, "facebook": str},

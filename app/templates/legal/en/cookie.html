@@ -1,0 +1,15 @@
+{% extends "legal/base.html" %}
+{% block body %}
+<p>On its own, the site uses only technical cookies. The site sets no other cookie.</p>
+<table class="legal-table">
+  <thead><tr><th scope="col">Cookie</th><th scope="col">Type</th><th scope="col">Purpose</th><th scope="col">Duration</th></tr></thead>
+  <tbody>
+    <tr><th scope="row"><code>lang</code></th><td>Technical</td><td>Remembers the language chosen with the selector.</td><td>1 year</td></tr>
+    <tr><th scope="row"><code>cookie_choice</code></th><td>Technical</td><td>Remembers your choice about YouTube cookies.</td><td>6 months</td></tr>
+  </tbody>
+</table>
+<h2>The YouTube video</h2>
+<p>Only if you accept, the video is loaded from YouTube (Google), which may set its own cookies and process data according to its <a href="https://policies.google.com/privacy" rel="noopener">privacy policy</a>. If you make no choice or reject, the video is not loaded and the site does not contact YouTube.</p>
+<h2>Your choice</h2>
+{% include "partials/cookie_choice.html" %}
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "legal/base.html" %}
+{% block body %}
+<h2>Titolare del sito</h2>
+<p>{{ company.name }}</p>
+<ul>
+  <li>Partita IVA: {{ company.vat }}</li>
+  <li>Sede legale: {{ company.address }}</li>
+  <li>PEC: {{ company.pec }}</li>
+  <li>REA: {{ company.rea }}</li>
+  <li>Email: <a href="mailto:{{ site().get('contact', {}).get('export_email') }}">{{ site().get('contact', {}).get('export_email') }}</a></li>
+</ul>
+<h2>Che cosa è questo sito</h2>
+<p>Il sito presenta i vini e l'olio di Si Bio. Non si vende nulla online: non ci sono ordini, carrello né pagamenti, e quindi nessuna condizione di vendita. Per informazioni si scrive via email.</p>
+<h2>Altre informazioni</h2>
+<p>Come trattiamo i dati è spiegato nell'<a href="{{ localize('/info/privacy', request.state.lang) }}">informativa sulla privacy</a>; i cookie sono descritti nella <a href="{{ localize('/info/cookie', request.state.lang) }}">pagina dei cookie</a>.</p>
+{% endblock %}

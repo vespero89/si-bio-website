@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} | Si Bio{% endblock %}
+{% block content %}
+<div class="wrap legal-page">
+  <nav class="legal-tabs" aria-label="{{ t('legal.tabs') }}">
+    <ul>
+      {%- for slug, tab, _ in pages %}
+      <li><a href="{{ localize('/info/' ~ slug, request.state.lang) }}"{% if slug == current %} aria-current="page"{% endif %}>{{ t(tab) }}</a></li>
+      {%- endfor %}
+    </ul>
+  </nav>
+  <h1>{{ title }}</h1>
+  <p class="legal-provisional">{{ t('legal.provisional') }}</p>
+  {% block body %}{% endblock %}
+</div>
+{% endblock %}

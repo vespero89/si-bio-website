@@ -1,0 +1,15 @@
+{% extends "legal/base.html" %}
+{% block body %}
+<p>Il sito, da solo, usa solo cookie tecnici. Nessun altro cookie viene impostato dal sito.</p>
+<table class="legal-table">
+  <thead><tr><th scope="col">Cookie</th><th scope="col">Tipo</th><th scope="col">A cosa serve</th><th scope="col">Durata</th></tr></thead>
+  <tbody>
+    <tr><th scope="row"><code>lang</code></th><td>Tecnico</td><td>Ricorda la lingua scelta con il selettore.</td><td>1 anno</td></tr>
+    <tr><th scope="row"><code>cookie_choice</code></th><td>Tecnico</td><td>Ricorda la tua scelta sui cookie di YouTube.</td><td>6 mesi</td></tr>
+  </tbody>
+</table>
+<h2>Il video di YouTube</h2>
+<p>Solo se accetti, il video viene caricato da YouTube (Google), che può impostare propri cookie e trattare i dati secondo la sua <a href="https://policies.google.com/privacy" rel="noopener">informativa</a>. Se non scegli o rifiuti, il video non viene caricato e il sito non contatta YouTube.</p>
+<h2>La tua scelta</h2>
+{% include "partials/cookie_choice.html" %}
+{% endblock %}

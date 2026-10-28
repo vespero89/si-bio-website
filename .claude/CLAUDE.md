@@ -41,6 +41,7 @@ app/pages.py        routes `/`, `/olio`, `/chi-siamo` (helper `oil_sheet`)
 app/wines.py        routes `/vini` and `/vini/<slug>` (fragment for HTMX, `Vary`), helpers `sheet`, `photo`, `pdf` for the wine page
 app/templating.py   Jinja2 environment, globals `t(key, **values)` and `num(value, decimals)` (language of the request), `canonical()`, `alternates()` (selector and hreflang), `farm_url()`, `menu`, `localize`, `site()`, `mailto(address, subject)`, `has_marker`
 app/cookies.py      cookie choice (POST /cookie-choice, `choice(request)`)
+app/legal.py        legal pages `/info/note-legali|privacy|cookie` (templates in `templates/legal/<lang>/`, `company(lang)`)
 app/pages.py        also `video()` (id and cover from site.toml for the visits page)
 app/templates/      base.html (header, menu, selector, canonical/hreflang, footer), home.html, oil.html, about.html, wines.html (page), wine_fragment.html (HTMX), partials/wine_row|wine_stage|wine_intro|contact_block.html
 app/static/         css/sibio.css (the only stylesheet), fonts/ (woff2 + OFL files), js/htmx.min.js (2.0.4, same file as ecommerce-fattoria), js/wines.js (focus), js/contact.js (Copy button, loaded by base.html), img/vini (bottle photos), schede (PDF)
@@ -89,15 +90,14 @@ Martin sentence) also need their switch in `site.toml`. `content.problems()` val
 (required fields, types, unknown keys, same keys as Italian in each published language, pdf files,
 unique `order`); `tests/test_content.py` fails if it returns anything. `content.read` is cached: tests that
 change `CONTENT_DIR` call `content.read.cache_clear()`. Texts are written, not invented: wine and oil
-facts stay markers until the family confirms them. Legal pages (task 13) are exempt from hiding.
+facts stay markers until the family confirms them. Legal pages are exempt from hiding (see "Legal pages").
 
 ## Layout
 `app/templates/base.html`: header (text wordmark "Si Bio" until the logo arrives), menu (`templating.MENU`, links
 localized by `localize`, `aria-current` on the current page), language selector (`alternates()`: one link per
 language that can be shown, `/path?lang=xx` so the cookie follows the choice, name of each language from
 `language.name` of its own file), footer (company data from `site.toml`; the farm link needs `farm.url`, without
-it the name is plain text; legal links area reserved: `legal_links` in the footer, wired in the legal pages
-task; "Gestisci i cookie" link to `/info/cookie#scelta`, always shown, the page comes with the legal pages task). Head: `canonical` and `hreflang` (every language that can be shown plus `x-default` on English) from
+it the name is plain text; `legal_links` in the footer: legal notice and privacy; "Gestisci i cookie" link to `/info/cookie#scelta`, always shown, the page comes with the legal pages task). Head: `canonical` and `hreflang` (every language that can be shown plus `x-default` on English) from
 `request.state.path`, absolute from `BASE_URL`. One stylesheet, mobile first, palette only in `:root`. Fonts
 self hosted in `app/static/fonts/` with their OFL files (Cormorant Garamond 500 for headings, Source Sans 3
 400 and 600 for text, latin subset only); never Google Fonts. Pages put their text in `{% block content %}`
@@ -165,8 +165,7 @@ SameSite=Lax, Secure when `BASE_URL` is https (`config.COOKIE_SECURE`); no ident
 path (`safe_next`: one leading `/`, no `//`, backslash or control character; else the home). Answers 303; the language middleware
 puts the prefix back on the Location. `GET` is 405. The body is read by hand (no python-multipart). `partials/cookie_notice.html`
 (band before `</body>`, only while there is no choice, on every full page, not in HTMX fragments) holds `partials/cookie_form.html`
-(two `.button`s, same style). `partials/cookie_choice.html` (`#scelta`: current choice sentence + the form) is for the `/info/cookie`
-page of the legal pages task. No `Vary: Cookie` from the app: the proxy must vary on `Cookie` or not cache HTML. Tests: `tests/test_cookies.py`;
+(two `.button`s, same style). `partials/cookie_choice.html` (`#scelta`: current choice sentence + the form) is included by the `/info/cookie` page. No `Vary: Cookie` from the app: the proxy must vary on `Cookie` or not cache HTML. Tests: `tests/test_cookies.py`;
 other tests that forbid forms or buttons strip the notice with `NOTICE`.
 
 ## Video
@@ -181,3 +180,17 @@ title, `referrerpolicy="strict-origin-when-cross-origin"`, `allow="encrypted-med
 Subtitles are YouTube's. Tests: `tests/test_video.py`.
 **CSP (task 15, not set yet):** needs `frame-src https://www.youtube-nocookie.com` (kept even without consent, it is only a permission)
 and `img-src 'self' data:`; no `media-src`, no inline script.
+
+## Legal pages
+`app/legal.py`: `/info/note-legali`, `/info/privacy`, `/info/cookie` (and `/en/info/...`). Texts are templates, one per page and
+language (`templates/legal/it|en/{note_legali,privacy,cookie}.html`, extending `legal/base.html`: tabs `nav.legal-tabs`, h1, and
+`p.legal-provisional` "provisional text, awaiting review by a lawyer"; the English one says it is a literal translation to be
+reviewed). Only what is true for the site: no forms, no analytics, mailto to `export@si-bio.it` (and to Fuselli e Filari for the
+package), server logs, cookies `lang` (1 year) and `cookie_choice` (6 months), YouTube only after consent. The cookie page lists the
+two cookies and includes `partials/cookie_choice.html` (`#scelta`). Footer: `legal_links` (notice, privacy) plus "Gestisci i cookie".
+**Placeholders are never hidden here**: company values come from `content.site_raw()` (markers kept; `legal.company(lang)` turns a
+marker into the marker of the page language via `legal.todo`/`legal.define`, keys `legal.what_*`), text placeholders are written in the
+templates with `t('legal.todo'|'legal.define', what=...)`. Open points today: notice 3 (registered office, PEC, REA = `[company]` of
+`site.toml`, new key `rea`), privacy 4 (hosting provider, legal basis of logs, retention of logs, retention of emails), cookie 0.
+`tests/test_legal.py` (`EXPECTED`) counts them per page and fails if the number changes: update it when a point is filled in.
+When a legal text changes, change its twin in the other language too. Not invented: legal basis of the logs, any retention period.

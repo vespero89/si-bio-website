@@ -10,6 +10,7 @@ name = "SI - BIO di Premici & Aleandri Società Agricola Semplice"
 vat = "02274900444"
 address = "[DA COMPLETARE: sede legale]"
 pec = "[DA COMPLETARE: PEC]"
+rea = "[DA COMPLETARE: numero REA]"
 
 [contact]
 export_email = "export@si-bio.it"

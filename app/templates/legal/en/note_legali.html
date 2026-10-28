@@ -1,0 +1,16 @@
+{% extends "legal/base.html" %}
+{% block body %}
+<h2>Owner of the site</h2>
+<p>{{ company.name }}</p>
+<ul>
+  <li>VAT number: {{ company.vat }}</li>
+  <li>Registered office: {{ company.address }}</li>
+  <li>PEC: {{ company.pec }}</li>
+  <li>REA: {{ company.rea }}</li>
+  <li>Email: <a href="mailto:{{ site().get('contact', {}).get('export_email') }}">{{ site().get('contact', {}).get('export_email') }}</a></li>
+</ul>
+<h2>What this site is</h2>
+<p>The site presents the wines and the oil of Si Bio. Nothing is sold online: there are no orders, cart or payments, and therefore no conditions of sale. For information, write by email.</p>
+<h2>Other information</h2>
+<p>How we handle data is explained in the <a href="{{ localize('/info/privacy', request.state.lang) }}">privacy notice</a>; cookies are described on the <a href="{{ localize('/info/cookie', request.state.lang) }}">cookie page</a>.</p>
+{% endblock %}

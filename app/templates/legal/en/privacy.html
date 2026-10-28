@@ -1,0 +1,16 @@
+{% extends "legal/base.html" %}
+{% block body %}
+{%- set mail = site().get('contact', {}).get('export_email') %}
+<h2>Data controller</h2>
+<p>{{ company.name }} (<a href="{{ localize('/info/note-legali', request.state.lang) }}">details in the legal notice</a>). For any request about personal data: <a href="mailto:{{ mail }}">{{ mail }}</a>.</p>
+<h2>Forms</h2>
+<p>The site has no forms to collect data and uses no statistics tools. The only forms are the buttons of the cookie choice.</p>
+<h2>Technical server data</h2>
+<p>When you visit the site, the server records technical data such as the IP address, the date and time and the page requested. It is needed for the operation and security of the site. The site is hosted by {{ t('legal.todo', what='hosting provider') }}. Legal basis: {{ t('legal.define', what='legal basis of the logs') }}. Retention: {{ t('legal.define', what='retention period of the logs') }}.</p>
+<h2>If you write to us</h2>
+<p>Contacts are by email. If you write to <a href="mailto:{{ mail }}">{{ mail }}</a>, the message reaches the mailbox of Si Bio; if you ask for the programme of the visit package, the request reaches the mailbox of Fuselli e Filari, which organizes it. The data you send is used only to answer you. Legal basis: your request and pre-contractual measures. Retention: {{ t('legal.define', what='retention period of emails') }}.</p>
+<h2>YouTube video</h2>
+<p>The video loads from YouTube (Google) only if you accept in the cookie notice. In that case Google may set its own cookies and process data according to its <a href="https://policies.google.com/privacy" rel="noopener">privacy policy</a>. The basis is your consent, which you can change at any time on the <a href="{{ localize('/info/cookie', request.state.lang) }}#scelta">cookie page</a>. The "Watch on YouTube" link instead opens YouTube in a new tab, by your choice.</p>
+<h2>Your rights</h2>
+<p>You can ask for access to your data, rectification, erasure, restriction of processing, object to the processing and, where applicable, receive the data in a readable format. Write to <a href="mailto:{{ mail }}">{{ mail }}</a>. You can also lodge a complaint with the <a href="https://www.garanteprivacy.it" rel="noopener">Italian data protection authority (Garante)</a>.</p>
+{% endblock %}

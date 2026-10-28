@@ -50,8 +50,7 @@
       <p class="footer-family">{{ t('footer.family_before') }}
         {%- if farm_url() %}<a href="{{ farm_url() }}" rel="noopener">{{ t('footer.family_link') }}</a>{% else %}{{ t('footer.family_link') }}{% endif %}
         {{- t('footer.family_after') }}</p>
-      {#- Reserved: legal pages (/info/note-legali, /info/privacy), wired in the legal pages task #}
-      {%- set legal_links = [] %}
+      {%- set legal_links = [("legal.tab_notice", "/info/note-legali"), ("legal.tab_privacy", "/info/privacy")] %}
       {%- if legal_links %}
       <nav class="footer-legal" aria-label="{{ t('footer.legal') }}">
         <ul>

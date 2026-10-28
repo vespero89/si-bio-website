@@ -1,0 +1,16 @@
+{% extends "legal/base.html" %}
+{% block body %}
+{%- set mail = site().get('contact', {}).get('export_email') %}
+<h2>Titolare</h2>
+<p>{{ company.name }} (<a href="{{ localize('/info/note-legali', request.state.lang) }}">dati nelle note legali</a>). Per qualsiasi richiesta sui dati personali: <a href="mailto:{{ mail }}">{{ mail }}</a>.</p>
+<h2>Moduli</h2>
+<p>Il sito non ha moduli per raccogliere dati e non usa strumenti di statistica. I soli moduli sono i pulsanti della scelta sui cookie.</p>
+<h2>Dati tecnici del server</h2>
+<p>Quando visiti il sito, il server registra dati tecnici come l'indirizzo IP, la data e l'ora e la pagina richiesta. Servono al funzionamento e alla sicurezza del sito. Il sito è ospitato da {{ t('legal.todo', what='fornitore dell\'hosting') }}. Base giuridica: {{ t('legal.define', what='base giuridica dei log') }}. Conservazione: {{ t('legal.define', what='durata della conservazione dei log') }}.</p>
+<h2>Chi ci scrive</h2>
+<p>I contatti avvengono per email. Se scrivi a <a href="mailto:{{ mail }}">{{ mail }}</a>, il messaggio arriva alla casella di Si Bio; se chiedi il programma del pacchetto di visita, la richiesta arriva alla casella di Fuselli e Filari, che lo organizza. I dati che ci invii servono solo a risponderti. Base giuridica: la tua richiesta e le misure precontrattuali. Conservazione: {{ t('legal.define', what='durata della conservazione delle email') }}.</p>
+<h2>Video di YouTube</h2>
+<p>Il video si carica da YouTube (Google) solo se accetti nell'avviso sui cookie. In quel caso Google può impostare propri cookie e trattare dati secondo la sua <a href="https://policies.google.com/privacy" rel="noopener">informativa</a>. La base è il tuo consenso, che puoi cambiare in ogni momento dalla <a href="{{ localize('/info/cookie', request.state.lang) }}#scelta">pagina dei cookie</a>. Il link «Guarda su YouTube» apre invece YouTube in una nuova scheda, per tua scelta.</p>
+<h2>I tuoi diritti</h2>
+<p>Puoi chiedere l'accesso ai tuoi dati, la rettifica, la cancellazione, la limitazione del trattamento, opporti al trattamento e, dove previsto, ottenere i dati in un formato leggibile. Scrivi a <a href="mailto:{{ mail }}">{{ mail }}</a>. Puoi anche presentare reclamo al <a href="https://www.garanteprivacy.it" rel="noopener">Garante per la protezione dei dati personali</a>.</p>
+{% endblock %}
