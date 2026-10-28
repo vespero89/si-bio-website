@@ -33,12 +33,13 @@ A local git `pre-commit` hook runs ruff check and pytest; never bypass it.
 ```
 app/config.py       settings from environment / .env, paths, `LANGS`, `PUBLISHED`, `PREVIEW`
 app/i18n.py         interface texts: `load`, `t(lang, key)`, `num`, completeness check
+app/content.py      content loader (`site`, `wines`, `wine`, `oil`, `page`), markers, validator `problems()`
 app/lang.py         language middleware: Italian at the root, others under /<code>/, root redirect
 app/main.py         FastAPI app, static files, routers
 app/templating.py   Jinja2 environment, globals `t(key, **values)` and `num(value, decimals)` (language of the request)
 app/templates/      base.html, pages, partials
 app/static/         css, js, img, schede (PDF)
-content/            site.toml (published languages for now), wines, pages (planned)
+content/            site.toml (settings), wines/<slug>.toml and oil.toml (neutral), <lang>/wines, <lang>/oil.toml, <lang>/pages (texts)
 locales/            interface texts per language (it is the reference), flat keys like `nav.wines`
 scripts/            photos, pre-launch content check (planned)
 tests/              pytest
@@ -72,3 +73,15 @@ the reference: `i18n.missing(lang)` lists the keys a language lacks and `tests/t
 a published language lacks any. Falling back to Italian happens in preview only; otherwise the key
 shows. Adding a language: translate its file, add the code to `LANGS` and `site.toml`.
 If English is not published, the root falls back to Italian instead of `/en/`.
+
+## Content
+`app/content.py` reads `content/` (see its docstring for the layout). `wines(lang)` gives the visible
+wines by `order`, `wine(lang, slug)` one or None, `oil(lang)`, `page(lang, name)`, `site()`.
+Markers (`[DA VERIFICARE: ...]`, `[DA COMPLETARE: ...]`, `[DA DEFINIRE: ...]`, English `[TO BE VERIFIED: ...]`
+and the like): a text holding one is shown in preview and becomes empty in production (a list becomes
+`[]`), so templates just test for an empty value. Page keys listed in `content.GATED` (the Riva dei
+Martin sentence) also need their switch in `site.toml`. `content.problems()` validates the raw files
+(required fields, types, unknown keys, same keys as Italian in each published language, pdf files,
+unique `order`); `tests/test_content.py` fails if it returns anything. `content.read` is cached: tests that
+change `CONTENT_DIR` call `content.read.cache_clear()`. Texts are written, not invented: wine and oil
+facts stay markers until the family confirms them. Legal pages (task 13) are exempt from hiding.

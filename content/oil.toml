@@ -1,0 +1,5 @@
+# Neutral data of the olive oil. Texts are in content/<lang>/oil.toml.
+photo = "[DA COMPLETARE: foto della bottiglia]"
+formats = ["[DA VERIFICARE: formati in ml]"]
+# [pdf]
+# it = "olio-it.pdf"   # file in app/static/schede/

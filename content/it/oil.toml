@@ -1,0 +1,9 @@
+# Olio (it). Every value except the name is a marker until the family confirms it.
+name = "Olio"
+description = "[DA VERIFICARE: descrizione dell'olio]"
+cultivar = "[DA VERIFICARE: cultivar]"
+area = "[DA VERIFICARE: zona degli oliveti]"
+harvest = "[DA VERIFICARE: raccolta]"
+milling = "[DA VERIFICARE: frangitura]"
+acidity = "[DA VERIFICARE: acidità]"
+pairings = "[DA VERIFICARE: abbinamenti]"

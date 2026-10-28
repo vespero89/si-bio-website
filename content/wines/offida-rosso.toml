@@ -1,0 +1,8 @@
+# Neutral data of Offida Rosso: the same in every language. Texts are in content/<lang>/wines/offida-rosso.toml.
+order = 3
+visible = true
+photo = "[DA COMPLETARE: foto della bottiglia]"
+abv = "[DA VERIFICARE: gradazione alcolica]"
+formats = ["[DA VERIFICARE: formati in ml]"]
+# [pdf]
+# it = "offida-rosso-it.pdf"   # file in app/static/schede/

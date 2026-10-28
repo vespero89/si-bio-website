@@ -1,4 +1,34 @@
-# Site settings. Languages listed here are published; a language in config.LANGS that is not
-# listed answers 404 (it shows with PREVIEW=1). Italian must be listed.
+# Site settings, the only settings file. Languages listed here are published; a language in
+# config.LANGS that is not listed answers 404 (it shows with PREVIEW=1). Italian must be listed.
+# A value that holds a marker like [DA COMPLETARE: ...] is hidden in production and shown in
+# preview (see app/content.py).
 [languages]
 published = ["it", "en"]
+
+[company]
+name = "SI - BIO di Premici & Aleandri Società Agricola Semplice"
+vat = "02274900444"
+address = "[DA COMPLETARE: sede legale]"
+pec = "[DA COMPLETARE: PEC]"
+
+[contact]
+export_email = "export@si-bio.it"
+# Fuselli e Filari receive the gift package requests directly, Si Bio is not in the way.
+partner_email = "[DA COMPLETARE: contatto email di Fuselli e Filari]"
+phone = "[DA COMPLETARE: telefono, solo se la responsabile commerciale lo vuole]"
+
+[farm]
+# Home of the family farm; the language prefix is added by the template.
+url = "[DA COMPLETARE: indirizzo del sito della fattoria]"
+
+[social]
+instagram = "[DA VERIFICARE: profilo social, se esiste]"
+facebook = "[DA VERIFICARE: profilo social, se esiste]"
+
+[video]
+youtube_id = "[DA COMPLETARE: identificativo del video YouTube]"
+cover = "[DA COMPLETARE: immagine di copertina del video]"
+
+[switches]
+riva_dei_martin = false
+organic_certified = false

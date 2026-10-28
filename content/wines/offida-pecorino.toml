@@ -1,0 +1,8 @@
+# Neutral data of Offida Pecorino: the same in every language. Texts are in content/<lang>/wines/offida-pecorino.toml.
+order = 1
+visible = true
+photo = "[DA COMPLETARE: foto della bottiglia]"
+abv = "[DA VERIFICARE: gradazione alcolica]"
+formats = ["[DA VERIFICARE: formati in ml]"]
+# [pdf]
+# it = "offida-pecorino-it.pdf"   # file in app/static/schede/
