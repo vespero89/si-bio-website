@@ -227,3 +227,9 @@ ul { list-style: none; margin: 0; padding: 0; }
 /* HTMX swap: the new wine fades in (the reduced motion rule above turns it off) */
 .wine-front { transition: opacity 0.2s ease-out; }
 .wine-front.htmx-added { opacity: 0; }
+
+/* Home, oil, about */
+.claim { margin: 1.5rem 0; padding-left: 1rem; border-left: 3px solid var(--wine); font-family: "Cormorant Garamond", serif; font-size: 1.5rem; }
+.claim p { margin: 0 0 0.25rem; }
+.claim footer { font-family: inherit; font-size: 1rem; color: var(--ink-soft); }
+.home-page h2 { margin-top: 2rem; }

@@ -53,6 +53,11 @@ pairings = "Abbinamenti"
 formats = "Formati"
 vintage = "Annata in commercio"
 awards = "Premi"
+cultivar = "Cultivar"
+area = "Zona degli oliveti"
+milling = "Frangitura"
+acidity = "Acidità"
+oil_harvest = "Raccolta"
 pdf = "Scarica la scheda (PDF, {size})"
 pdf_italian = "Scheda in PDF (in italiano)"
 
@@ -62,7 +67,24 @@ write = "Scrivici per informazioni commerciali"
 copy = "Copia"
 copied = "Copiato"
 subject_wine = "Si Bio: {name}"
+subject_olio = "Si Bio: olio"
 subject_info = "Si Bio: informazioni"
 sales = "Responsabile commerciale:"
 phone = "Telefono:"
 company = "Dati dell'azienda"
+
+[home]
+lead = "Vini e olio di Offida, nel Piceno."
+wines = "I nostri vini"
+oil_link = "Scopri l'olio"
+visits_title = "Vieni nel Piceno"
+visits_text = "Accogliamo buyer e importatori nella nostra terra."
+visits_link = "Visite e pacchetti"
+buyers = "Per buyer e importatori: scrivici per informazioni commerciali."
+contact_link = "Contattaci"
+
+[oil]
+intro = "L'olio della famiglia Premici e Aleandri, a Offida."
+
+[about]
+what = "Cinque vini da uve del Piceno e un olio."

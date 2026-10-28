@@ -37,9 +37,10 @@ app/content.py      content loader (`site`, `wines`, `wine`, `oil`, `page`), mar
 app/lang.py         language middleware: Italian at the root, others under /<code>/, root redirect
 app/main.py         FastAPI app, static files, routers
 app/contact.py      route `/contatti` (mailto block, company data, sales manager role)
+app/pages.py        routes `/`, `/olio`, `/chi-siamo` (helper `oil_sheet`)
 app/wines.py        routes `/vini` and `/vini/<slug>` (fragment for HTMX, `Vary`), helpers `sheet`, `photo`, `pdf` for the wine page
 app/templating.py   Jinja2 environment, globals `t(key, **values)` and `num(value, decimals)` (language of the request), `canonical()`, `alternates()` (selector and hreflang), `farm_url()`, `menu`, `localize`, `site()`, `mailto(address, subject)`, `has_marker`
-app/templates/      base.html (header, menu, selector, canonical/hreflang, footer), wines.html (page), wine_fragment.html (HTMX), partials/wine_row|wine_stage|wine_intro|contact_block.html
+app/templates/      base.html (header, menu, selector, canonical/hreflang, footer), home.html, oil.html, about.html, wines.html (page), wine_fragment.html (HTMX), partials/wine_row|wine_stage|wine_intro|contact_block.html
 app/static/         css/sibio.css (the only stylesheet), fonts/ (woff2 + OFL files), js/htmx.min.js (2.0.4, same file as ecommerce-fattoria), js/wines.js (focus), js/contact.js (Copy button, loaded by base.html), img/vini (bottle photos), schede (PDF)
 content/            site.toml (settings), wines/<slug>.toml and oil.toml (neutral), <lang>/wines, <lang>/oil.toml, <lang>/pages (texts)
 locales/            interface texts per language (it is the reference), flat keys like `nav.wines`
@@ -130,3 +131,15 @@ implemented (links are enough). Without JS the plain links of the page keep work
 then company data from `site.toml` (name, VAT, registered office, PEC, phone) and the role of the commercial manager read
 from `sales_contact` of the `about` page file. Every value that is still a marker is empty in production, so its line is
 left out (shown in preview). No form, no database. The menu entry `nav.contact` already points here.
+
+## Home, oil, about
+`app/pages.py`. Home: h1, `home.lead`, the claim as `blockquote.claim` (`claim`, optional `claim_by` as its source; both
+markers until the DOCG and Veneto check, so no quotation in production), `who` when verified, the family line with the farm
+link (`footer.family_*` keys), the five wines as plain links in a `.wine-row` (no HTMX), links to `/olio` and `/visite`,
+the buyers sentence (`buyers` of the file, else `home.buyers`) and the "Contattaci" button; `certification` only when filled.
+In production the home is therefore h1, lead, family line, wines and links. Oil: h1 `oil.name`, `oil.intro`, description,
+a `dl.sheet` from `pages.OIL_SHEET` (harvest uses the label `sheet.oil_harvest`), optional PDF (`[pdf]` of `oil.toml`, same
+`wines.pdf` rule), contact block with subject `contact.subject_olio` ("Si Bio: olio" / "Si Bio: oil"). About: h1, `family`
+(who), `about.what` (fixed text: five wines from Piceno grapes and an oil, no "organic"), `why_veneto`, the family line, the
+Riva dei Martin sentence only with `riva_dei_martin = true` in `site.toml` (`content.GATED`; never "our winery"), the commercial
+manager role (`sales_contact`) and the contact button. Tests: `tests/test_pages.py`.

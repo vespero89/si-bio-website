@@ -1,4 +1,47 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Si Bio</h1>
+<div class="wrap home-page">
+  <h1>{{ page.title }}</h1>
+  <p class="lead">{{ t('home.lead') }}</p>
+  {%- if page.claim %}
+  <blockquote class="claim">
+    <p>{{ page.claim }}</p>
+    {%- if page.claim_by %}<footer>{{ page.claim_by }}</footer>{% endif %}
+  </blockquote>
+  {%- endif %}
+  {%- if page.who %}
+  <p>{{ page.who }}</p>
+  {%- endif %}
+  <p class="footer-family">{{ t('footer.family_before') }}
+    {%- if farm_url() %}<a href="{{ farm_url() }}" rel="noopener">{{ t('footer.family_link') }}</a>{% else %}{{ t('footer.family_link') }}{% endif %}
+    {{- t('footer.family_after') }}</p>
+
+  <h2>{{ t('home.wines') }}</h2>
+  <nav class="wine-row" aria-label="{{ t('wines.row') }}">
+    <ul>
+      {%- for w in wines %}
+      <li>
+        <a href="{{ localize('/vini/' ~ w.slug, request.state.lang) }}">
+          {%- if w.photo and not has_marker(w.photo) %}
+          <img src="/static/img/vini/{{ w.photo }}" alt="" width="300" height="600">
+          {%- else %}
+          <span class="bottle-placeholder" aria-hidden="true"></span>
+          {%- endif %}
+          <span class="wine-row-name">{{ w.name }}</span>
+        </a>
+      </li>
+      {%- endfor %}
+    </ul>
+  </nav>
+  <p><a href="{{ localize('/olio', request.state.lang) }}">{{ t('home.oil_link') }}</a></p>
+
+  <h2>{{ t('home.visits_title') }}</h2>
+  <p>{{ t('home.visits_text') }} <a href="{{ localize('/visite', request.state.lang) }}">{{ t('home.visits_link') }}</a></p>
+
+  <p>{{ page.buyers or t('home.buyers') }}</p>
+  <p><a class="button" href="{{ localize('/contatti', request.state.lang) }}">{{ t('home.contact_link') }}</a></p>
+  {%- if page.certification %}
+  <p>{{ page.certification }}</p>
+  {%- endif %}
+</div>
 {% endblock %}

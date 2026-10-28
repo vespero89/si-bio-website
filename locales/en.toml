@@ -52,6 +52,11 @@ pairings = "Pairings"
 formats = "Formats"
 vintage = "Vintage on sale"
 awards = "Awards"
+cultivar = "Cultivar"
+area = "Olive grove area"
+milling = "Milling"
+acidity = "Acidity"
+oil_harvest = "Harvest"
 pdf = "Download the sheet (PDF, {size})"
 pdf_italian = "Sheet in PDF (in Italian)"
 
@@ -61,7 +66,24 @@ write = "Write to us for trade enquiries"
 copy = "Copy"
 copied = "Copied"
 subject_wine = "Si Bio: {name}"
+subject_olio = "Si Bio: oil"
 subject_info = "Si Bio: information"
 sales = "Sales manager:"
 phone = "Phone:"
 company = "Company details"
+
+[home]
+lead = "Wine and olive oil from Offida, in the Piceno."
+wines = "Our wines"
+oil_link = "Discover the oil"
+visits_title = "Come to the Piceno"
+visits_text = "We welcome buyers and importers to our land."
+visits_link = "Visits and packages"
+buyers = "For buyers and importers: write to us for trade enquiries."
+contact_link = "Contact us"
+
+[oil]
+intro = "The olive oil of the Premici and Aleandri family, in Offida."
+
+[about]
+what = "Five wines from Piceno grapes and an olive oil."

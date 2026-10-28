@@ -1,7 +1,9 @@
+import shutil
+
 import pytest
 from fastapi.testclient import TestClient
 
-from app import config
+from app import config, content
 from app.main import app
 
 
@@ -11,9 +13,17 @@ def client():
 
 
 @pytest.fixture
-def german(monkeypatch):
-    """A third language known to the code (LANGS) but not published."""
+def german(monkeypatch, tmp_path):
+    """A third language known to the code (LANGS) but not published, with a copy of the Italian
+    content so that pages that read content files can answer in it."""
+    shutil.copytree(config.CONTENT_DIR, tmp_path / "content")
+    shutil.copytree(tmp_path / "content" / "it", tmp_path / "content" / "de")
+    monkeypatch.setattr(config, "CONTENT_DIR", tmp_path / "content")
+    content.read.cache_clear()
     monkeypatch.setattr(config, "LANGS", ("it", "en", "de"))
+    yield
+    monkeypatch.undo()
+    content.read.cache_clear()
 
 
 def test_site_toml_publishes_it_and_en():

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}{{ page.title }} | Si Bio{% endblock %}
+{% block content %}
+<div class="wrap about-page">
+  <h1>{{ page.title }}</h1>
+  {%- if page.family %}
+  <p>{{ page.family }}</p>
+  {%- endif %}
+  <p>{{ t('about.what') }}</p>
+  {%- if page.why_veneto %}
+  <p>{{ page.why_veneto }}</p>
+  {%- endif %}
+  <p class="footer-family">{{ t('footer.family_before') }}
+    {%- if farm_url() %}<a href="{{ farm_url() }}" rel="noopener">{{ t('footer.family_link') }}</a>{% else %}{{ t('footer.family_link') }}{% endif %}
+    {{- t('footer.family_after') }}</p>
+  {%- if page.riva_dei_martin %}
+  <p>{{ page.riva_dei_martin }}</p>
+  {%- endif %}
+  {%- if page.sales_contact %}
+  <p>{{ t('contact.sales') }} {{ page.sales_contact }}</p>
+  {%- endif %}
+  <p><a class="button" href="{{ localize('/contatti', request.state.lang) }}">{{ t('home.contact_link') }}</a></p>
+</div>
+{% endblock %}

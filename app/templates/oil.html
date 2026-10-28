@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ oil.name }} | Si Bio{% endblock %}
+{% block content %}
+<div class="wrap oil-page">
+  <h1>{{ oil.name }}</h1>
+  <p class="lead">{{ t('oil.intro') }}</p>
+  {%- if oil.description %}
+  <p>{{ oil.description }}</p>
+  {%- endif %}
+  {%- if photo %}
+  <img src="/static/img/vini/{{ photo }}" alt="{{ oil.name }}" width="300" height="600">
+  {%- endif %}
+  {%- if sheet %}
+  <dl class="sheet">
+    {%- for field, value in sheet %}
+    <dt>{{ t('sheet.' ~ field) }}</dt>
+    <dd>{{ value }}</dd>
+    {%- endfor %}
+  </dl>
+  {%- endif %}
+  {%- if pdf %}
+  <p><a class="pdf-link" href="{{ pdf.url }}">
+    {%- if pdf.fallback %}{{ t('sheet.pdf_italian') }}{% else %}{{ t('sheet.pdf', size=pdf.size_kb ~ ' KB') }}{% endif -%}
+  </a></p>
+  {%- endif %}
+  {%- set subject = t('contact.subject_olio') %}
+  {% include "partials/contact_block.html" %}
+</div>
+{% endblock %}
