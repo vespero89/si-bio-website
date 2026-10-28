@@ -36,6 +36,7 @@ app/i18n.py         interface texts: `load`, `t(lang, key)`, `num`, completeness
 app/content.py      content loader (`site`, `wines`, `wine`, `oil`, `page`), markers, validator `problems()`
 app/lang.py         language middleware: Italian at the root, others under /<code>/, root redirect
 app/main.py         FastAPI app, static files, routers
+app/contact.py      route `/contatti` (mailto block, company data, sales manager role)
 app/wines.py        routes `/vini` and `/vini/<slug>` (fragment for HTMX, `Vary`), helpers `sheet`, `photo`, `pdf` for the wine page
 app/templating.py   Jinja2 environment, globals `t(key, **values)` and `num(value, decimals)` (language of the request), `canonical()`, `alternates()` (selector and hreflang), `farm_url()`, `menu`, `localize`, `site()`, `mailto(address, subject)`, `has_marker`
 app/templates/      base.html (header, menu, selector, canonical/hreflang, footer), wines.html (page), wine_fragment.html (HTMX), partials/wine_row|wine_stage|wine_intro|contact_block.html
@@ -122,3 +123,10 @@ stage. A history restore (`HX-History-Restore-Request`) gets the full page. Ever
 (`tabindex="-1"`) and `contact.js` runs again to add the Copy button. HTMX and the scripts are local (no CDN).
 The fade in uses `.htmx-added`; the global `prefers-reduced-motion` rule disables it. Arrow keys are not
 implemented (links are enough). Without JS the plain links of the page keep working.
+
+## Contact page
+`/contatti` (`app/contact.py`, `contact.html`): h1 and intro from `content/<lang>/pages/contact.toml`, the
+`partials/contact_block.html` with subject `contact.subject_info` ("Si Bio: informazioni" / "Si Bio: information", no wine),
+then company data from `site.toml` (name, VAT, registered office, PEC, phone) and the role of the commercial manager read
+from `sales_contact` of the `about` page file. Every value that is still a marker is empty in production, so its line is
+left out (shown in preview). No form, no database. The menu entry `nav.contact` already points here.
