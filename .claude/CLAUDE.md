@@ -36,9 +36,9 @@ app/i18n.py         interface texts: `load`, `t(lang, key)`, `num`, completeness
 app/content.py      content loader (`site`, `wines`, `wine`, `oil`, `page`), markers, validator `problems()`
 app/lang.py         language middleware: Italian at the root, others under /<code>/, root redirect
 app/main.py         FastAPI app, static files, routers
-app/templating.py   Jinja2 environment, globals `t(key, **values)` and `num(value, decimals)` (language of the request)
-app/templates/      base.html, pages, partials
-app/static/         css, js, img, schede (PDF)
+app/templating.py   Jinja2 environment, globals `t(key, **values)` and `num(value, decimals)` (language of the request), `canonical()`, `alternates()` (selector and hreflang), `farm_url()`, `menu`, `localize`, `site()`
+app/templates/      base.html (header, menu, selector, canonical/hreflang, footer), pages, partials
+app/static/         css/sibio.css (the only stylesheet), fonts/ (woff2 + OFL files), js, img, schede (PDF)
 content/            site.toml (settings), wines/<slug>.toml and oil.toml (neutral), <lang>/wines, <lang>/oil.toml, <lang>/pages (texts)
 locales/            interface texts per language (it is the reference), flat keys like `nav.wines`
 scripts/            photos, pre-launch content check (planned)
@@ -85,3 +85,15 @@ Martin sentence) also need their switch in `site.toml`. `content.problems()` val
 unique `order`); `tests/test_content.py` fails if it returns anything. `content.read` is cached: tests that
 change `CONTENT_DIR` call `content.read.cache_clear()`. Texts are written, not invented: wine and oil
 facts stay markers until the family confirms them. Legal pages (task 13) are exempt from hiding.
+
+## Layout
+`app/templates/base.html`: header (text wordmark "Si Bio" until the logo arrives), menu (`templating.MENU`, links
+localized by `localize`, `aria-current` on the current page), language selector (`alternates()`: one link per
+language that can be shown, `/path?lang=xx` so the cookie follows the choice, name of each language from
+`language.name` of its own file), footer (company data from `site.toml`; the farm link needs `farm.url`, without
+it the name is plain text; legal links area reserved: `legal_links` in the footer, wired in the legal pages
+task). Head: `canonical` and `hreflang` (every language that can be shown plus `x-default` on English) from
+`request.state.path`, absolute from `BASE_URL`. One stylesheet, mobile first, palette only in `:root`. Fonts
+self hosted in `app/static/fonts/` with their OFL files (Cormorant Garamond 500 for headings, Source Sans 3
+400 and 600 for text, latin subset only); never Google Fonts. Pages put their text in `{% block content %}`
+with one `h1`.

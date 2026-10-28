@@ -4,11 +4,64 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Si Bio{% endblock %}</title>
+  <link rel="canonical" href="{{ canonical() }}">
+  {%- set alts = alternates() %}
+  {%- for alt in alts %}
+  <link rel="alternate" hreflang="{{ alt.code }}" href="{{ base_url }}{{ alt.url }}">
+  {%- endfor %}
+  <link rel="alternate" hreflang="x-default" href="{{ base_url }}{{ localize(request.state.path, x_default_lang()) }}">
+  <link rel="preload" href="/static/fonts/cormorant-garamond-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/static/css/sibio.css">
 </head>
 <body>
-  <a href="#main">{{ t('skip.content') }}</a>
+  <a class="skip" href="#main">{{ t('skip.content') }}</a>
+  <header class="site-header">
+    <div class="wrap header-row">
+      <a class="brand" href="{{ localize('/', request.state.lang) }}">Si Bio</a>
+      <nav class="menu" aria-label="{{ t('header.menu') }}">
+        <ul>
+          {%- for key, path in menu %}
+          <li><a href="{{ localize(path, request.state.lang) }}"{% if is_current(path) %} aria-current="page"{% endif %}>{{ t(key) }}</a></li>
+          {%- endfor %}
+        </ul>
+      </nav>
+      <nav class="lang" aria-label="{{ t('language.label') }}">
+        <ul>
+          {%- for alt in alts %}
+          <li><a href="{{ alt.url }}?lang={{ alt.code }}" lang="{{ alt.code }}" hreflang="{{ alt.code }}"{% if alt.code == request.state.lang %} aria-current="true"{% endif %}>{{ alt.name }}</a></li>
+          {%- endfor %}
+        </ul>
+      </nav>
+    </div>
+  </header>
   <main id="main">
     {% block content %}{% endblock %}
   </main>
+  {%- set company = site().get("company", {}) %}
+  {%- set contact = site().get("contact", {}) %}
+  <footer class="site-footer">
+    <div class="wrap">
+      <p class="footer-name">{{ company.get("name") }}</p>
+      <p class="footer-data">
+        {%- if company.get("vat") %}{{ t('footer.vat', value=company.vat) }}{% endif %}
+        {%- if company.get("address") %}<br>{{ t('footer.address', value=company.address) }}{% endif %}
+        {%- if contact.get("export_email") %}<br><a href="mailto:{{ contact.export_email }}">{{ contact.export_email }}</a>{% endif %}
+      </p>
+      <p class="footer-family">{{ t('footer.family_before') }}
+        {%- if farm_url() %}<a href="{{ farm_url() }}" rel="noopener">{{ t('footer.family_link') }}</a>{% else %}{{ t('footer.family_link') }}{% endif %}
+        {{- t('footer.family_after') }}</p>
+      {#- Reserved: legal pages (/info/note-legali, /info/privacy) and "Gestisci i cookie" (/info/cookie), wired in the legal pages task #}
+      {%- set legal_links = [] %}
+      {%- if legal_links %}
+      <nav class="footer-legal" aria-label="{{ t('footer.legal') }}">
+        <ul>
+          {%- for key, path in legal_links %}
+          <li><a href="{{ localize(path, request.state.lang) }}">{{ t(key) }}</a></li>
+          {%- endfor %}
+        </ul>
+      </nav>
+      {%- endif %}
+    </div>
+  </footer>
 </body>
 </html>

@@ -11,8 +11,23 @@ content = "Vai al contenuto"
 wines = "Vini"
 oil = "Olio"
 about = "Chi siamo"
-visits = "Visite"
+visits = "Visite e pacchetti"
 contact = "Contatti"
 
 [wine]
 abv = "{value} % vol"
+
+[language]
+name = "Italiano"
+label = "Lingua"
+
+[header]
+menu = "Menu principale"
+
+[footer]
+vat = "P.IVA {value}"
+address = "Sede: {value}"
+family_before = "Dietro Si Bio c'è la famiglia della "
+family_link = "Fattoria nel Ciafone"
+family_after = ", che dal 1915 alleva e coltiva a Offida."
+legal = "Informazioni legali"
