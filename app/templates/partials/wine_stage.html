@@ -1,0 +1,34 @@
+<article class="wine-front">
+  <div class="wine-photo">
+    {%- if photo %}
+    <img src="/static/img/vini/{{ photo }}" alt="{{ wine.name }}" width="300" height="600">
+    {%- else %}
+    <span class="bottle-placeholder" role="img" aria-label="{{ t('wines.photo_missing') }}"></span>
+    {%- endif %}
+  </div>
+  <div class="wine-sheet">
+    {%- if heading %}
+    <h2 tabindex="-1">{{ wine.name }}</h2>
+    {%- else %}
+    <h1 tabindex="-1">{{ wine.name }}</h1>
+    {%- endif %}
+    {%- if wine.description %}
+    <p>{{ wine.description }}</p>
+    {%- endif %}
+    {%- if sheet %}
+    <dl class="sheet">
+      {%- for field, value in sheet %}
+      <dt>{{ t('sheet.' ~ field) }}</dt>
+      <dd>{% if field == 'abv' and value is number %}{{ t('wine.abv', value=num(value)) }}{% else %}{{ value }}{% endif %}</dd>
+      {%- endfor %}
+    </dl>
+    {%- endif %}
+    {%- if pdf %}
+    <p><a class="pdf-link" href="{{ pdf.url }}">
+      {%- if pdf.fallback %}{{ t('sheet.pdf_italian') }}{% else %}{{ t('sheet.pdf', size=pdf.size_kb ~ ' KB') }}{% endif -%}
+    </a></p>
+    {%- endif %}
+    {%- set subject = t('contact.subject_wine', name=wine.name) %}
+    {% include "partials/contact_block.html" %}
+  </div>
+</article>

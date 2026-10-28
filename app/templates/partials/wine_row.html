@@ -1,0 +1,15 @@
+<ul>
+  {%- for w in wines %}
+  <li>
+    {%- set url = localize('/vini/' ~ w.slug, request.state.lang) %}
+    <a href="{{ url }}" hx-get="{{ url }}"{% if w.slug == wine.slug %} aria-current="{{ 'true' if heading else 'page' }}"{% endif %}>
+      {%- if w.photo and not has_marker(w.photo) %}
+      <img src="/static/img/vini/{{ w.photo }}" alt="" width="300" height="600">
+      {%- else %}
+      <span class="bottle-placeholder" aria-hidden="true"></span>
+      {%- endif %}
+      <span class="wine-row-name">{{ w.name }}</span>
+    </a>
+  </li>
+  {%- endfor %}
+</ul>

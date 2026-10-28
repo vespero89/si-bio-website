@@ -2,62 +2,16 @@
 {% block title %}{{ wine.name }} | Si Bio{% endblock %}
 {% block content %}
 <div class="wrap wines-page">
-  {%- if heading %}
-  <h1>{{ t('wines.title') }}</h1>
-  <p class="lead">{{ t('wines.intro') }}</p>
-  {%- endif %}
+  <div id="wine-intro">{% include "partials/wine_intro.html" %}</div>
 
-  <nav class="wine-row" aria-label="{{ t('wines.row') }}">
-    <ul>
-      {%- for w in wines %}
-      <li>
-        <a href="{{ localize('/vini/' ~ w.slug, request.state.lang) }}"{% if w.slug == wine.slug %} aria-current="{{ 'true' if heading else 'page' }}"{% endif %}>
-          {%- if w.photo and not has_marker(w.photo) %}
-          <img src="/static/img/vini/{{ w.photo }}" alt="" width="300" height="600">
-          {%- else %}
-          <span class="bottle-placeholder" aria-hidden="true"></span>
-          {%- endif %}
-          <span class="wine-row-name">{{ w.name }}</span>
-        </a>
-      </li>
-      {%- endfor %}
-    </ul>
+  <nav class="wine-row" id="wine-row" aria-label="{{ t('wines.row') }}" hx-target="#wine-stage" hx-swap="innerHTML" hx-push-url="true">
+    {% include "partials/wine_row.html" %}
   </nav>
 
-  <article class="wine-front">
-    <div class="wine-photo">
-      {%- if photo %}
-      <img src="/static/img/vini/{{ photo }}" alt="{{ wine.name }}" width="300" height="600">
-      {%- else %}
-      <span class="bottle-placeholder" role="img" aria-label="{{ t('wines.photo_missing') }}"></span>
-      {%- endif %}
-    </div>
-    <div class="wine-sheet">
-      {%- if heading %}
-      <h2 tabindex="-1">{{ wine.name }}</h2>
-      {%- else %}
-      <h1 tabindex="-1">{{ wine.name }}</h1>
-      {%- endif %}
-      {%- if wine.description %}
-      <p>{{ wine.description }}</p>
-      {%- endif %}
-      {%- if sheet %}
-      <dl class="sheet">
-        {%- for field, value in sheet %}
-        <dt>{{ t('sheet.' ~ field) }}</dt>
-        <dd>{% if field == 'abv' and value is number %}{{ t('wine.abv', value=num(value)) }}{% else %}{{ value }}{% endif %}</dd>
-        {%- endfor %}
-      </dl>
-      {%- endif %}
-      {%- if pdf %}
-      <p><a class="pdf-link" href="{{ pdf.url }}">
-        {%- if pdf.fallback %}{{ t('sheet.pdf_italian') }}{% else %}{{ t('sheet.pdf', size=pdf.size_kb ~ ' KB') }}{% endif -%}
-      </a></p>
-      {%- endif %}
-      {%- set subject = t('contact.subject_wine', name=wine.name) %}
-      {% include "partials/contact_block.html" %}
-    </div>
-  </article>
+  <div id="wine-stage">
+    {% include "partials/wine_stage.html" %}
+  </div>
 </div>
-<script src="/static/js/contact.js" defer></script>
+<script src="/static/js/htmx.min.js" defer></script>
+<script src="/static/js/wines.js" defer></script>
 {% endblock %}

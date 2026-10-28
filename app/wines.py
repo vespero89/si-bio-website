@@ -57,9 +57,15 @@ def pdf(wine: dict, lang: str) -> dict | None:
 def _page(request: Request, current: dict, heading: bool):
     lang = of(request)
     wines = content.wines(lang)
-    return templates.TemplateResponse(
+    # HTMX asks for the fragment; a history restore after a cache miss also sends HX-Request but
+    # needs the whole page.
+    fragment = (
+        request.headers.get("hx-request") == "true"
+        and request.headers.get("hx-history-restore-request") != "true"
+    )
+    response = templates.TemplateResponse(
         request,
-        "wines.html",
+        "wine_fragment.html" if fragment else "wines.html",
         {
             "wines": wines,
             "wine": current,
@@ -69,6 +75,8 @@ def _page(request: Request, current: dict, heading: bool):
             "pdf": pdf(current, lang),
         },
     )
+    response.headers["Vary"] = "HX-Request, HX-History-Restore-Request"
+    return response
 
 
 @router.get("/vini", response_class=HTMLResponse)

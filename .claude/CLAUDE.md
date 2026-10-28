@@ -36,10 +36,10 @@ app/i18n.py         interface texts: `load`, `t(lang, key)`, `num`, completeness
 app/content.py      content loader (`site`, `wines`, `wine`, `oil`, `page`), markers, validator `problems()`
 app/lang.py         language middleware: Italian at the root, others under /<code>/, root redirect
 app/main.py         FastAPI app, static files, routers
-app/wines.py        routes `/vini` and `/vini/<slug>`, helpers `sheet`, `photo`, `pdf` for the wine page
+app/wines.py        routes `/vini` and `/vini/<slug>` (fragment for HTMX, `Vary`), helpers `sheet`, `photo`, `pdf` for the wine page
 app/templating.py   Jinja2 environment, globals `t(key, **values)` and `num(value, decimals)` (language of the request), `canonical()`, `alternates()` (selector and hreflang), `farm_url()`, `menu`, `localize`, `site()`, `mailto(address, subject)`, `has_marker`
-app/templates/      base.html (header, menu, selector, canonical/hreflang, footer), wines.html, partials/contact_block.html
-app/static/         css/sibio.css (the only stylesheet), fonts/ (woff2 + OFL files), js/contact.js (Copy button), img/vini (bottle photos), schede (PDF)
+app/templates/      base.html (header, menu, selector, canonical/hreflang, footer), wines.html (page), wine_fragment.html (HTMX), partials/wine_row|wine_stage|wine_intro|contact_block.html
+app/static/         css/sibio.css (the only stylesheet), fonts/ (woff2 + OFL files), js/htmx.min.js (2.0.4, same file as ecommerce-fattoria), js/wines.js (focus), js/contact.js (Copy button, loaded by base.html), img/vini (bottle photos), schede (PDF)
 content/            site.toml (settings), wines/<slug>.toml and oil.toml (neutral), <lang>/wines, <lang>/oil.toml, <lang>/pages (texts)
 locales/            interface texts per language (it is the reference), flat keys like `nav.wines`
 scripts/            photos, pre-launch content check (planned)
@@ -110,3 +110,15 @@ a marker value is empty in production, so a field never shows empty. Photo: `pho
 `partials/contact_block.html` (needs `subject`): address as text, `mailto` built by `mailto()` (percent-encoded UTF-8,
 `%20`, never `+`), subject `contact.subject_wine`. The "Copy" button is created by `static/js/contact.js` (labels in
 `data-copy` / `data-copied`), so without JS only address and link exist.
+
+## Wine carousel (HTMX)
+`/vini` and `/vini/<slug>` render `wines.html`: `#wine-intro` (h1 + lead, only on `/vini`), `nav#wine-row` (links
+with `hx-get`, `hx-target="#wine-stage"`, `hx-push-url="true"` on the nav) and `#wine-stage` (the
+`.wine-front` article). With `HX-Request: true` the route returns `wine_fragment.html` instead: `<title>`
+(htmx updates the tab title), the intro and the row as out of band swaps (`hx-swap-oob="innerHTML"`, so the new
+`aria-current` and an h1 that is only on `/vini` follow, and the row keeps its scroll position) and the
+stage. A history restore (`HX-History-Restore-Request`) gets the full page. Every wine response has
+`Vary: HX-Request, HX-History-Restore-Request`. After the swap `js/wines.js` focuses the wine title
+(`tabindex="-1"`) and `contact.js` runs again to add the Copy button. HTMX and the scripts are local (no CDN).
+The fade in uses `.htmx-added`; the global `prefers-reduced-motion` rule disables it. Arrow keys are not
+implemented (links are enough). Without JS the plain links of the page keep working.

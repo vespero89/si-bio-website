@@ -223,3 +223,7 @@ ul { list-style: none; margin: 0; padding: 0; }
   .wine-row ul { justify-content: center; }
   .wine-front { grid-template-columns: 1fr 2fr; gap: 3rem; }
 }
+
+/* HTMX swap: the new wine fades in (the reduced motion rule above turns it off) */
+.wine-front { transition: opacity 0.2s ease-out; }
+.wine-front.htmx-added { opacity: 0; }
