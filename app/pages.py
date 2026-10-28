@@ -53,3 +53,10 @@ def about_page(request: Request):
     return templates.TemplateResponse(
         request, "about.html", {"page": content.page(of(request), "about")}
     )
+
+
+@router.get("/visite", response_class=HTMLResponse)
+def visits_page(request: Request):
+    return templates.TemplateResponse(
+        request, "visits.html", {"page": content.page(of(request), "visits")}
+    )

@@ -25,7 +25,11 @@ CARD = (
 WINE_TEXT = {"name", "description", *CARD}
 OIL_TEXT = {"name", "description", "cultivar", "area", "harvest", "milling", "acidity", "pairings"}
 SLUG = re.compile(r"[a-z0-9]+(-[a-z0-9]+)*$")
-GATED = {"riva_dei_martin": "riva_dei_martin"}
+GATED = {
+    "riva_dei_martin": "riva_dei_martin",
+    "buyers_riva_dei_martin": "riva_dei_martin",
+    "package_riva_dei_martin": "riva_dei_martin",
+}
 """Page keys shown only when the switch of the same name in site.toml is on."""
 
 

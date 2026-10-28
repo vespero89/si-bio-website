@@ -69,6 +69,8 @@ copied = "Copiato"
 subject_wine = "Si Bio: {name}"
 subject_olio = "Si Bio: olio"
 subject_info = "Si Bio: informazioni"
+subject_buyers = "Si Bio: programma buyer"
+subject_package = "Richiesta programma: {name}"
 sales = "Responsabile commerciale:"
 phone = "Telefono:"
 company = "Dati dell'azienda"
@@ -88,3 +90,9 @@ intro = "L'olio della famiglia Premici e Aleandri, a Offida."
 
 [about]
 what = "Cinque vini da uve del Piceno e un olio."
+
+[visits]
+invitation = "Su invito"
+buyers_button = "Contatta la nostra responsabile commerciale"
+organizer = "Organizzato e venduto da Fuselli e Filari, agenzia di Offida."
+package_button = "Chiedi il programma"

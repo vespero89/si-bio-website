@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ page.title }} | Si Bio{% endblock %}
+{% block content %}
+{%- set partner = site().get("contact", {}).get("partner_email") %}
+<div class="wrap visits-page">
+  <h1>{{ page.title }}</h1>
+  <section class="visits-buyers">
+    <h2>{{ page.buyers_title }}</h2>
+    <p class="visits-tag">{{ t('visits.invitation') }}</p>
+    <p class="lead">{{ page.buyers_text }}</p>
+    {%- if page.buyers_riva_dei_martin %}
+    <p>{{ page.buyers_riva_dei_martin }}</p>
+    {%- endif %}
+    {#- Place for the promo video (task 12 fills it): nothing is loaded from outside. #}
+    <div class="video-slot"></div>
+    {%- set subject = t('contact.subject_buyers') %}
+    {%- set contact_button = t('visits.buyers_button') %}
+    {% include "partials/contact_block.html" %}
+  </section>
+  {#- The package is sold by Fuselli e Filari: no block until their contact and the name are known. #}
+  {%- if partner and page.package_name %}
+  <section class="visits-package">
+    <h2>{{ page.package_name }}</h2>
+    {%- if page.package_lead %}
+    <p class="lead">{{ page.package_lead }}</p>
+    {%- endif %}
+    {%- if page.package_text %}
+    <p>{{ page.package_text }}</p>
+    {%- endif %}
+    {%- if page.package_hotel %}
+    <p>{{ page.package_hotel }}</p>
+    {%- endif %}
+    {%- if page.package_riva_dei_martin %}
+    <p>{{ page.package_riva_dei_martin }}</p>
+    {%- endif %}
+    <p>{{ t('visits.organizer') }}</p>
+    {%- set subject = t('contact.subject_package', name=page.package_name) %}
+    {%- set contact_address = partner %}
+    {%- set contact_button = t('visits.package_button') %}
+    {% include "partials/contact_block.html" %}
+  </section>
+  {%- endif %}
+</div>
+{% endblock %}

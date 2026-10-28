@@ -68,6 +68,8 @@ copied = "Copied"
 subject_wine = "Si Bio: {name}"
 subject_olio = "Si Bio: oil"
 subject_info = "Si Bio: information"
+subject_buyers = "Si Bio: buyer programme"
+subject_package = "Programme request: {name}"
 sales = "Sales manager:"
 phone = "Phone:"
 company = "Company details"
@@ -87,3 +89,9 @@ intro = "The olive oil of the Premici and Aleandri family, in Offida."
 
 [about]
 what = "Five wines from Piceno grapes and an olive oil."
+
+[visits]
+invitation = "By invitation"
+buyers_button = "Contact our sales manager"
+organizer = "Organised and sold by Fuselli e Filari, a travel agency in Offida."
+package_button = "Ask for the programme"

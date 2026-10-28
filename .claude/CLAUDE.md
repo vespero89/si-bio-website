@@ -143,3 +143,14 @@ a `dl.sheet` from `pages.OIL_SHEET` (harvest uses the label `sheet.oil_harvest`)
 (who), `about.what` (fixed text: five wines from Piceno grapes and an oil, no "organic"), `why_veneto`, the family line, the
 Riva dei Martin sentence only with `riva_dei_martin = true` in `site.toml` (`content.GATED`; never "our winery"), the commercial
 manager role (`sales_contact`) and the contact button. Tests: `tests/test_pages.py`.
+
+## Visits and package
+`/visite` (`pages.visits_page`, `visits.html`, page file `visits.toml`). h1 `title`, then two sections. Buyers (on invitation,
+`visits.invitation`): `buyers_title` ("Vieni a trovarci" / "Visit us"), `buyers_text`, an empty `div.video-slot` (task 12 fills it;
+nothing is loaded from outside), contact block to `export_email` with subject `contact.subject_buyers` and button
+`visits.buyers_button`. Package (sold by Fuselli e Filari, no price, no programme invented): `package_name` as h2, `package_lead`,
+`package_text`, `package_hotel` (Hotel Casale), the fixed line `visits.organizer`, contact block with `contact_address` =
+`partner_email` of `site.toml`, subject `contact.subject_package` ("Richiesta programma: {name}") and button `visits.package_button`.
+The whole package section is left out in production unless `partner_email` AND `package_name` are verified (markers). The partial
+`contact_block.html` takes optional `contact_address` and `contact_button`. Riva dei Martin lines (`buyers_riva_dei_martin`,
+`package_riva_dei_martin`) are in `content.GATED`: only with the switch on (and still markers until agreed). Tests: `tests/test_visits.py`.
