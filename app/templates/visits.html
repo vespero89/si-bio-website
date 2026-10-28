@@ -11,8 +11,9 @@
     {%- if page.buyers_riva_dei_martin %}
     <p>{{ page.buyers_riva_dei_martin }}</p>
     {%- endif %}
-    {#- Place for the promo video (task 12 fills it): nothing is loaded from outside. #}
-    <div class="video-slot"></div>
+    {%- if video %}
+    {% include "partials/video.html" %}
+    {%- endif %}
     {%- set subject = t('contact.subject_buyers') %}
     {%- set contact_button = t('visits.buyers_button') %}
     {% include "partials/contact_block.html" %}

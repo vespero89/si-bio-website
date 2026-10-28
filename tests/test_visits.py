@@ -7,6 +7,7 @@ from app import config, content
 from app.main import app
 
 NOTICE = re.compile(r'<section class="cookie-notice".*?</section>', re.S)
+SLOT = re.compile(r'<div class="video-slot".*?</div>', re.S)
 
 PARTNER = "info@example-partner.it"
 
@@ -86,7 +87,7 @@ def test_no_price_no_form_no_external(client, preview):
         html = client.get(prefix + "/visite").text
         assert "<form" not in NOTICE.sub("", html)  # only the cookie choice posts
         assert "€" not in html
-        assert "youtube" not in NOTICE.sub("", html).lower()
+        assert "youtube" not in SLOT.sub("", NOTICE.sub("", html)).lower()
         assert not re.search(r"<(iframe|script)[^>]+src=\"https?://", html)
     assert 'class="video-slot"' in client.get("/visite").text
 

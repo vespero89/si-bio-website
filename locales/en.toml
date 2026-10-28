@@ -97,6 +97,14 @@ buyers_button = "Contact our sales manager"
 organizer = "Organised and sold by Fuselli e Filari, a travel agency in Offida."
 package_button = "Ask for the programme"
 
+[video]
+title = "Si Bio presentation video"
+alt = "Cover of the Si Bio presentation video"
+consent = "To watch it here, the video comes from YouTube and uses Google cookies."
+accept = "I accept and watch"
+decline = "Not now"
+youtube = "Watch on YouTube"
+
 [cookie]
 notice = "We only use technical cookies. If you accept, we can show you our video from YouTube, which uses Google cookies."
 label = "Cookies"

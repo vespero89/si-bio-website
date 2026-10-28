@@ -1,0 +1,28 @@
+{#- Promo video. Expects `video` (pages.video()). Without the choice "accepted" only our own cover and plain links load;
+    the iframe is rendered by the server, so no JavaScript and no layout jump. No nested div: the slot is one block. -#}
+<div class="video-slot" id="video">
+  {%- if video.placeholder %}
+  <p class="video-placeholder">{{ video.placeholder }}</p>
+  {%- else %}
+  {%- set accepted = cookie_choice(request) == "accepted" %}
+  <figure class="video-frame">
+    {%- if accepted %}
+    <iframe src="https://www.youtube-nocookie.com/embed/{{ video.id }}?rel=0&amp;hl={{ request.state.lang }}" title="{{ t('video.title') }}" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
+    {%- else %}
+    <img src="/static/img/{{ video.cover }}" alt="{{ t('video.alt') }}" width="1280" height="720" loading="lazy">
+    <span class="video-play" aria-hidden="true"></span>
+    {%- endif %}
+  </figure>
+  {%- if not accepted %}
+  <p>{{ t('video.consent') }}</p>
+  <form method="post" action="{{ localize('/cookie-choice', request.state.lang) }}" class="cookie-form">
+    <input type="hidden" name="next" value="{{ request.state.path }}#video">
+    <button class="button" type="submit" name="choice" value="accept">{{ t('video.accept') }}</button>
+    {%- if cookie_choice(request) is none %}
+    <button class="button" type="submit" name="choice" value="reject">{{ t('video.decline') }}</button>
+    {%- endif %}
+  </form>
+  {%- endif %}
+  <p><a href="https://www.youtube.com/watch?v={{ video.id }}" target="_blank" rel="noopener noreferrer">{{ t('video.youtube') }}</a></p>
+  {%- endif %}
+</div>

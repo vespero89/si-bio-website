@@ -41,6 +41,7 @@ app/pages.py        routes `/`, `/olio`, `/chi-siamo` (helper `oil_sheet`)
 app/wines.py        routes `/vini` and `/vini/<slug>` (fragment for HTMX, `Vary`), helpers `sheet`, `photo`, `pdf` for the wine page
 app/templating.py   Jinja2 environment, globals `t(key, **values)` and `num(value, decimals)` (language of the request), `canonical()`, `alternates()` (selector and hreflang), `farm_url()`, `menu`, `localize`, `site()`, `mailto(address, subject)`, `has_marker`
 app/cookies.py      cookie choice (POST /cookie-choice, `choice(request)`)
+app/pages.py        also `video()` (id and cover from site.toml for the visits page)
 app/templates/      base.html (header, menu, selector, canonical/hreflang, footer), home.html, oil.html, about.html, wines.html (page), wine_fragment.html (HTMX), partials/wine_row|wine_stage|wine_intro|contact_block.html
 app/static/         css/sibio.css (the only stylesheet), fonts/ (woff2 + OFL files), js/htmx.min.js (2.0.4, same file as ecommerce-fattoria), js/wines.js (focus), js/contact.js (Copy button, loaded by base.html), img/vini (bottle photos), schede (PDF)
 content/            site.toml (settings), wines/<slug>.toml and oil.toml (neutral), <lang>/wines, <lang>/oil.toml, <lang>/pages (texts)
@@ -147,8 +148,7 @@ manager role (`sales_contact`) and the contact button. Tests: `tests/test_pages.
 
 ## Visits and package
 `/visite` (`pages.visits_page`, `visits.html`, page file `visits.toml`). h1 `title`, then two sections. Buyers (on invitation,
-`visits.invitation`): `buyers_title` ("Vieni a trovarci" / "Visit us"), `buyers_text`, an empty `div.video-slot` (task 12 fills it;
-nothing is loaded from outside), contact block to `export_email` with subject `contact.subject_buyers` and button
+`visits.invitation`): `buyers_title` ("Vieni a trovarci" / "Visit us"), `buyers_text`, the video block `partials/video.html` (see "Video"), contact block to `export_email` with subject `contact.subject_buyers` and button
 `visits.buyers_button`. Package (sold by Fuselli e Filari, no price, no programme invented): `package_name` as h2, `package_lead`,
 `package_text`, `package_hotel` (Hotel Casale), the fixed line `visits.organizer`, contact block with `contact_address` =
 `partner_email` of `site.toml`, subject `contact.subject_package` ("Richiesta programma: {name}") and button `visits.package_button`.
@@ -168,3 +168,16 @@ puts the prefix back on the Location. `GET` is 405. The body is read by hand (no
 (two `.button`s, same style). `partials/cookie_choice.html` (`#scelta`: current choice sentence + the form) is for the `/info/cookie`
 page of the legal pages task. No `Vary: Cookie` from the app: the proxy must vary on `Cookie` or not cache HTML. Tests: `tests/test_cookies.py`;
 other tests that forbid forms or buttons strip the notice with `NOTICE`.
+
+## Video
+`/visite` only. `pages.video()` reads `[video]` of `site.toml`: `youtube_id` (11 characters `[A-Za-z0-9_-]`) and `cover` (file name in
+`static/img/`, 16:9, rendered 1280x720). While one is a marker or the id is not valid, the whole block is gone in production; in preview
+a `p.video-placeholder` shows the marker text (no URL, no iframe). `partials/video.html` renders `div.video-slot#video` (no nested div):
+a `figure.video-frame` (16:9 box) holding either the iframe or the cover plus a CSS play mark, then, unless accepted, the consent text and a
+form to `/cookie-choice` (`next` = page + `#video`): no choice gives "Accetto e guardo" / "Non ora", `rejected` gives only the accept
+button. Always the plain anchor "Guarda su YouTube" (`youtube.com/watch?v=<id>`, `target="_blank"`, `noopener noreferrer`). Only with
+`cookie_choice(request) == "accepted"` the server renders `https://www.youtube-nocookie.com/embed/<id>?rel=0&hl=<lang>` (`loading="lazy"`,
+title, `referrerpolicy="strict-origin-when-cross-origin"`, `allow="encrypted-media; picture-in-picture; fullscreen"`). No JavaScript.
+Subtitles are YouTube's. Tests: `tests/test_video.py`.
+**CSP (task 15, not set yet):** needs `frame-src https://www.youtube-nocookie.com` (kept even without consent, it is only a permission)
+and `img-src 'self' data:`; no `media-src`, no inline script.
