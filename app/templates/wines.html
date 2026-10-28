@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% set meta_description = "" if heading else wine.description|meta_text %}
+{% set og_image = photo %}
 {% block title %}{{ wine.name }} | Si Bio{% endblock %}
 {% block content %}
 <div class="wrap wines-page">

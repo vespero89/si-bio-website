@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from urllib.parse import quote
 
 from fastapi.templating import Jinja2Templates
@@ -23,7 +24,9 @@ def _num(context, value: float, decimals: int | None = None) -> str:
     return i18n.num(of(context["request"]), value, decimals)
 
 
-templates.env.globals.update(t=_t, num=_num)
+templates.env.globals.update(
+    t=_t, num=_num, t_in=i18n.t, is_preview=lambda: config.PREVIEW, origin=lambda: config.BASE_URL
+)
 
 
 def _language_name(code: str) -> str:
@@ -63,6 +66,21 @@ def _mailto(address: str, subject: str) -> str:
     """A mailto link with the subject percent-encoded in UTF-8 (spaces as %20, never +)."""
     return f"mailto:{address}?subject={quote(subject, safe='')}"
 
+
+def _meta_text(text: str, limit: int = 155) -> str:
+    """First sentence of a text for a meta description, cut at a word near `limit`; empty for
+    an empty text or a placeholder."""
+    text = " ".join((text or "").split())
+    if not text or content.has_marker(text):
+        return ""
+    first = re.match(r".+?[.!?](?=\s|$)", text)
+    text = first.group(0) if first else text
+    if len(text) <= limit:
+        return text
+    return text[:limit].rsplit(" ", 1)[0].rstrip(",;:") + "..."
+
+
+templates.env.filters["meta_text"] = _meta_text
 
 MENU = (
     ("nav.wines", "/vini"),

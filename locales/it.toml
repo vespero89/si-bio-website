@@ -130,3 +130,20 @@ define = "[DA DEFINIRE: {what}]"
 what_address = "sede legale"
 what_pec = "PEC"
 what_rea = "numero REA"
+
+[meta]
+# Provisional texts, to review before deploy (see "Texts to review before deploy" in CLAUDE.md).
+default = "Vini e olio di Offida, nel Piceno. Si Bio, azienda agricola della famiglia Premici e Aleandri."
+locale = "it_IT"
+
+[jsonld]
+category_wine = "Vino"
+category_oil = "Olio d'oliva"
+
+[llms]
+summary = "Si Bio produce vini e olio a Offida, nel Piceno. Il sito si rivolge a buyer, importatori e ristoranti."
+wines = "Vini"
+oil = "Olio"
+visits = "Visite e pacchetti"
+contact = "Come contattarci"
+farm = "La fattoria di famiglia"

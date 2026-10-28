@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% set meta_description = oil.description|meta_text %}
+{% set og_image = photo %}
 {% block title %}{{ oil.name }} | Si Bio{% endblock %}
 {% block content %}
 <div class="wrap oil-page">

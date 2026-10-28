@@ -41,6 +41,8 @@ app/pages.py        routes `/`, `/olio`, `/chi-siamo` (helper `oil_sheet`)
 app/wines.py        routes `/vini` and `/vini/<slug>` (fragment for HTMX, `Vary`), helpers `sheet`, `photo`, `pdf` for the wine page
 app/templating.py   Jinja2 environment, globals `t(key, **values)` and `num(value, decimals)` (language of the request), `canonical()`, `alternates()` (selector and hreflang), `farm_url()`, `menu`, `localize`, `site()`, `mailto(address, subject)`, `has_marker`
 app/cookies.py      cookie choice (POST /cookie-choice, `choice(request)`)
+app/seo.py          `/robots.txt`, `/sitemap.xml`, `/llms.txt` (per language), `NoindexMiddleware` (preview)
+app/jsonld.py       JSON-LD builders: `clean`, `dumps`, `organization`, `website`, `product`, `breadcrumbs`
 app/legal.py        legal pages `/info/note-legali|privacy|cookie` (templates in `templates/legal/<lang>/`, `company(lang)`)
 app/pages.py        also `video()` (id and cover from site.toml for the visits page)
 app/templates/      base.html (header, menu, selector, canonical/hreflang, footer), home.html, oil.html, about.html, wines.html (page), wine_fragment.html (HTMX), partials/wine_row|wine_stage|wine_intro|contact_block.html
@@ -194,3 +196,38 @@ templates with `t('legal.todo'|'legal.define', what=...)`. Open points today: no
 `site.toml`, new key `rea`), privacy 4 (hosting provider, legal basis of logs, retention of logs, retention of emails), cookie 0.
 `tests/test_legal.py` (`EXPECTED`) counts them per page and fails if the number changes: update it when a point is filled in.
 When a legal text changes, change its twin in the other language too. Not invented: legal basis of the logs, any retention period.
+
+## SEO and GEO
+Mechanics only; the wording is provisional (see "Texts to review before deploy").
+`app/seo.py`: `/robots.txt` and `/sitemap.xml` exist at the root only (`/en/...` answers 404), `/llms.txt` and `/en/llms.txt` one per
+published language. Production: robots allows everything and ends with `Sitemap: <BASE_URL>/sitemap.xml`. `PREVIEW=1`: robots is
+`Disallow: /` without sitemap line, `NoindexMiddleware` (outermost) adds `X-Robots-Tag: noindex` to every response, and `base.html`
+adds `<meta name="robots" content="noindex, nofollow">`; production has neither. Sitemap: home, `/vini`, each visible wine, `/olio`,
+`/chi-siamo`, `/visite`, `/contatti`, the three legal pages, each in every PUBLISHED language (never in preview-only ones), every entry with
+`xhtml:link` alternates for the published languages plus `x-default` (English if published, else Italian). No `lastmod`: the files carry no
+reliable date. Absolute URLs from `config.BASE_URL`.
+Head (`base.html`): `description` = `meta_description` set by the page (`{% set meta_description = ... %}` at the top of the child
+template, filter `meta_text` = first sentence cut near 155 characters, empty for a marker) or the key `meta.default`; Open Graph
+(`og:site_name`, `type`, `title` = the `<title>`, `description`, `url` = canonical, `locale` from the key `meta.locale`, `locale:alternate`,
+`og:image` only when the page sets `og_image`, today the bottle photo of wines and oil), Twitter card (`summary_large_image` with an image,
+else `summary`). Page sources: home `home.lead`, wine and oil their description, about `family`, visits `buyers_text`.
+JSON-LD (`app/jsonld.py`, routes pass `jsonld` = list of `dumps` strings, `base.html` prints one `application/ld+json` script each):
+home `Organization` (name "Si Bio", legalName, `vatID` = IT + VAT, url, email, address only when verified, `sameAs` only for set social
+profiles) and `WebSite`; each wine page and the oil page `Product` (name, description, url, bottle photo, brand, `category` from
+`jsonld.category_*`) with NO `Offer`, plus `BreadcrumbList`. `clean` drops empty values and markers at any depth, so a placeholder never
+appears even in preview. No JSON-LD on `/vini`, contact, about, visits, legal. Inline scripts of this type are data, the "no inline
+script" tests allow them.
+`/llms.txt` (`seo.llms_txt`): headings from `llms.*` keys, summary `llms.summary`, wines with their link and the filled sheet facts
+(markers skipped), oil, visits (package line only when `package_name` and `partner_email` are verified), contact email, farm link when
+known. Riva dei Martin never appears. When the content flow changes, check it still tells the truth.
+Tests: `tests/test_seo.py` (files, head, JSON-LD, llms), `tests/test_seo_structure.py` walks every public page in every published
+language (one h1, heading order, img alt/width/height, links with text, one canonical, hreflang for each language plus x-default, title,
+description).
+
+## Texts to review before deploy
+Provisional, to be read by Fabio and the family before launch:
+- locale keys `meta.default` (fallback description of every page), `llms.*` (summary and headings), `jsonld.category_wine|oil`, in `locales/it.toml` and `en.toml`;
+- titles: `<name> | Si Bio` built in each template (`page.title`, wine or oil name);
+- descriptions: `home.lead`, first sentence of wine/oil description, `about.family`, `visits.buyers_text` (content files);
+- JSON-LD values: legalName, VAT, email, address, `sameAs` come from `site.toml`; name "Si Bio" and brand in `jsonld.BRAND`;
+- `llms.txt` structure and the line `visits.organizer`.

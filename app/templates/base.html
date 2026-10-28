@@ -4,12 +4,35 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Si Bio{% endblock %}</title>
+  {%- set description = meta_description|default('') or t('meta.default') %}
+  <meta name="description" content="{{ description }}">
+  {%- if is_preview() %}
+  <meta name="robots" content="noindex, nofollow">
+  {%- endif %}
   <link rel="canonical" href="{{ canonical() }}">
   {%- set alts = alternates() %}
   {%- for alt in alts %}
   <link rel="alternate" hreflang="{{ alt.code }}" href="{{ base_url }}{{ alt.url }}">
   {%- endfor %}
   <link rel="alternate" hreflang="x-default" href="{{ base_url }}{{ localize(request.state.path, x_default_lang()) }}">
+  <meta property="og:site_name" content="Si Bio">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ self.title()|trim }}">
+  <meta property="og:description" content="{{ description }}">
+  <meta property="og:url" content="{{ canonical() }}">
+  {%- if og_image %}
+  <meta property="og:image" content="{{ origin() }}/static/img/vini/{{ og_image }}">
+  {%- endif %}
+  <meta property="og:locale" content="{{ t('meta.locale') }}">
+  {%- for alt in alts if alt.code != request.state.lang %}
+  <meta property="og:locale:alternate" content="{{ t_in(alt.code, 'meta.locale') }}">
+  {%- endfor %}
+  <meta name="twitter:card" content="{{ 'summary_large_image' if og_image else 'summary' }}">
+  <meta name="twitter:title" content="{{ self.title()|trim }}">
+  <meta name="twitter:description" content="{{ description }}">
+  {%- for block in jsonld|default([]) %}
+  <script type="application/ld+json">{{ block|safe }}</script>
+  {%- endfor %}
   <link rel="preload" href="/static/fonts/cormorant-garamond-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/static/css/sibio.css">
 </head>

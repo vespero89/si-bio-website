@@ -7,7 +7,7 @@ from __future__ import annotations
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse
 
-from app import config, content
+from app import config, content, i18n, jsonld
 from app.lang import of
 from app.templating import templates
 
@@ -54,6 +54,20 @@ def pdf(wine: dict, lang: str) -> dict | None:
     return None
 
 
+def _structured(current: dict, lang: str) -> list[str]:
+    """JSON-LD of a wine page: the product and its breadcrumb."""
+    path = f"/vini/{current['slug']}"
+    trail = [
+        (jsonld.BRAND, "/"),
+        (i18n.t(lang, "nav.wines"), "/vini"),
+        (current["name"], path),
+    ]
+    return [
+        jsonld.dumps(jsonld.product(current, path, lang, "jsonld.category_wine", photo(current))),
+        jsonld.dumps(jsonld.breadcrumbs(trail, lang)),
+    ]
+
+
 def _page(request: Request, current: dict, heading: bool):
     lang = of(request)
     wines = content.wines(lang)
@@ -73,6 +87,7 @@ def _page(request: Request, current: dict, heading: bool):
             "sheet": sheet(current),
             "photo": photo(current),
             "pdf": pdf(current, lang),
+            "jsonld": [] if heading else _structured(current, lang),
         },
     )
     response.headers["Vary"] = "HX-Request, HX-History-Restore-Request"

@@ -129,3 +129,20 @@ define = "[TO BE DEFINED: {what}]"
 what_address = "registered office"
 what_pec = "certified email (PEC)"
 what_rea = "REA number"
+
+[meta]
+# Provisional texts, to review before deploy (see "Texts to review before deploy" in CLAUDE.md).
+default = "Wine and olive oil from Offida, in the Piceno area. Si Bio, the farm of the Premici and Aleandri family."
+locale = "en_US"
+
+[jsonld]
+category_wine = "Wine"
+category_oil = "Olive oil"
+
+[llms]
+summary = "Si Bio makes wine and olive oil in Offida, in the Piceno area. The site is for buyers, importers and restaurants."
+wines = "Wines"
+oil = "Oil"
+visits = "Visits and packages"
+contact = "How to reach us"
+farm = "The family farm"

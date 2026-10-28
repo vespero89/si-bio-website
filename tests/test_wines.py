@@ -237,7 +237,9 @@ def test_no_copy_button_in_the_html_but_script_and_labels_are_there(client):
 
 def test_no_inline_script_and_no_form(client):
     html = client.get("/vini/armide").text
-    assert not [s for s in re.findall(r"<script\b([^>]*)>", html) if "src=" not in s]
+    # JSON-LD blocks are data, not code
+    scripts = re.findall(r"<script\b([^>]*)>", html)
+    assert not [s for s in scripts if "src=" not in s and "application/ld+json" not in s]
     assert "<form" not in NOTICE.sub("", html)  # only the cookie choice posts
 
 

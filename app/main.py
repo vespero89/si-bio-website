@@ -5,14 +5,17 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-from app import config, contact, cookies, legal, pages, wines
+from app import config, contact, cookies, legal, pages, seo, wines
 from app.lang import LanguageMiddleware
+from app.seo import NoindexMiddleware
 
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 app.mount("/static", StaticFiles(directory=str(config.STATIC_DIR)), name="static")
 app.add_middleware(LanguageMiddleware)
+app.add_middleware(NoindexMiddleware)
 app.include_router(wines.router)
 app.include_router(contact.router)
 app.include_router(cookies.router)
 app.include_router(legal.router)
 app.include_router(pages.router)
+app.include_router(seo.router)

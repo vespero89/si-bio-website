@@ -7,7 +7,7 @@ import re
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 
-from app import config, content
+from app import config, content, jsonld
 from app.lang import of
 from app.templating import templates
 from app.wines import pdf, photo
@@ -50,7 +50,13 @@ def oil_sheet(oil: dict) -> list[tuple[str, str]]:
 def home(request: Request):
     lang = of(request)
     return templates.TemplateResponse(
-        request, "home.html", {"page": content.page(lang, "home"), "wines": content.wines(lang)}
+        request,
+        "home.html",
+        {
+            "page": content.page(lang, "home"),
+            "wines": content.wines(lang),
+            "jsonld": [jsonld.dumps(jsonld.organization(lang)), jsonld.dumps(jsonld.website(lang))],
+        },
     )
 
 
@@ -58,10 +64,20 @@ def home(request: Request):
 def oil_page(request: Request):
     lang = of(request)
     oil = content.oil(lang)
+    trail = [(jsonld.BRAND, "/"), (oil["name"], "/olio")]
     return templates.TemplateResponse(
         request,
         "oil.html",
-        {"oil": oil, "sheet": oil_sheet(oil), "photo": photo(oil), "pdf": pdf(oil, lang)},
+        {
+            "oil": oil,
+            "sheet": oil_sheet(oil),
+            "photo": photo(oil),
+            "pdf": pdf(oil, lang),
+            "jsonld": [
+                jsonld.dumps(jsonld.product(oil, "/olio", lang, "jsonld.category_oil", photo(oil))),
+                jsonld.dumps(jsonld.breadcrumbs(trail, lang)),
+            ],
+        },
     )
 
 
