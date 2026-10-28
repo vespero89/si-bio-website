@@ -1,0 +1,20 @@
+[project]
+name = "sito-sibio"
+version = "0.1.0"
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+# FastAPI uses calls in defaults (Depends, Form) by design
+ignore = ["B008"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = [
+    # Starlette suggests httpx2 for TestClient; httpx still works
+    "ignore:Using `httpx` with `starlette.testclient` is deprecated",
+]
