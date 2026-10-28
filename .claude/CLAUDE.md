@@ -36,9 +36,10 @@ app/i18n.py         interface texts: `load`, `t(lang, key)`, `num`, completeness
 app/content.py      content loader (`site`, `wines`, `wine`, `oil`, `page`), markers, validator `problems()`
 app/lang.py         language middleware: Italian at the root, others under /<code>/, root redirect
 app/main.py         FastAPI app, static files, routers
-app/templating.py   Jinja2 environment, globals `t(key, **values)` and `num(value, decimals)` (language of the request), `canonical()`, `alternates()` (selector and hreflang), `farm_url()`, `menu`, `localize`, `site()`
-app/templates/      base.html (header, menu, selector, canonical/hreflang, footer), pages, partials
-app/static/         css/sibio.css (the only stylesheet), fonts/ (woff2 + OFL files), js, img, schede (PDF)
+app/wines.py        routes `/vini` and `/vini/<slug>`, helpers `sheet`, `photo`, `pdf` for the wine page
+app/templating.py   Jinja2 environment, globals `t(key, **values)` and `num(value, decimals)` (language of the request), `canonical()`, `alternates()` (selector and hreflang), `farm_url()`, `menu`, `localize`, `site()`, `mailto(address, subject)`, `has_marker`
+app/templates/      base.html (header, menu, selector, canonical/hreflang, footer), wines.html, partials/contact_block.html
+app/static/         css/sibio.css (the only stylesheet), fonts/ (woff2 + OFL files), js/contact.js (Copy button), img/vini (bottle photos), schede (PDF)
 content/            site.toml (settings), wines/<slug>.toml and oil.toml (neutral), <lang>/wines, <lang>/oil.toml, <lang>/pages (texts)
 locales/            interface texts per language (it is the reference), flat keys like `nav.wines`
 scripts/            photos, pre-launch content check (planned)
@@ -97,3 +98,15 @@ task). Head: `canonical` and `hreflang` (every language that can be shown plus `
 self hosted in `app/static/fonts/` with their OFL files (Cormorant Garamond 500 for headings, Source Sans 3
 400 and 600 for text, latin subset only); never Google Fonts. Pages put their text in `{% block content %}`
 with one `h1`.
+
+## Wine pages
+`/vini` shows the first wine in front with its own h1 ("I nostri vini") and intro; `/vini/<slug>` has the wine name as h1.
+Unknown or hidden slugs answer 404. The row of wines (`nav.wine-row`) is plain links, full page loads (the HTMX
+carousel is a later task); `aria-current="page"` on the wine of the page, `"true"` on `/vini`. The technical sheet
+(`wines.sheet`) is a `dl` built only from filled fields, in the order of `wines.SHEET`, labels `sheet.<field>`;
+a marker value is empty in production, so a field never shows empty. Photo: `photo` in the neutral file is a file in
+`static/img/vini/`; while it is a marker a CSS placeholder shows. PDF: `[pdf]` table of the neutral file
+(`it = "x.pdf"`, files in `static/schede/`); page language first, else the Italian one with "(in italiano)".
+`partials/contact_block.html` (needs `subject`): address as text, `mailto` built by `mailto()` (percent-encoded UTF-8,
+`%20`, never `+`), subject `contact.subject_wine`. The "Copy" button is created by `static/js/contact.js` (labels in
+`data-copy` / `data-copied`), so without JS only address and link exist.

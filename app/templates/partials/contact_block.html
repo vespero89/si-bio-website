@@ -1,0 +1,8 @@
+{#- Contact block: address as text, mailto link with the subject filled in, "Copy" button made by contact.js. Needs `subject`. #}
+{%- set address = site().get("contact", {}).get("export_email") %}
+{%- if address %}
+<div class="contact-block" data-copy="{{ t('contact.copy') }}" data-copied="{{ t('contact.copied') }}">
+  <p class="contact-address"><span class="contact-label">{{ t('contact.address') }}</span> <span class="contact-email">{{ address }}</span></p>
+  <p><a class="button" href="{{ mailto(address, subject) }}">{{ t('contact.write') }}</a></p>
+</div>
+{%- endif %}

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from urllib.parse import quote
+
 from fastapi.templating import Jinja2Templates
 from jinja2 import pass_context
 
@@ -57,6 +59,11 @@ def _is_current(context, path: str) -> bool:
     return context["request"].state.path.rstrip("/") == path
 
 
+def _mailto(address: str, subject: str) -> str:
+    """A mailto link with the subject percent-encoded in UTF-8 (spaces as %20, never +)."""
+    return f"mailto:{address}?subject={quote(subject, safe='')}"
+
+
 MENU = (
     ("nav.wines", "/vini"),
     ("nav.oil", "/olio"),
@@ -71,6 +78,8 @@ templates.env.globals.update(
     farm_url=_farm_url,
     is_current=_is_current,
     menu=MENU,
+    mailto=_mailto,
+    has_marker=content.has_marker,
     base_url=config.BASE_URL,
     localize=lang.localize,
     site=content.site,
