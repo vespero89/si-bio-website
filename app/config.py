@@ -30,6 +30,7 @@ _load_dotenv(PROJECT_DIR / ".env")
 CONTENT_DIR = PROJECT_DIR / "content"
 TEMPLATE_DIR = APP_DIR / "templates"
 STATIC_DIR = APP_DIR / "static"
+LOCALES_DIR = PROJECT_DIR / "locales"
 
 BASE_URL = (os.environ.get("BASE_URL") or "http://127.0.0.1:8000").rstrip("/")
 

@@ -1,0 +1,17 @@
+# Interface texts, English. Same keys as locales/it.toml.
+
+[number]
+decimal = "."
+
+[skip]
+content = "Skip to content"
+
+[nav]
+wines = "Wines"
+oil = "Olive oil"
+about = "About us"
+visits = "Visits"
+contact = "Contact"
+
+[wine]
+abv = "{value}% vol"

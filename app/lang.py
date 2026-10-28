@@ -47,7 +47,8 @@ def of(request) -> str:
 def preferred(header: str) -> str:
     """Language for the root from an Accept-Language header: the published language with the
     highest q, 'it' when the header is empty, and English when it names only languages the site
-    does not publish. 'de,en;q=0.8' -> 'en'; 'it-CH' -> 'it'; 'fr' -> 'en'."""
+    does not publish (Italian if English is not published either). 'de,en;q=0.8' -> 'en';
+    'it-CH' -> 'it'; 'fr' -> 'en'."""
     ranked = []
     for n, part in enumerate(header.split(",")):
         tag, _, params = part.strip().partition(";")
@@ -65,7 +66,7 @@ def preferred(header: str) -> str:
     for _, _, code in sorted(ranked):
         if code in config.PUBLISHED:
             return code
-    return FALLBACK
+    return FALLBACK if FALLBACK in config.PUBLISHED else DEFAULT
 
 
 class LanguageMiddleware:

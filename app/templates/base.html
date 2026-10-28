@@ -6,7 +6,8 @@
   <title>{% block title %}Si Bio{% endblock %}</title>
 </head>
 <body>
-  <main>
+  <a href="#main">{{ t('skip.content') }}</a>
+  <main id="main">
     {% block content %}{% endblock %}
   </main>
 </body>

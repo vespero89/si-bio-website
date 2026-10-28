@@ -1,0 +1,18 @@
+# Interface texts, Italian: the reference file. Every key here must exist in each published
+# language (tests/test_i18n.py). Placeholders in braces, e.g. {value}.
+
+[number]
+decimal = ","
+
+[skip]
+content = "Vai al contenuto"
+
+[nav]
+wines = "Vini"
+oil = "Olio"
+about = "Chi siamo"
+visits = "Visite"
+contact = "Contatti"
+
+[wine]
+abv = "{value} % vol"
