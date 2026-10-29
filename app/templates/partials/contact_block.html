@@ -1,7 +1,7 @@
-{#- Contact block: address as text, mailto link with the subject filled in, "Copy" button made by contact.js. Needs `subject`; optional `contact_address` (default: export_email) and `contact_button` (default: contact.write). #}
+{#- Contact block: address as text, mailto link with the subject filled in, "Copy" button made by contact.js. Needs `subject`; optional `inline` (address and button side by side on wide screens); optional `contact_address` (default: export_email) and `contact_button` (default: contact.write). #}
 {%- set address = contact_address or site().get("contact", {}).get("export_email") %}
 {%- if address %}
-<div class="contact-block" data-copy="{{ t('contact.copy') }}" data-copied="{{ t('contact.copied') }}">
+<div class="contact-block" {% if inline %}data-inline {% endif %}data-copy="{{ t('contact.copy') }}" data-copied="{{ t('contact.copied') }}">
   <p class="contact-address"><span class="contact-label">{{ t('contact.address') }}</span> <span class="contact-email">{{ address }}</span></p>
   <p><a class="button" href="{{ mailto(address, subject) }}">{{ contact_button or t('contact.write') }}</a></p>
 </div>

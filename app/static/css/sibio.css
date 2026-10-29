@@ -91,6 +91,7 @@ main { flex: 1; }
 a { color: var(--c-ink); text-decoration-thickness: 1px; text-underline-offset: 0.22em; }
 a:hover { color: var(--c-accent); }
 :focus-visible { outline: 2px solid var(--c-accent); outline-offset: 3px; }
+[tabindex="-1"]:focus-visible { outline: none; } /* titles focused by script after a swap or a dialog opening */
 h1, h2, h3 { font-family: var(--f-display); font-weight: 500; line-height: var(--lh-tight); margin: 0; }
 p, figure, blockquote, dl, dd { margin: 0; }
 img { display: block; max-width: 100%; height: auto; }
@@ -285,16 +286,12 @@ body.has-dialog { overflow: hidden; }
 .contact-address .contact-label { flex-basis: 100%; }
 .contact-email { font-family: var(--f-display); font-size: var(--t-xl); text-decoration: none; overflow-wrap: anywhere; }
 .contact-block .button { justify-self: start; }
-.others { border-top: 1px solid var(--c-line); padding-block: var(--s-8) var(--s-9); }
-.others h2 { font-size: var(--t-2xl); }
-.others ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); max-width: 48rem; list-style: none; margin: var(--s-6) 0 0; padding: 0; }
-.others a { display: block; text-decoration: none; }
-.others .name { display: block; font-family: var(--f-display); font-size: 1.125rem; margin-top: var(--s-3); line-height: 1.2; }
-.others .style { display: block; font-size: var(--t-xs); letter-spacing: var(--caps); text-transform: uppercase; font-weight: 600; color: var(--c-muted); }
+.contact-block[data-inline] { margin-bottom: var(--s-8); }
 
 /* Simple pages: oil, about, visits */
 .page-head { padding-block: var(--s-7) var(--s-6); }
 .page-head h1 { font-size: var(--t-3xl); margin-top: var(--s-3); }
+.page-head .prose { margin-top: var(--s-4); }
 .page-head .lead { margin-top: var(--s-4); max-width: 36rem; font-size: var(--t-xl); line-height: var(--lh-snug); }
 .split { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-7); padding-block: var(--s-8); align-items: start; }
 .prose p { max-width: var(--measure); }
@@ -394,11 +391,9 @@ body.has-dialog { overflow: hidden; }
   .sheet dt, .sheet dd { margin: 0; padding-block: var(--s-3); border-bottom: 1px solid var(--c-line); }
   .sheet dt { padding-top: calc(var(--s-3) + 0.25em); }
   .contact-block { padding: var(--s-6); }
-  .contact-block-inline { grid-template-columns: minmax(0, 1fr) auto; align-items: end; padding: var(--s-7); }
-  .contact-block-inline .contact-email { font-size: var(--t-2xl); }
-  .others ul { gap: var(--s-6); }
-  .others .name { font-size: var(--t-xl); }
-
+  .contact-block[data-inline] { grid-template-columns: minmax(0, 1fr) auto; align-items: end; padding: var(--s-7); }
+  .contact-block[data-inline] .contact-email { font-size: var(--t-2xl); }
+    
   .page-head { padding-block: var(--s-9) var(--s-7); }
   .split { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: var(--s-9); padding-block: var(--s-9); }
   .split-bordered { border-top: 1px solid var(--c-line); padding-top: var(--s-8); }
@@ -422,7 +417,11 @@ body.has-dialog { overflow: hidden; }
 .certified { margin-top: var(--s-5); font-weight: 600; }
 .copy-live { position: absolute; left: -999px; }
 
-/* /vini: the row of wines (HTMX links, aria-current on the wine shown) */
+/* /vini: intro as a page head, then the row of wines (HTMX links, aria-current on the wine shown) */
+.wines-page { padding-top: var(--s-7); }
+#wine-intro h1 { font-size: var(--t-3xl); }
+#wine-intro .lead { grid-column: auto; margin-top: var(--s-4); max-width: 36rem; font-size: var(--t-xl); line-height: var(--lh-snug); }
+#wine-row { margin-block: var(--s-6) var(--s-7); }
 .wine-row ul { display: flex; gap: var(--s-4); overflow-x: auto; scroll-snap-type: x mandatory; list-style: none; margin: 0; padding: var(--s-2) 0 var(--s-4); }
 .wine-row li { flex: 0 0 6.5rem; scroll-snap-align: center; }
 .wine-row a { display: block; padding: var(--s-2); border: 1px solid transparent; text-align: center; text-decoration: none; }
@@ -437,6 +436,7 @@ body.has-dialog { overflow: hidden; }
 .package { padding-block: var(--s-rest); border-top: 1px solid var(--c-line); }
 .package h2 { font-size: var(--t-2xl); }
 .package p { margin-top: var(--s-4); max-width: var(--measure); }
+.package .lead { grid-column: auto; font-size: var(--t-xl); line-height: var(--lh-snug); }
 .includes .price { margin-top: var(--s-5); }
 .video-head h2 { overflow-wrap: anywhere; }
 .video-slot .yt { margin-top: var(--s-4); font-size: var(--t-sm); }
@@ -471,6 +471,3 @@ body.has-dialog { overflow: hidden; }
 .legal-table th, .legal-table td { padding: var(--s-2) var(--s-3) var(--s-2) 0; border-bottom: 1px solid var(--c-line); text-align: left; vertical-align: top; font-weight: 400; }
 .legal-table thead th { font-weight: 600; }
 
-@media (min-width: 45.0625em) {
-  .wine-row ul { justify-content: center; }
-}

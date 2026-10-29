@@ -112,6 +112,7 @@ movement_1_text = "Pecorino and Passerina, native grapes of the hills of Offida.
 movement_2_text = "Armide and Passacaille, two wines from the same opera."
 
 [oil]
+eyebrow = "Extra virgin olive oil"
 intro = "The olive oil of the Premici and Aleandri family, in Offida."
 
 [about]

@@ -113,6 +113,7 @@ movement_1_text = "Pecorino e Passerina, vitigni autoctoni delle colline di Offi
 movement_2_text = "Armide e Passacaille, due vini dalla stessa opera."
 
 [oil]
+eyebrow = "Extravergine di oliva"
 intro = "L'olio della famiglia Premici e Aleandri, a Offida."
 
 [about]

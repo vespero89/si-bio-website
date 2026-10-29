@@ -153,3 +153,23 @@ def test_about_production_has_family_and_company(client, production):
     assert "Dietro Si Bio c&#39;è la famiglia" in html
     assert "Si Bio di Premici Silvia e Aleandri Vincenzo, società semplice agricola" in html
     assert 'aria-current="page"' in html
+
+
+def test_oil_and_contact_pages_use_the_page_head(client):
+    for path, eyebrow in (
+        ("/olio", "Extravergine di oliva"),
+        ("/en/olio", "Extra virgin olive oil"),
+    ):
+        html = client.get(path).text
+        assert 'class="wrap page-head oil-page"' in html
+        assert f'<p class="eyebrow">{eyebrow}</p>' in html
+        assert html.count("<h1") == 1
+        assert "data-inline" in html
+    contact = client.get("/contatti").text
+    assert 'class="wrap page-head contact-page"' in contact
+    assert "data-inline" in contact
+
+
+def test_dialog_focus_does_not_scroll_the_sheet():
+    script = (config.STATIC_DIR / "js" / "wine-dialog.js").read_text()
+    assert "preventScroll: true" in script
