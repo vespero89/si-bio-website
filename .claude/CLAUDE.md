@@ -67,7 +67,7 @@ tests/              pytest (`test_css.py`: every template class is styled or a h
 - Code, comments, commits and docs in English; text shown on the site in Italian and English.
 - No em dashes or en dashes in any text.
 - Write code like the code around it: same naming, same comment density.
-- Commits are local, never pushed; no remote.
+- One local branch per stream of work, merged into `main` by Fabio; the private GitHub remote `origin` is pushed only when Fabio says so.
 
 ## Languages
 `config.LANGS` lists the languages the code knows; `content/site.toml` (`[languages] published`) the
