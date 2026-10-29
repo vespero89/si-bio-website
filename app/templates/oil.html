@@ -3,32 +3,44 @@
 {% set og_image = photo %}
 {% block title %}{{ oil.name }} | Si Bio{% endblock %}
 {% block content %}
-<div class="wrap oil-page">
+<div class="wrap page-head oil-page">
+  <p class="eyebrow">{{ t('oil.eyebrow') }}</p>
   <h1>{{ oil.name }}</h1>
   <p class="lead">{{ t('oil.intro') }}</p>
-  {%- if oil.description %}
-  <p>{{ oil.description }}</p>
-  {%- endif %}
-  {%- if scene %}
+</div>
+{%- if scene %}
+<div class="wrap">
   <img class="oil-scene" src="/static/img/{{ scene }}" alt="{{ oil.scene_alt }}" width="1112" height="616"{% set sources = srcset(scene) %}{% if sources %} srcset="{{ sources }}" sizes="(min-width: 1112px) 1112px, 100vw"{% endif %}>
-  {%- endif %}
-  {%- if photo %}
-  <img src="/static/img/vini/{{ photo }}" alt="{{ oil.name }}" width="300" height="600"{% set sources = srcset('vini/' ~ photo) %}{% if sources %} srcset="{{ sources }}" sizes="300px"{% endif %}>
-  {%- endif %}
-  {%- if sheet %}
-  <dl class="sheet">
-    {%- for field, value in sheet %}
-    <dt>{{ t('sheet.' ~ field) }}</dt>
-    <dd>{{ value }}</dd>
-    {%- endfor %}
-  </dl>
-  {%- endif %}
-  {%- if pdf %}
-  <p><a class="pdf-link" href="{{ pdf.url }}">
-    {%- if pdf.fallback %}{{ t('sheet.pdf_italian') }}{% else %}{{ t('sheet.pdf', size=pdf.size_kb ~ ' KB') }}{% endif -%}
-  </a></p>
-  {%- endif %}
+</div>
+{%- endif %}
+<div class="wrap split">
+  <div class="prose">
+    {%- if oil.description %}
+    <p class="first">{{ oil.description }}</p>
+    {%- endif %}
+    {%- if photo %}
+    <img src="/static/img/vini/{{ photo }}" alt="{{ oil.name }}" width="300" height="600"{% set sources = srcset('vini/' ~ photo) %}{% if sources %} srcset="{{ sources }}" sizes="300px"{% endif %}>
+    {%- endif %}
+  </div>
+  <div>
+    {%- if sheet %}
+    <dl class="sheet">
+      {%- for field, value in sheet %}
+      <dt>{{ t('sheet.' ~ field) }}</dt>
+      <dd>{{ value }}</dd>
+      {%- endfor %}
+    </dl>
+    {%- endif %}
+    {%- if pdf %}
+    <p><a class="pdf-link" href="{{ pdf.url }}">
+      {%- if pdf.fallback %}{{ t('sheet.pdf_italian') }}{% else %}{{ t('sheet.pdf', size=pdf.size_kb ~ ' KB') }}{% endif -%}
+    </a></p>
+    {%- endif %}
+  </div>
+</div>
+<div class="wrap">
   {%- set subject = t('contact.subject_olio') %}
+  {%- set inline = true %}
   {% include "partials/contact_block.html" %}
 </div>
 {% endblock %}

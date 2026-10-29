@@ -1,50 +1,164 @@
 {% extends "base.html" %}
 {% set meta_description = t('home.lead') %}
-{% block content %}
-<div class="wrap home-page">
-  <h1>{{ page.title }}</h1>
-  <p class="lead">{{ t('home.lead') }}</p>
-  {%- if page.claim %}
-  <blockquote class="claim">
-    <p>{{ page.claim }}</p>
-    {%- if page.tagline %}<p>{{ page.tagline }}</p>{% endif %}
-  </blockquote>
-  {%- endif %}
-  {%- if about.mission %}
-  <p>{{ about.mission }}</p>
-  {%- endif %}
-  {%- if about.territory %}
-  <p>{{ about.territory }}</p>
-  {%- endif %}
-  <p class="footer-family">{{ t('footer.family_before') }}
-    {%- if farm_url() %}<a href="{{ farm_url() }}" rel="noopener">{{ t('footer.family_link') }}</a>{% else %}{{ t('footer.family_link') }}{% endif %}
-    {{- t('footer.family_after') }}</p>
-
-  <h2>{{ t('home.wines') }}</h2>
-  <nav class="wine-row" aria-label="{{ t('wines.row') }}">
-    <ul>
-      {%- for w in wines %}
-      <li>
-        <a href="{{ localize('/vini/' ~ w.slug, request.state.lang) }}">
-          {%- if w.photo and not has_marker(w.photo) %}
-          <img src="/static/img/vini/{{ w.photo }}" alt="" width="300" height="600"{% set sources = srcset('vini/' ~ w.photo) %}{% if sources %} srcset="{{ sources }}" sizes="300px"{% endif %}>
-          {%- else %}
-          <span class="bottle-placeholder" aria-hidden="true"></span>
+{%- macro card(w) %}
+        <li class="wine">
+          <a href="{{ localize('/vini/' ~ w.slug, request.state.lang) }}" data-wine="{{ w.slug }}">
+            {%- if w.photo and not has_marker(w.photo) %}
+            <img class="bottle" src="/static/img/vini/{{ w.photo }}" alt="" width="400" height="600"{% set sources = srcset('vini/' ~ w.photo) %}{% if sources %} srcset="{{ sources }}" sizes="(min-width: 45.0625em) 34rem, 82vw"{% endif %}>
+            {%- else %}
+            <span class="ph ph-bottle" aria-hidden="true"></span>
+            {%- endif %}
+            <span class="wine-cap"><span class="wine-name">{{ w.name }}</span>{% if w.subtitle or w.style %}<span class="wine-sub">{{ w.subtitle or w.style }}</span>{% endif %}</span>
+          </a>
+        </li>
+{%- endmacro %}
+{%- macro fact(label, value) %}
+          {%- if value %}
+          <div><dt class="eyebrow">{{ label }}</dt><dd>{{ value }}</dd></div>
           {%- endif %}
-          <span class="wine-row-name">{{ w.name }}</span>
-        </a>
-      </li>
-      {%- endfor %}
-    </ul>
-  </nav>
+{%- endmacro %}
+{% block content %}
+{%- set lang = request.state.lang %}
+{%- set piceno = wines | selectattr('group', 'equalto', 'piceno') | list %}
+{%- set opera = wines | selectattr('group', 'equalto', 'opera') | list %}
+<h1 class="sr-only">{{ page.title }}</h1>
+<section class="wines" aria-labelledby="wines-title">
+  <div class="wrap wines-head">
+    <div>
+      <p class="eyebrow">{{ t('home.wines_label') }}</p>
+      <h2 id="wines-title">{{ t('home.wines') }}</h2>
+    </div>
+    <div class="arrows" data-rail-arrows hidden>
+      <button class="icon-btn" type="button" data-rail-step="-1" aria-label="{{ t('wines.prev') }}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true" focusable="false"><path d="M16 10H4M9 5l-5 5 5 5"/></svg></button>
+      <button class="icon-btn" type="button" data-rail-step="1" aria-label="{{ t('wines.next') }}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true" focusable="false"><path d="M4 10h12M11 5l5 5-5 5"/></svg></button>
+    </div>
+  </div>
+  <ul class="rail" data-rail>
+    {%- if piceno %}
+    <li class="movement movement-1">
+      <span class="movement-num" aria-hidden="true">I</span>
+      <span class="movement-body"><span class="eyebrow">{{ t('home.movement_1_label') }}</span><span class="movement-title">{{ t('home.movement_1_title') }}</span><span class="movement-text">{{ t('home.movement_1_text') }}</span></span>
+    </li>
+    {%- for w in piceno %}{{ card(w) }}{% endfor %}
+    {%- endif %}
+    {%- if opera %}
+    <li class="movement movement-2">
+      <span class="movement-num" aria-hidden="true">II</span>
+      <span class="movement-body">
+        {%- if page.tagline %}<span class="eyebrow" lang="en">{{ page.tagline }}</span>{% endif %}
+        {%- if page.claim %}<span class="movement-title">{{ page.claim }}</span>{% endif %}
+        <span class="movement-text">{{ t('home.movement_2_text') }}</span></span>
+    </li>
+    {%- for w in opera %}{{ card(w) }}{% endfor %}
+    {%- endif %}
+  </ul>
+</section>
 
-  <h2>{{ t('home.visits_title') }}</h2>
-  <p>{{ t('home.visits_text') }} <a href="{{ localize('/visite', request.state.lang) }}">{{ t('home.visits_link') }}</a></p>
+<section class="intro" aria-label="{{ page.title }}">
+  <div class="wrap intro-grid">
+    <p class="eyebrow">{{ t('home.intro_label') }}</p>
+    <p class="lead">{{ t('home.lead') }}</p>
+    <p class="muted">{{ t('home.people') }}</p>
+    {%- if about.mission %}
+    <p class="intro-text">{{ about.mission }}</p>
+    {%- endif %}
+    {%- if about.territory %}
+    <p class="intro-text">{{ about.territory }}</p>
+    {%- endif %}
+  </div>
+</section>
 
-  <p>{{ page.buyers or t('home.buyers') }}</p>
-  <p><a class="button" href="{{ localize('/contatti', request.state.lang) }}">{{ t('home.contact_link') }}</a></p>
-  {%- if certificate() %}
-  <p class="certified"><a href="{{ localize('/chi-siamo#certificato', request.state.lang) }}">{{ t('certificate.home_link') }}</a></p>
+<figure class="claim wrap">
+  {%- set cls = 'stave' %}{% include "partials/stave_long.html" %}
+  {%- if page.tagline %}
+  <blockquote><p lang="en">{{ page.tagline }}</p></blockquote>
   {%- endif %}
+  <figcaption class="family">{{ t('footer.family_before') }}
+    {%- if farm_url() %}<a href="{{ farm_url() }}" rel="noopener">{{ t('footer.family_link') }}</a>{% else %}{{ t('footer.family_link') }}{% endif %}
+    {{- t('footer.family_after') }}</figcaption>
+</figure>
+
+<div class="wrap">
+  <div class="tiles">
+    <article class="tile">
+      <h2>{{ t('home.oil_title') }}</h2>
+      <p class="muted">{{ t('home.oil_text') }}</p>
+      <a class="text-link" href="{{ localize('/olio', lang) }}">{{ t('home.oil_link') }}</a>
+    </article>
+    <article class="tile">
+      <h2>{{ t('home.visits_title') }}</h2>
+      <p class="muted">{{ t('home.visits_text') }}</p>
+      <a class="text-link" href="{{ localize('/visite', lang) }}">{{ t('home.visits_link') }}</a>
+    </article>
+  </div>
 </div>
+
+<section class="band">
+  <div class="wrap">
+    <p>{{ page.buyers or t('home.buyers') }}</p>
+    <a class="button" href="{{ localize('/contatti', lang) }}">{{ t('home.contact_link') }}</a>
+    {%- if certificate() %}
+    <p class="certified"><a href="{{ localize('/chi-siamo#certificato', lang) }}">{{ t('certificate.home_link') }}</a></p>
+    {%- endif %}
+  </div>
+</section>
+
+{%- set export_email = site().get('contact', {}).get('export_email') %}
+{%- for w in wines %}
+<template id="wine-{{ w.slug }}">
+  <div class="wine-dialog-inner">
+    <button class="icon-btn dlg-close" type="button" data-close aria-label="{{ t('wines.close') }}"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
+    <div class="dlg-photo">
+      {%- if w.photo and not has_marker(w.photo) %}
+      <img src="/static/img/vini/{{ w.photo }}" alt="{{ t('wines.photo_alt', name=w.name) }}" width="687" height="515">
+      {%- endif %}
+    </div>
+    <div class="dlg-sheet presentation">
+      <header class="score">
+        {%- set cls = 'stave' %}{% include "partials/stave_short.html" %}
+        <h2 id="dlg-{{ w.slug }}" tabindex="-1">{{ w.name }}</h2>
+        {%- if w.subtitle %}
+        <p class="score-sub">{{ w.subtitle }}</p>
+        {%- endif %}
+        {%- set kicker = [w.style, w.denomination] | select | join(' · ') %}
+        {%- if kicker %}
+        <p class="eyebrow kicker">{{ kicker }}</p>
+        {%- endif %}
+      </header>
+      {%- if w.description %}
+      <p class="desc">{{ w.description }}</p>
+      {%- endif %}
+      <dl class="facts">
+        {{- fact(t('sheet.grapes'), w.grapes) }}
+        {{- fact(t('sheet.abv'), t('wine.abv', value=num(w.abv)) if w.abv is number else w.abv) }}
+        {{- fact(t('sheet.serving_temperature'), w.serving_temperature) }}
+      </dl>
+      <dl class="senses">
+        {{- fact(t('sheet.appearance'), w.appearance) }}
+        {{- fact(t('sheet.aroma'), w.aroma) }}
+        {{- fact(t('sheet.palate'), w.palate) }}
+        {{- fact(t('sheet.pairings'), w.pairings) }}
+      </dl>
+      {%- if w.story %}
+      <section class="story">
+        <h3>{{ w.story_title }}</h3>
+        <p>{{ w.story }}</p>
+        {%- if w.claim %}
+        <blockquote class="story-claim"><p>{{ w.claim }}</p><p class="tagline" lang="en">{{ t('wines.tagline') }}</p></blockquote>
+        {%- endif %}
+      </section>
+      {%- endif %}
+      <div class="actions">
+        <a class="button button-ghost" href="{{ localize('/vini/' ~ w.slug, lang) }}">{{ t('wines.full_sheet') }}</a>
+        {%- if export_email %}
+        <a class="button" href="{{ mailto(export_email, t('contact.subject_wine', name=w.name)) }}">{{ t('wines.write') }}</a>
+        {%- endif %}
+      </div>
+    </div>
+  </div>
+</template>
+{%- endfor %}
 {% endblock %}
+{% block scripts %}
+  <script src="/static/js/wine-dialog.js" defer></script>
+{%- endblock %}

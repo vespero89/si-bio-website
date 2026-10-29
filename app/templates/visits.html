@@ -3,40 +3,50 @@
 {% block title %}{{ page.title }} | Si Bio{% endblock %}
 {% block content %}
 {%- set partner = site().get("contact", {}).get("partner_email") %}
-<div class="wrap visits-page">
+<div class="wrap page-head">
+  <p class="eyebrow">{{ t('visits.eyebrow') }}</p>
   <h1>{{ page.title }}</h1>
-  <section class="visits-buyers">
-    <h2>{{ page.buyers_title }}</h2>
-    <p class="visits-tag">{{ t('visits.invitation') }}</p>
-    <p class="lead">{{ page.buyers_text }}</p>
-    {%- if page.buyers_includes %}
-    <h3>{{ t('visits.includes_title') }}</h3>
-    <ul class="visits-includes">
-      {%- for item in page.buyers_includes %}
-      <li>{{ item }}</li>
-      {%- endfor %}
-    </ul>
-    {%- endif %}
-    {%- if page.buyers_hotel %}
-    <p class="visits-hotel">{{ page.buyers_hotel }}{% if page.buyers_hotel_url %} <a href="{{ page.buyers_hotel_url }}" rel="noopener">{{ t('visits.hotel_link') }}</a>{% endif %}</p>
-    {%- endif %}
-    {%- if page.buyers_riva_dei_martin %}
-    <p>{{ page.buyers_riva_dei_martin }}</p>
-    {%- endif %}
-    {%- if video %}
-    {% include "partials/video.html" %}
-    {%- endif %}
-    {%- set export_address = site().get("contact", {}).get("export_email") %}
-    {%- if export_address %}
-    <p class="visits-price">{{ t('visits.price_list') }} <a href="{{ mailto(export_address, t('contact.subject_price')) }}">{{ t('visits.price_link') }}</a></p>
-    {%- endif %}
-    {%- set subject = t('contact.subject_buyers') %}
-    {%- set contact_button = t('visits.buyers_button') %}
-    {% include "partials/contact_block.html" %}
+</div>
+<div class="wrap">
+  <section class="buyers" aria-labelledby="buyers-title">
+    <div>
+      <p class="eyebrow">{{ t('visits.invitation') }}</p>
+      <h2 id="buyers-title">{{ page.buyers_title }}</h2>
+      <p class="first">{{ page.buyers_text }}</p>
+      {%- if page.buyers_hotel %}
+      <p class="hotel">{{ page.buyers_hotel }}{% if page.buyers_hotel_url %} <a href="{{ page.buyers_hotel_url }}" rel="noopener">{{ t('visits.hotel_link') }}</a>{% endif %}</p>
+      {%- endif %}
+      {%- if page.buyers_riva_dei_martin %}
+      <p>{{ page.buyers_riva_dei_martin }}</p>
+      {%- endif %}
+    </div>
+    <div class="includes">
+      {%- if page.buyers_includes %}
+      <h3>{{ t('visits.includes_title') }}</h3>
+      <ol>
+        {%- for item in page.buyers_includes %}
+        <li>{{ item }}</li>
+        {%- endfor %}
+      </ol>
+      {%- endif %}
+      {%- set export_address = site().get("contact", {}).get("export_email") %}
+      {%- if export_address %}
+      <p class="price">{{ t('visits.price_list') }} <a href="{{ mailto(export_address, t('contact.subject_price')) }}">{{ t('visits.price_link') }}</a></p>
+      {%- endif %}
+    </div>
   </section>
+</div>
+{%- if video %}
+{% include "partials/video.html" %}
+{%- endif %}
+<div class="wrap buyers-contact">
+  {%- set subject = t('contact.subject_buyers') %}
+  {%- set contact_button = t('visits.buyers_button') %}
+  {% include "partials/contact_block.html" %}
+</div>
   {#- The package is sold by Fuselli e Filari: no block until their contact and the name are known. #}
   {%- if partner and page.package_name %}
-  <section class="visits-package">
+  <section class="wrap package">
     <h2>{{ page.package_name }}</h2>
     {%- if page.package_lead %}
     <p class="lead">{{ page.package_lead }}</p>
@@ -57,5 +67,4 @@
     {% include "partials/contact_block.html" %}
   </section>
   {%- endif %}
-</div>
 {% endblock %}

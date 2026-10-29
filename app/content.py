@@ -24,7 +24,9 @@ CARD = (
     "total_acidity residual_sugar serving_temperature appearance aroma palate pairings vintage "
     "awards"
 ).split()
-WINE_TEXT = {"name", "description", "claim", *CARD}
+WINE_TEXT = {"name", "description", "claim", "subtitle", "story_title", "story", *CARD}
+GROUPS = ("piceno", "opera")
+"""Movements of the home row of wines: the neutral field `group` of a wine."""
 OIL_TEXT = {
     "name",
     "description",
@@ -227,6 +229,10 @@ def problems() -> list[str]:
         data = _load(root / "wines" / f"{slug}.toml", out) or {}
         name = f"wines/{slug}.toml"
         _typed(name, data, {"order": int, "visible": bool, "photo": str}, out)
+        if data.get("visible") and "group" not in data:
+            out.append(f"{name}: missing 'group'")
+        if "group" in data and data["group"] not in GROUPS:
+            out.append(f"{name}: 'group' must be one of {', '.join(GROUPS)}")
         for key in ("abv", "formats"):
             if key not in data:
                 out.append(f"{name}: missing '{key}'")

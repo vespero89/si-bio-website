@@ -3,22 +3,29 @@
 {% block content %}
 {%- set company = site().get("company", {}) %}
 {%- set contact = site().get("contact", {}) %}
-<div class="wrap contact-page">
+<div class="wrap page-head contact-page">
   <h1>{{ page.title }}</h1>
   <p class="lead">{{ page.intro }}</p>
   {%- if sales_contact %}
-  <p>{{ t('contact.sales') }} {{ sales_contact }}</p>
+  <p class="prose">{{ t('contact.sales') }} {{ sales_contact }}</p>
   {%- endif %}
+</div>
+<div class="wrap">
   {%- set subject = t('contact.subject_info') %}
+  {%- set inline = true %}
   {% include "partials/contact_block.html" %}
-  {%- if contact.get("phone") %}
-  <p>{{ t('contact.phone') }} {{ contact.phone }}</p>
-  {%- endif %}
-  <h2>{{ t('contact.company') }}</h2>
-  <p class="footer-data">{{ company.get("name") }}
-    {%- if company.get("vat") %}<br>{{ t('footer.vat', value=company.vat) }}{% endif %}
-    {%- if company.get("address") %}<br>{{ t('footer.address', value=company.address) }}{% endif %}
-    {%- if company.get("pec") %}<br>PEC: {{ company.pec }}{% endif %}
-  </p>
+</div>
+<div class="wrap split">
+  <div>
+    <h2>{{ t('contact.company') }}</h2>
+    <p class="footer-data">{{ company.get("name") }}
+      {%- if company.get("vat") %}<br>{{ t('footer.vat', value=company.vat) }}{% endif %}
+      {%- if company.get("address") %}<br>{{ t('footer.address', value=company.address) }}{% endif %}
+      {%- if company.get("pec") %}<br>PEC: {{ company.pec }}{% endif %}
+    </p>
+    {%- if contact.get("phone") %}
+    <p>{{ t('contact.phone') }} {{ contact.phone }}</p>
+    {%- endif %}
+  </div>
 </div>
 {% endblock %}

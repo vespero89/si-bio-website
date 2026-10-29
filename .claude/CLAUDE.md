@@ -46,13 +46,13 @@ app/seo.py          `/robots.txt`, `/sitemap.xml`, `/llms.txt` (per language), `
 app/jsonld.py       JSON-LD builders: `clean`, `dumps`, `organization`, `website`, `product`, `breadcrumbs`
 app/legal.py        legal pages `/info/note-legali|privacy|cookie` (templates in `templates/legal/<lang>/`, `company(lang)`)
 app/pages.py        also `video()` (id and cover from site.toml for the visits page)
-app/templates/      base.html (header, menu, selector, canonical/hreflang, footer), home.html, oil.html, about.html, wines.html (page), wine_fragment.html (HTMX), partials/wine_row|wine_stage|wine_intro|contact_block.html
-app/static/         css/sibio.css (the only stylesheet), fonts/ (woff2 + OFL files), js/htmx.min.js (2.0.4, same file as ecommerce-fattoria), js/wines.js (focus), js/contact.js (Copy button, loaded by base.html), img/vini (bottle photos), schede (PDF)
+app/templates/      base.html (header, menu, selector, canonical/hreflang, footer), home.html, oil.html, about.html, wines.html (page), wine_fragment.html (HTMX), partials/stave_long|stave_short (inline SVG staves)|wine_row|wine_stage|wine_intro|contact_block.html
+app/static/         css/sibio.css (the only stylesheet), fonts/ (woff2 + OFL files), js/htmx.min.js (2.0.4, same file as ecommerce-fattoria), js/wines.js (focus), js/wine-dialog.js (home dialog and arrows, home only), js/contact.js (Copy button, loaded by base.html), img/vini (bottle photos), schede (PDF)
 content/            (wines: Pecorino, Passerina, Armide, Passacaille visible; Offida Rosso `visible = false` until sheet and photo; optional text `claim` on Armide and Passacaille only, shown with "Taste the Essence"; DOCG only on the two Offida wines)
 content/            site.toml (settings), wines/<slug>.toml and oil.toml (neutral), <lang>/wines, <lang>/oil.toml, <lang>/pages (texts)
 locales/            interface texts per language (it is the reference), flat keys like `nav.wines`
 scripts/            qr.py, photos.py (photo sizes), check_content.py (pre-launch check)
-tests/              pytest
+tests/              pytest (`test_css.py`: every template class is styled or a hook; `test_about`, `test_wine_page`, `test_home_rail`, `test_visits`, `test_video`: markup of the redesigned pages)
 ```
 
 ## Rules
@@ -67,7 +67,7 @@ tests/              pytest
 - Code, comments, commits and docs in English; text shown on the site in Italian and English.
 - No em dashes or en dashes in any text.
 - Write code like the code around it: same naming, same comment density.
-- Commits are local, never pushed; no remote.
+- One local branch per stream of work, merged into `main` by Fabio; the private GitHub remote `origin` is pushed only when Fabio says so.
 
 ## Languages
 `config.LANGS` lists the languages the code knows; `content/site.toml` (`[languages] published`) the
@@ -93,18 +93,17 @@ Markers (`[DA VERIFICARE: ...]`, `[DA COMPLETARE: ...]`, `[DA DEFINIRE: ...]`, E
 and the like): a text holding one is shown in preview and becomes empty in production (a list becomes
 `[]`), so templates just test for an empty value. Page keys listed in `content.GATED` (the Riva dei
 Martin sentence) also need their switch in `site.toml`. `content.problems()` validates the raw files
-(required fields, types, unknown keys, same keys as Italian in each published language, pdf files,
+(required fields, `group` of visible wines in `content.GROUPS`, types, unknown keys, same keys as Italian in each published language, pdf files,
 unique `order`); `tests/test_content.py` fails if it returns anything. `content.read` is cached: tests that
 change `CONTENT_DIR` call `content.read.cache_clear()`. Texts are written, not invented: wine and oil
 facts stay markers until the family confirms them. Legal pages are exempt from hiding (see "Legal pages").
 
 ## Layout
 `app/templates/base.html`: header (text wordmark "Si Bio" until the logo arrives), menu (`templating.MENU`, links
-localized by `localize`, `aria-current` on the current page), language selector (`alternates()`: one link per
+localized by `localize`, `aria-current` on the current page), language selector (`nav.lang`, plain links without a list; `alternates()`: one link per
 language that can be shown, `/path?lang=xx` so the cookie follows the choice, name of each language from
-`language.name` of its own file), footer (company data from `site.toml`; the farm link needs `farm.url`, without
-it the name is plain text; `legal_links` in the footer: legal notice and privacy; "Gestisci i cookie" link to `/info/cookie#scelta`, always shown, the page comes with the legal pages task). Head: `canonical` and `hreflang` (every language that can be shown plus `x-default` on English) from
-`request.state.path`, absolute from `BASE_URL`. One stylesheet, mobile first, palette only in `:root`. Fonts
+`language.name` of its own file), footer (`.footer-grid` in three columns: "Si Bio" with company name, registered office, VAT and the farm line; "Esplora" with the menu; "Contatti" with `export_email` and, only with the certificate, the link to `/chi-siamo#certificato`; then the `nav.legal` row: `footer.copyright` with `this_year()`, legal notice, privacy and "Gestisci i cookie" to `/info/cookie#scelta`, always shown; the farm link needs `farm.url`, without it the name is plain text). Head: `canonical` and `hreflang` (every language that can be shown plus `x-default` on English) from
+`request.state.path`, absolute from `BASE_URL`. One stylesheet, mobile first, palette only in `:root`. Page blocks to reuse: `.wrap` (width and gutter), `.page-head` (eyebrow, h1, `.lead`), `.split` (+ `.split-bordered`, `.prose`), `.band` / `.band-dark`; a script-focused title (`tabindex="-1"`) shows no outline. Fonts
 self hosted in `app/static/fonts/` with their OFL files (Cormorant Garamond 500 for headings, Source Sans 3
 400 and 600 for text, latin subset only); never Google Fonts. Pages put their text in `{% block content %}`
 with one `h1`.
@@ -112,19 +111,23 @@ with one `h1`.
 ## Wine pages
 `/vini` shows the first wine in front with its own h1 ("I nostri vini") and intro; `/vini/<slug>` has the wine name as h1.
 Unknown or hidden slugs answer 404. The row of wines (`nav.wine-row`) is plain links, full page loads (the HTMX
-carousel is a later task); `aria-current="page"` on the wine of the page, `"true"` on `/vini`. The technical sheet
+carousel is a later task); `aria-current="page"` on the wine of the page, `"true"` on `/vini`. The stage (`partials/wine_stage.html`) is `article.wp`: `.wp-photo` (photo with `srcset`, `alt`, size, or the CSS placeholder), then
+`.wp-body`: `header.score` (short stave partial with `cls="stave"`, the name as h1 on `/vini/<slug>` and h2 on `/vini`, `p.score-sub` =
+`subtitle`, `p.kicker` = `style`), `p.desc`, `section.story` (h2 `story_title`, `story`, and the `blockquote.story-claim` with "Taste the Essence"
+inside it when the wine has a `claim`; no section while `story` is empty or a marker, so Pecorino and Passerina have none in production),
+h2 `wines.sheet_title`, the sheet, PDF link and contact block. The other wines are the `nav.wine-row`. The technical sheet
 (`wines.sheet`) is a `dl` built only from filled fields, in the order of `wines.SHEET`, labels `sheet.<field>`;
-a marker value is empty in production, so a field never shows empty. New fields: `style`, `training`, `bottle_aging`, `appearance`, `aroma`, `palate` (texts per language, in `content.CARD`) and `bottles_per_year` (number in the neutral file, shown grouped by `num(value, 0, true)`: 5.000 / 5,000; published on purpose). No price field; keep the sheet free of prices, of the contract winemaking and of "organic" for wines (the certificate block and the home line never appear on wine or oil pages; the footer link is on every page). Photo: `photo` in the neutral file is a file in
+a marker value is empty in production, so a field never shows empty. New wine fields: neutral `group` ("piceno" | "opera", required for visible wines; Offida Rosso is piceno); texts `subtitle` (Armide "Opera di Lully", Passacaille "Finale della stessa opera", empty elsewhere), `story_title` and `story` (Armide and Passacaille: the name; Pecorino and Passerina: markers until the family writes them; listed in `content.WINE_TEXT`). Earlier fields: `style`, `training`, `bottle_aging`, `appearance`, `aroma`, `palate` (texts per language, in `content.CARD`) and `bottles_per_year` (number in the neutral file, shown grouped by `num(value, 0, true)`: 5.000 / 5,000; published on purpose). No price field; keep the sheet free of prices, of the contract winemaking and of "organic" for wines (the certificate block and the home line never appear on wine or oil pages; the footer link is on every page). Photo: `photo` in the neutral file is a file in
 `static/img/vini/`; while it is a marker a CSS placeholder shows. PDF: `[pdf]` table of the neutral file
 (`it = "x.pdf"`, files in `static/schede/`); page language first, else the Italian one with "(in italiano)".
-`partials/contact_block.html` (needs `subject`): address as text, `mailto` built by `mailto()` (percent-encoded UTF-8,
+`partials/contact_block.html` (needs `subject`; optional `inline`): address as text, `mailto` built by `mailto()` (percent-encoded UTF-8,
 `%20`, never `+`), subject `contact.subject_wine`. The "Copy" button is created by `static/js/contact.js` (labels in
 `data-copy` / `data-copied`), so without JS only address and link exist.
 
 ## Wine carousel (HTMX)
 `/vini` and `/vini/<slug>` render `wines.html`: `#wine-intro` (h1 + lead, only on `/vini`), `nav#wine-row` (links
 with `hx-get`, `hx-target="#wine-stage"`, `hx-push-url="true"` on the nav) and `#wine-stage` (the
-`.wine-front` article). With `HX-Request: true` the route returns `wine_fragment.html` instead: `<title>`
+`article.wp`). With `HX-Request: true` the route returns `wine_fragment.html` instead: `<title>`
 (htmx updates the tab title), the intro and the row as out of band swaps (`hx-swap-oob="innerHTML"`, so the new
 `aria-current` and an h1 that is only on `/vini` follow, and the row keeps its scroll position) and the
 stage. A history restore (`HX-History-Restore-Request`) gets the full page. Every wine response has
@@ -134,27 +137,38 @@ The fade in uses `.htmx-added`; the global `prefers-reduced-motion` rule disable
 implemented (links are enough). Without JS the plain links of the page keep working.
 
 ## Contact page
-`/contatti` (`app/contact.py`, `contact.html`): h1 and intro from `content/<lang>/pages/contact.toml`, the
-`partials/contact_block.html` with subject `contact.subject_info` ("Si Bio: informazioni" / "Si Bio: information", no wine),
+`/contatti` (`app/contact.py`, `contact.html`): `.page-head` with h1 and intro from `content/<lang>/pages/contact.toml` (and the sales role), the
+`partials/contact_block.html` (`inline`: `data-inline`, address and button side by side on wide screens; also used by the oil page) with subject `contact.subject_info` ("Si Bio: informazioni" / "Si Bio: information", no wine),
 then company data from `site.toml` (name, VAT, registered office, PEC, phone) and the role of the commercial manager read
 from `sales_contact` of the `about` page file. Every value that is still a marker is empty in production, so its line is
 left out (shown in preview). No form, no database. The menu entry `nav.contact` already points here.
 
 ## Home, oil, about
-`app/pages.py`. Home: h1, `home.lead`, the claim as `blockquote.claim` (`claim`, shown without attribution, with the `tagline`
-"Taste the Essence" under it; on wine pages the claim is only on Armide and Passacaille, made in the Veneto near Riva dei Martin; nothing more about the Veneto is said), the About `mission` and `territory` (no "organic"), the family line with the farm
-link (`footer.family_*` keys), the visible wines as plain links in a `.wine-row` (no HTMX), links to `/olio` and `/visite`,
-the buyers sentence (`buyers` of the file, else `home.buyers`) and the "Contattaci" button. Oil: h1 `oil.name`, `oil.intro`, description,
-a `dl.sheet` from `pages.OIL_SHEET` (harvest uses the label `sheet.oil_harvest`), optional PDF (`[pdf]` of `oil.toml`, same
-`wines.pdf` rule), contact block with subject `contact.subject_olio` ("Si Bio: olio" / "Si Bio: oil"). About: h1, `family`
-(who), `about.what` (fixed text: wines from Piceno grapes and an oil, no "organic"), `mission` and `territory`, the certificate block (below), the family line, the
-Riva dei Martin sentence only with `riva_dei_martin = true` in `site.toml` (`content.GATED`; never "our winery"), the commercial
-manager role (`sales_contact`) and the contact button. Tests: `tests/test_pages.py`.
+`app/pages.py`. Home (`home.html`): visually hidden `h1.sr-only` "Si Bio" (page `title`), then `section.wines`: `ul.rail[data-rail]` in two
+movements by the neutral field `group` (`piceno` then `opera`, wines by `order`): movement I (`home.movement_1_*`), the cards, movement II
+(eyebrow `tagline`, the `claim` of the home file as its title, `home.movement_2_text`), the cards. A card is
+`<a href="/vini/<slug>" data-wine="<slug>">` with the bottle photo (`alt=""`, the caption names the wine; `subtitle`, else `style`, under it).
+The arrows `div[data-rail-arrows][hidden]` are shown by `js/wine-dialog.js` (loaded with `defer` by the home only, through `{% block scripts %}`
+of `base.html`). After the main blocks come one `<template id="wine-<slug>">` per visible wine, the presentation the script puts in a native
+`<dialog>`: close button, photo, `header.score` (short stave, name, `subtitle`, kicker = style + denomination), description, `dl.facts`
+(grapes, abv, serving temperature), `dl.senses` (appearance, aroma, palate, pairings), `section.story` (`story_title`, `story`, and the
+claim with "Taste the Essence" on the wines that have one), buttons "Scheda tecnica completa" (wine page) and "Scrivici" (`mailto()`,
+subject `contact.subject_wine`). A field that is empty (a marker in production) leaves its row out; a wine without `story` has no story
+section. Without JS the cards are plain links. Then `section.intro` (`home.lead`, `mission`, `territory`), `figure.claim` (long stave,
+"Taste the Essence" as the only quote, the family line with the farm link: "The roots of Si Bio are at Fattoria nel Ciafone...", the muted line `home.people` under `home.lead`), the tiles for the oil (`/olio`, keys `home.oil_*`, no "organic") and visits (`/visite`), and `section.band` (the
+buyers sentence, "Contattaci", the certificate line `p.certified` only with the switch on). The claim appears only in movement II (and in the
+Armide and Passacaille dialogs). Tests: `tests/test_home_rail.py`, `tests/test_home_about.py`.
+Oil (`oil.html`): `.page-head` (eyebrow `oil.eyebrow`, h1 `oil.name`, `p.lead` = `oil.intro`), the scene photo, `.split` with the description (`.prose`) and the
+`dl.sheet` from `pages.OIL_SHEET` (harvest uses the label `sheet.oil_harvest`), optional PDF (`[pdf]` of `oil.toml`, same
+`wines.pdf` rule), contact block (`inline`) with subject `contact.subject_olio` ("Si Bio: olio" / "Si Bio: oil"). About (`about.html`): `div.page-head` (eyebrow `about.eyebrow`, h1, `p.lead` = `about.what`), `div.split.split-bordered` with `.prose` (`family`: two plain-fact paragraphs split on a blank line, also the meta description; `mission`, `territory`, the Riva dei Martin sentence only with `riva_dei_martin = true` in `site.toml` (`content.GATED`; never "our winery"), the commercial manager role `sales_contact`) and a 4:5 family photo placeholder; then `section.silvia#musica` (long stave watermark, 4:5 portrait placeholder, `about.music_label`, h2 `music_title`, `music` split on blank lines into paragraphs, link `about.music_link` to `/visite#video`; facts stated by Fabio, no markers, no "organic", no Veneto; left out only if `music` is empty); then the certificate block (below, `dl.sheet` + QR, only with `certificate()`); last the family line and the contact button on `section.band.band-dark`. Tests: `tests/test_pages.py`.
 
 ## Visits and package
-`/visite` (`pages.visits_page`, `visits.html`, page file `visits.toml`). h1 `title`, then two sections. Buyers (on invitation,
-`visits.invitation`): `buyers_title` ("Vieni a trovarci" / "Visit us"), `buyers_text`, `buyers_includes` (list of four, h3 `visits.includes_title`, listed in `content.LIST_KEYS`), `buyers_hotel` + `buyers_hotel_url` (Hotel Il Casale, facts from hotelcasale.it, link `visits.hotel_link`), the row "Listino su richiesta" (`visits.price_list`, mailto to `export_email` with subject `contact.subject_price`; no price or terms anywhere), the video block `partials/video.html` (see "Video"), contact block to `export_email` with subject `contact.subject_buyers` and button
-`visits.buyers_button`. Package (sold by Fuselli e Filari, no price, no programme invented): `package_name` as h2, `package_lead`,
+`/visite` (`pages.visits_page`, `visits.html`, page file `visits.toml`). `.page-head` (eyebrow `visits.eyebrow`, h1 `title`), then `section.buyers`: left column eyebrow
+`visits.invitation`, h2 `buyers_title`, `p.first` = `buyers_text`, `p.hotel` (`buyers_hotel` + `buyers_hotel_url`, Hotel Il Casale, facts from hotelcasale.it, link
+`visits.hotel_link`), Riva dei Martin line; right column `div.includes` (h3 `visits.includes_title`, `ol` of `buyers_includes`, listed in `content.LIST_KEYS`) and
+`p.price` "Listino su richiesta" (`visits.price_list`, mailto to `export_email` with subject `contact.subject_price`; no price or terms anywhere). Then the video
+block (`partials/video.html`, see "Video"), then `div.buyers-contact` with the contact block to `export_email`, subject `contact.subject_buyers`, button
+`visits.buyers_button`. Package (`section.wrap.package`, sold by Fuselli e Filari, no price, no programme invented): `package_name` as h2, `package_lead`,
 `package_text`, `package_hotel` (Hotel Il Casale), the fixed line `visits.organizer`, contact block with `contact_address` =
 `partner_email` of `site.toml`, subject `contact.subject_package` ("Richiesta programma: {name}") and button `visits.package_button`.
 The whole package section is left out in production unless `partner_email` AND `package_name` are verified (markers). The partial
@@ -174,12 +188,12 @@ puts the prefix back on the Location. `GET` is 405. The body is read by hand (no
 other tests that forbid forms or buttons strip the notice with `NOTICE`.
 
 ## Video
-`/visite` only. `pages.video()` reads `[video]` of `site.toml`: `youtube_id` (11 characters `[A-Za-z0-9_-]`) and `cover` (file name in
+`/visite` only. The partial is `section.video` (`.wrap`, `div.video-head` with eyebrow `video.eyebrow`, h2 `video.title` and `p.music-credit` = `video.music_credit`, "Musica originale di Silvia Premici" / "Original music by Silvia Premici"), then the slot; the credit lives in this block only and goes with it when the block is left out. `pages.video()` reads `[video]` of `site.toml`: `youtube_id` (11 characters `[A-Za-z0-9_-]`) and `cover` (file name in
 `static/img/`, 16:9, rendered 1280x720). While one is a marker or the id is not valid, the whole block is gone in production; in preview
 a `p.video-placeholder` shows the marker text (no URL, no iframe). `partials/video.html` renders `div.video-slot#video` (no nested div):
-a `figure.video-frame` (16:9 box) holding either the iframe or the cover plus a CSS play mark, then, unless accepted, the consent text and a
-form to `/cookie-choice` (`next` = page + `#video`): no choice gives "Accetto e guardo" / "Non ora", `rejected` gives only the accept
-button. Always the plain anchor "Guarda su YouTube" (`youtube.com/watch?v=<id>`, `target="_blank"`, `noopener noreferrer`). Only with
+a `figure.video-frame` (16:9 box) holding either the iframe or the cover plus a CSS play mark, then, unless accepted, a
+`form.consent` (text + buttons) to `/cookie-choice` (`next` = page + `#video`): no choice gives "Accetto e guardo" / "Non ora", `rejected` gives only the accept
+button. Always the plain anchor "Guarda su YouTube" (`p.yt`) (`youtube.com/watch?v=<id>`, `target="_blank"`, `noopener noreferrer`). Only with
 `cookie_choice(request) == "accepted"` the server renders `https://www.youtube-nocookie.com/embed/<id>?rel=0&hl=<lang>` (`loading="lazy"`,
 title, `referrerpolicy="strict-origin-when-cross-origin"`, `allow="encrypted-media; picture-in-picture; fullscreen"`). No JavaScript.
 Subtitles are YouTube's. Tests: `tests/test_video.py`.

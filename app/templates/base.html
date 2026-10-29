@@ -52,11 +52,9 @@
         </ul>
       </nav>
       <nav class="lang" aria-label="{{ t('language.label') }}">
-        <ul>
-          {%- for alt in alts %}
-          <li><a href="{{ alt.url }}?lang={{ alt.code }}" lang="{{ alt.code }}" hreflang="{{ alt.code }}"{% if alt.code == request.state.lang %} aria-current="true"{% endif %}>{{ alt.name }}</a></li>
-          {%- endfor %}
-        </ul>
+        {%- for alt in alts %}
+        <a href="{{ alt.url }}?lang={{ alt.code }}" lang="{{ alt.code }}" hreflang="{{ alt.code }}"{% if alt.code == request.state.lang %} aria-current="true"{% endif %}>{{ alt.name }}</a>
+        {%- endfor %}
       </nav>
     </div>
   </header>
@@ -67,34 +65,50 @@
   {%- set contact = site().get("contact", {}) %}
   <footer class="site-footer">
     <div class="wrap">
-      <p class="footer-name">{{ company.get("name") }}</p>
-      <p class="footer-data">
-        {%- if company.get("vat") %}{{ t('footer.vat', value=company.vat) }}{% endif %}
-        {%- if company.get("address") %}<br>{{ t('footer.address', value=company.address) }}{% endif %}
-        {%- if contact.get("export_email") %}<br><a href="mailto:{{ contact.export_email }}">{{ contact.export_email }}</a>{% endif %}
-      </p>
-      <p class="footer-family">{{ t('footer.family_before') }}
-        {%- if farm_url() %}<a href="{{ farm_url() }}" rel="noopener">{{ t('footer.family_link') }}</a>{% else %}{{ t('footer.family_link') }}{% endif %}
-        {{- t('footer.family_after') }}</p>
+      <div class="footer-grid">
+        <div>
+          <p class="footer-brand">Si Bio</p>
+          <p class="muted">{{ company.get("name") }}
+            {%- if company.get("address") %}<br>{{ t('footer.address', value=company.address) }}{% endif %}
+            {%- if company.get("vat") %}<br>{{ t('footer.vat', value=company.vat) }}{% endif %}</p>
+          <p class="footer-family">{{ t('footer.family_before') }}
+            {%- if farm_url() %}<a href="{{ farm_url() }}" rel="noopener">{{ t('footer.family_link') }}</a>{% else %}{{ t('footer.family_link') }}{% endif %}
+            {{- t('footer.family_after') }}</p>
+        </div>
+        <nav aria-label="{{ t('footer.site') }}">
+          <h2>{{ t('footer.explore') }}</h2>
+          <ul>
+            {%- for key, path in menu %}
+            <li><a href="{{ localize(path, request.state.lang) }}">{{ t(key) }}</a></li>
+            {%- endfor %}
+          </ul>
+        </nav>
+        <div>
+          <h2>{{ t('footer.contacts') }}</h2>
+          <ul>
+            {%- if contact.get("export_email") %}
+            <li><a href="mailto:{{ contact.export_email }}">{{ contact.export_email }}</a></li>
+            {%- endif %}
+            {%- if certificate() %}
+            <li><a href="{{ localize('/chi-siamo#certificato', request.state.lang) }}">{{ t('certificate.footer') }}</a></li>
+            {%- endif %}
+          </ul>
+        </div>
+      </div>
       {%- set legal_links = [("legal.tab_notice", "/info/note-legali"), ("legal.tab_privacy", "/info/privacy")] %}
-      {%- if legal_links %}
-      <nav class="footer-legal" aria-label="{{ t('footer.legal') }}">
-        <ul>
-          {%- for key, path in legal_links %}
-          <li><a href="{{ localize(path, request.state.lang) }}">{{ t(key) }}</a></li>
-          {%- endfor %}
-        </ul>
+      <nav class="legal" aria-label="{{ t('footer.legal') }}">
+        <span>{{ t('footer.copyright', year=this_year()) }}</span>
+        {%- for key, path in legal_links %}
+        <a href="{{ localize(path, request.state.lang) }}">{{ t(key) }}</a>
+        {%- endfor %}
+        <a href="{{ localize('/info/cookie', request.state.lang) }}#scelta">{{ t('footer.cookies') }}</a>
       </nav>
-      {%- endif %}
-      {%- if certificate() %}
-      <p class="footer-certificate"><a href="{{ localize('/chi-siamo#certificato', request.state.lang) }}">{{ t('certificate.footer') }}</a></p>
-      {%- endif %}
-      <p class="footer-cookies"><a href="{{ localize('/info/cookie', request.state.lang) }}#scelta">{{ t('footer.cookies') }}</a></p>
     </div>
   </footer>
   {%- if not cookie_choice(request) %}
   {%- include "partials/cookie_notice.html" %}
   {%- endif %}
   <script src="/static/js/contact.js" defer></script>
+  {%- block scripts %}{% endblock %}
 </body>
 </html>

@@ -1,6 +1,7 @@
 # Neutral data of Armide: the same in every language. Texts are in content/<lang>/wines/armide.toml.
 order = 3
 visible = true
+group = "opera"        # "piceno" or "opera": the movement of the home row
 photo = "armide.jpg"      # provisional: file in app/static/img/vini/, replaced by the photo shoot
 abv = 11.5
 bottles_per_year = 4000

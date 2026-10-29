@@ -79,19 +79,22 @@ def test_no_wine_oil_or_grapes_called_organic(client, production, prefix):
 def test_about_what_ends_before_the_certified_block(client, production, prefix):
     html = client.get(f"{prefix}/chi-siamo").text
     what = re.search(
-        r"<p>(Our wines from Piceno grapes and an olive oil\.|I nostri vini[^<]*olio\.)</p>", html
+        r'<p class="lead">(Our wines from Piceno grapes and an olive oil\.'
+        r"|I nostri vini[^<]*olio\.)</p>",
+        html,
     )
     assert what, "about.what must end with a full stop in its own paragraph"
     assert html.index('id="certificato"') > what.end()
 
 
 @pytest.mark.parametrize("prefix", ["", "/en"])
-def test_home_claim_without_attribution_and_tagline(client, production, prefix):
-    html = client.get(f"{prefix}/").text
+def test_home_tagline_without_attribution_and_claim_in_movement_two(client, production, prefix):
+    html = re.sub(r"<template.*?</template>", "", client.get(f"{prefix}/").text, flags=re.S)
     quote = re.search(r"<blockquote.*?</blockquote>", html, re.S).group(0)
-    assert CLAIM[prefix] in unescape(quote)
-    assert "Taste the Essence" in quote
+    assert "Taste the Essence" in quote and CLAIM[prefix] not in unescape(quote)
     assert "<footer" not in quote
+    movement = re.search(r'<li class="movement movement-2">.*?</li>', html, re.S).group(0)
+    assert CLAIM[prefix] in unescape(movement)
 
 
 def test_why_veneto_is_gone():

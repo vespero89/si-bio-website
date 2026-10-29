@@ -1,14 +1,25 @@
-{#- The organic certificate: sentence, certificate data, link to the European register and QR code.
+{#- The organic certificate: sentence, certificate data as a sheet, link to the European register and QR code.
     Needs `cert` (app/certificate.py) and `sentence` (the `organic` text of the About page). -#}
 <section class="certificate" id="certificato" aria-labelledby="certificato-title">
-  <h2 id="certificato-title">{{ t('certificate.title') }}</h2>
-  {%- if sentence %}
-  <p>{{ sentence }}</p>
-  {%- endif %}
-  <p>{{ t('certificate.details', number=cert.number, body=cert.body, regulation=cert.regulation) }}
-    {%- if cert.valid_from and cert.valid_until %} {{ t('certificate.validity', start=cert.valid_from, end=cert.valid_until) }}{% endif %}
-    {%- if cert.holder %} {{ t('certificate.holder', name=cert.holder, address=cert.holder_address) }}{% endif %}</p>
-  <p><a href="{{ cert.verify_url }}" rel="noopener">{{ t('certificate.verify') }}</a></p>
+  <div>
+    <p class="eyebrow">{{ t('certificate.eyebrow') }}</p>
+    <h2 id="certificato-title">{{ t('certificate.title') }}</h2>
+    {%- if sentence %}
+    <p class="sentence">{{ sentence }}</p>
+    {%- endif %}
+    <dl class="sheet">
+      <dt>{{ t('certificate.label_number') }}</dt><dd>{{ cert.number }}</dd>
+      <dt>{{ t('certificate.label_body') }}</dt><dd>{{ cert.body }}</dd>
+      <dt>{{ t('certificate.label_regulation') }}</dt><dd>{{ cert.regulation }}</dd>
+      {%- if cert.valid_from and cert.valid_until %}
+      <dt>{{ t('certificate.label_validity') }}</dt><dd>{{ t('certificate.validity', start=cert.valid_from, end=cert.valid_until) }}</dd>
+      {%- endif %}
+      {%- if cert.holder %}
+      <dt>{{ t('certificate.label_holder') }}</dt><dd>{{ t('certificate.holder', name=cert.holder, address=cert.holder_address) }}</dd>
+      {%- endif %}
+    </dl>
+    <a class="text-link" href="{{ cert.verify_url }}" rel="noopener">{{ t('certificate.verify') }}</a>
+  </div>
   {%- if cert.qr %}
   <figure class="certificate-qr">
     <img src="{{ cert.qr }}" alt="{{ t('certificate.qr_alt') }}" width="200" height="200">

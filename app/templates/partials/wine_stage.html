@@ -1,27 +1,42 @@
-<article class="wine-front">
-  <div class="wine-photo">
+<article class="wp">
+  <div class="wp-photo">
     {%- if photo %}
     <img src="/static/img/vini/{{ photo }}" alt="{{ t('wines.photo_alt', name=wine.name) }}" width="687" height="515"{% set sources = srcset('vini/' ~ photo) %}{% if sources %} srcset="{{ sources }}" sizes="(min-width: 687px) 687px, 100vw"{% endif %}>
     {%- else %}
     <span class="bottle-placeholder" role="img" aria-label="{{ t('wines.photo_missing') }}"></span>
     {%- endif %}
   </div>
-  <div class="wine-sheet">
-    {%- if heading %}
-    <h2 tabindex="-1">{{ wine.name }}</h2>
-    {%- else %}
-    <h1 tabindex="-1">{{ wine.name }}</h1>
-    {%- endif %}
+  <div class="wp-body">
+    <header class="score">
+      {%- with cls = "stave" %}{% include "partials/stave_short.html" %}{% endwith %}
+      {%- if heading %}
+      <h2 tabindex="-1">{{ wine.name }}</h2>
+      {%- else %}
+      <h1 tabindex="-1">{{ wine.name }}</h1>
+      {%- endif %}
+      {%- if wine.subtitle %}
+      <p class="score-sub">{{ wine.subtitle }}</p>
+      {%- endif %}
+      {%- if wine.style %}
+      <p class="eyebrow kicker">{{ wine.style }}</p>
+      {%- endif %}
+    </header>
     {%- if wine.description %}
-    <p>{{ wine.description }}</p>
+    <p class="desc">{{ wine.description }}</p>
     {%- endif %}
-    {%- if wine.claim %}
-    <blockquote class="claim">
-      <p>{{ wine.claim }}</p>
-      <p>{{ t('wines.tagline') }}</p>
-    </blockquote>
+    {%- if wine.story %}
+    <section class="story">
+      <h2>{{ wine.story_title }}</h2>
+      <p>{{ wine.story }}</p>
+      {%- if wine.claim %}
+      <blockquote class="story-claim"><p>{{ wine.claim }}</p><p class="tagline" lang="en">{{ t('wines.tagline') }}</p></blockquote>
+      {%- endif %}
+    </section>
+    {%- elif wine.claim %}
+    <blockquote class="story-claim"><p>{{ wine.claim }}</p><p class="tagline" lang="en">{{ t('wines.tagline') }}</p></blockquote>
     {%- endif %}
     {%- if sheet %}
+    <h2>{{ t('wines.sheet_title') }}</h2>
     <dl class="sheet">
       {%- for field, value in sheet %}
       <dt>{{ t('sheet.' ~ field) }}</dt>

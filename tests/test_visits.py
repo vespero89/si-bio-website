@@ -171,7 +171,7 @@ MONEY = re.compile(r"€|\bEUR\b|\bEXW\b|\bIVA\b|\bVAT\b|prezz|\bprices?\b|antic
 @pytest.mark.parametrize(("lang", "prefix"), [("it", ""), ("en", "/en")])
 def test_buyers_includes_list_of_four(client, production, lang, prefix):
     html = client.get(prefix + "/visite").text
-    block = re.search(r'<ul class="visits-includes">(.*?)</ul>', html, re.S).group(1)
+    block = re.search(r'<div class="includes">.*?<ol>(.*?)</ol>', html, re.S).group(1)
     assert re.findall(r"<li>(.*?)</li>", block, re.S) == [
         s.replace("'", "&#39;") for s in INCLUDES[lang]
     ]
@@ -181,7 +181,7 @@ def test_buyers_includes_list_of_four(client, production, lang, prefix):
 def test_hotel_description_and_link(client, production):
     for prefix, name in (("", "Hotel Il Casale"), ("/en", "Hotel Il Casale")):
         html = client.get(prefix + "/visite").text
-        para = re.search(r'<p class="visits-hotel">(.*?)</p>', html, re.S).group(1)
+        para = re.search(r'<p class="hotel">(.*?)</p>', html, re.S).group(1)
         assert name in para
         assert "Colli del Tronto" in para
         assert f'href="{HOTEL_URL}"' in para
@@ -191,11 +191,11 @@ def test_hotel_description_and_link(client, production):
 
 def test_price_list_row_mailto(client, production):
     it = client.get("/visite").text
-    row = re.search(r'<p class="visits-price">(.*?)</p>', it, re.S).group(1)
+    row = re.search(r'<p class="price">(.*?)</p>', it, re.S).group(1)
     assert "Listino su richiesta" in row
     assert "mailto:export.sibio@gmail.com?subject=Si%20Bio%3A%20listino" in row
     en = client.get("/en/visite").text
-    row = re.search(r'<p class="visits-price">(.*?)</p>', en, re.S).group(1)
+    row = re.search(r'<p class="price">(.*?)</p>', en, re.S).group(1)
     assert "Price list on request" in row
     assert "mailto:export.sibio@gmail.com?subject=Si%20Bio%3A%20price%20list" in row
 
@@ -203,7 +203,7 @@ def test_price_list_row_mailto(client, production):
 @pytest.mark.parametrize("prefix", ["", "/en"])
 def test_buyers_block_has_no_price_or_terms(client, production, prefix):
     html = client.get(prefix + "/visite").text
-    block = re.search(r'<section class="visits-buyers">.*?</section>', html, re.S).group(0)
+    block = re.search(r'<section class="buyers".*?</section>', html, re.S).group(0)
     text = re.sub(r"<[^>]+>", " ", block)
     assert not MONEY.search(text.replace("Listino su richiesta", "").replace("Price list on", ""))
     assert not re.search(r"biologic|organic|\bbio\b|conto terzi|contract", text, re.I)
@@ -232,3 +232,14 @@ def test_llms_txt_never_prints_a_programme_marker(client, request, monkeypatch, 
     text = client.get("/llms.txt").text
     assert "DA COMPLETARE" not in text
     assert ("  - Transfer" in text) == (mode == "preview")
+
+
+@pytest.mark.parametrize("prefix", ["", "/en"])
+def test_visits_page_uses_the_new_layout(client, production, prefix):
+    html = client.get(prefix + "/visite").text
+    assert re.search(r'<div class="wrap page-head">\s*<p class="eyebrow">[^<]+</p>\s*<h1>', html)
+    assert html.count("<h1") == 1
+    assert '<section class="buyers"' in html
+    assert '<div class="includes">' in html
+    assert "visits-" not in html
+    assert 'class="eyebrow">' + ("Su invito" if not prefix else "By invitation") in html

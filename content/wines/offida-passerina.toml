@@ -1,6 +1,7 @@
 # Neutral data of Offida Passerina: the same in every language. Texts are in content/<lang>/wines/offida-passerina.toml.
 order = 2
 visible = true
+group = "piceno"        # "piceno" or "opera": the movement of the home row
 photo = "offida-passerina.jpg"      # provisional: file in app/static/img/vini/, replaced by the photo shoot
 abv = 13.5
 bottles_per_year = 5000
