@@ -10,7 +10,6 @@ CSS = (config.STATIC_DIR / "css" / "sibio.css").read_text()
 
 # Classes the current templates carry as page or hook names only; nothing to style.
 HOOKS = {
-    "about-page",
     "contact-page",
     "cookie-choice",
     "oil-page",

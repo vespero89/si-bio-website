@@ -160,10 +160,7 @@ buyers sentence, "Contattaci", the certificate line `p.certified` only with the 
 Armide and Passacaille dialogs). Tests: `tests/test_home_rail.py`, `tests/test_home_about.py`.
 Oil: h1 `oil.name`, `oil.intro`, description,
 a `dl.sheet` from `pages.OIL_SHEET` (harvest uses the label `sheet.oil_harvest`), optional PDF (`[pdf]` of `oil.toml`, same
-`wines.pdf` rule), contact block with subject `contact.subject_olio` ("Si Bio: olio" / "Si Bio: oil"). About: h1, `family`
-(who), `about.what` (fixed text: wines from Piceno grapes and an oil, no "organic"), `mission` and `territory`, the certificate block (below), the family line, the
-Riva dei Martin sentence only with `riva_dei_martin = true` in `site.toml` (`content.GATED`; never "our winery"), the commercial
-manager role (`sales_contact`) and the contact button. Tests: `tests/test_pages.py`.
+`wines.pdf` rule), contact block with subject `contact.subject_olio` ("Si Bio: olio" / "Si Bio: oil"). About (`about.html`): `div.page-head` (eyebrow `about.eyebrow`, h1, `p.lead` = `about.what`), `div.split.split-bordered` with `.prose` (`family`, `mission`, `territory`, the Riva dei Martin sentence only with `riva_dei_martin = true` in `site.toml` (`content.GATED`; never "our winery"), the commercial manager role `sales_contact`) and a 4:5 family photo placeholder; then `section.silvia#musica` (long stave watermark, 4:5 portrait placeholder, `about.music_label`, h2 `music_title`, `music` split on blank lines into paragraphs, link `about.music_link` to `/visite#video`; facts stated by Fabio, no markers, no "organic", no Veneto; left out only if `music` is empty); then the certificate block (below, `dl.sheet` + QR, only with `certificate()`); last the family line and the contact button on `section.band.band-dark`. Tests: `tests/test_pages.py`.
 
 ## Visits and package
 `/visite` (`pages.visits_page`, `visits.html`, page file `visits.toml`). h1 `title`, then two sections. Buyers (on invitation,

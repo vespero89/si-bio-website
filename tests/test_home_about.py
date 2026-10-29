@@ -79,7 +79,9 @@ def test_no_wine_oil_or_grapes_called_organic(client, production, prefix):
 def test_about_what_ends_before_the_certified_block(client, production, prefix):
     html = client.get(f"{prefix}/chi-siamo").text
     what = re.search(
-        r"<p>(Our wines from Piceno grapes and an olive oil\.|I nostri vini[^<]*olio\.)</p>", html
+        r'<p class="lead">(Our wines from Piceno grapes and an olive oil\.'
+        r"|I nostri vini[^<]*olio\.)</p>",
+        html,
     )
     assert what, "about.what must end with a full stop in its own paragraph"
     assert html.index('id="certificato"') > what.end()

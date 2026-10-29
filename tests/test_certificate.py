@@ -100,9 +100,9 @@ def test_about_block_in_italian(client, production):
     assert "Azienda biologica certificata" in flat
     assert "Il certificato riguarda la coltivazione di uva, olive e cereali." in flat
     assert f"Certificato n. {NUMBER}" in flat
-    assert "organismo di controllo Suolo e Salute Srl (IT-BIO-004)" in flat
+    assert "Organismo di controllo Suolo e Salute Srl (IT-BIO-004)" in flat
     assert "Reg. (UE) 2018/848" in flat
-    assert "Valido dal 25 agosto 2026 al 24 agosto 2029" in flat
+    assert "Validità Dal 25 agosto 2026 al 24 agosto 2029" in flat
     assert "Intestato a Si Bio di Premici Silvia e Aleandri Vincenzo, società semplice" in flat
     assert "Contrada San Lazzaro 118, 63073 Offida" in flat
     assert "Inquadra per verificare il certificato aggiornato" in flat
@@ -120,8 +120,8 @@ def test_about_block_in_english(client, production):
     sentence = "Si Bio is a certified organic farm. The certificate covers the cultivation of "
     assert sentence + "grapes, olives and cereals." in flat
     assert f"Certificate no. {NUMBER}" in flat
-    assert "control body Suolo e Salute Srl (IT-BIO-004)" in flat
-    assert "Valid from 25 August 2026 to 24 August 2029" in flat
+    assert "Control body Suolo e Salute Srl (IT-BIO-004)" in flat
+    assert "Validity From 25 August 2026 to 24 August 2029" in flat
     assert "Scan to check the current certificate" in flat
     assert "Check in the EU register" in flat
 
