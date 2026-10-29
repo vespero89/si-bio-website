@@ -374,6 +374,7 @@ body.has-dialog { overflow: hidden; }
   .intro-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
   .intro-grid .eyebrow { grid-column: 1 / span 3; padding-top: 0.6em; }
   .lead { grid-column: 4 / span 8; font-size: var(--t-3xl); }
+  .intro-grid .muted { grid-column: 4 / span 8; margin-top: calc(-1 * var(--s-3)); }
   .intro-text { grid-column: 4 / span 4; margin-top: var(--s-5); }
   .intro-text + .intro-text { grid-column: 8 / span 4; }
 

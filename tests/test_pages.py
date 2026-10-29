@@ -53,7 +53,7 @@ def test_no_placeholder_in_production(client, production, path):
 
 
 def test_preview_shows_placeholders(client, preview):
-    assert "DA VERIFICARE" in client.get("/chi-siamo").text
+    assert "DA DEFINIRE" in client.get("/chi-siamo").text
     assert "DA VERIFICARE" in client.get("/olio").text
     assert "DA DEFINIRE" in client.get("/").text
     assert "TO BE DEFINED" in client.get("/en/").text

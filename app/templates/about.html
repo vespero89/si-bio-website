@@ -10,7 +10,9 @@
 <div class="wrap split split-bordered">
   <div class="prose">
     {%- if page.family %}
-    <p class="first">{{ page.family }}</p>
+    {%- for paragraph in page.family.split('\n\n') %}
+    <p{% if loop.first %} class="first"{% endif %}>{{ paragraph }}</p>
+    {%- endfor %}
     {%- endif %}
     {%- if page.mission %}
     <p{% if not page.family %} class="first"{% endif %}>{{ page.mission }}</p>

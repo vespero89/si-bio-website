@@ -104,3 +104,33 @@ def test_silvia_stays_when_the_certificate_switch_is_off(client, production, mon
     html = client.get("/chi-siamo").text
     assert 'id="certificato"' not in html
     assert 'class="silvia"' in html
+
+
+FAMILY_START = {
+    "it": "Si Bio nasce dall'incontro di due storie.",
+    "en": "Si Bio was born from the meeting of two stories.",
+}
+
+
+@pytest.mark.parametrize("lang,prefix", [("it", ""), ("en", "/en")])
+def test_family_text_is_two_plain_paragraphs(client, production, lang, prefix):
+    family = content.page(lang, "about")["family"]
+    assert family.count("\n\n") == 1 and not content.has_marker(family)
+    assert not re.search(r"biologic|organic|Veneto|Riva", family, re.I)
+    html = client.get(f"{prefix}/chi-siamo").text
+    prose = re.search(r'<div class="prose">(.*?)</div>', html, re.S).group(1)
+    first, second = family.split("\n\n")
+    assert f'<p class="first">{unescape(first)}</p>' in unescape(prose)
+    assert f"<p>{unescape(second)}</p>" in unescape(prose)
+    description = re.search(r'<meta name="description" content="([^"]*)"', html).group(1)
+    assert unescape(description) == FAMILY_START[lang]
+    assert family.split("\n\n")[0] not in content.page(lang, "about")["music"]
+
+
+@pytest.mark.parametrize("lang,prefix", [("it", ""), ("en", "/en")])
+def test_home_people_line_under_the_intro(client, production, lang, prefix):
+    html = client.get(f"{prefix}/").text
+    text = i18n.t(lang, "home.people")
+    assert f'<p class="muted">{text}</p>' in unescape(html)
+    assert unescape(html).index(i18n.t(lang, "home.lead")) < unescape(html).index(text)
+    assert not re.search(r"biologic|organic", text, re.I)
