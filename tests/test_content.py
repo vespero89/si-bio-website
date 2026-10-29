@@ -117,7 +117,7 @@ def test_site_keeps_real_values_in_production(production):
     site = content.site()
     assert site["contact"]["export_email"] == "export@si-bio.it"
     assert site["contact"]["partner_email"] == ""
-    assert site["switches"] == {"riva_dei_martin": False, "organic_certified": False}
+    assert site["switches"] == {"riva_dei_martin": False, "organic_certified": True}
     assert site["video"]["youtube_id"] == ""
 
 
@@ -205,3 +205,39 @@ def test_no_page_mentions_riva_dei_martin_while_switch_is_off(preview):
     for lang in config.PUBLISHED:
         for name in content.PAGES:
             assert "Riva dei Martin" not in " ".join(strings(content.page(lang, name)))
+
+
+def test_validator_checks_the_certificate_when_the_switch_is_on(tree):
+    assert content.problems() == []
+    path = tree / "site.toml"
+    original = path.read_text()
+    for old, new, word in (
+        ('number = "IT-BIO-004.380-0031262.2026.004"', 'number = ""', "number"),
+        ("https://webgate.ec.europa.eu/", "http://webgate.ec.europa.eu/", "verify_url"),
+        ("https://webgate.ec.europa.eu/", "https://example.org/", "verify_url"),
+        ('valid_until = "2029-08-24"', 'valid_until = "24/08/2029"', "valid_until"),
+        ('valid_from = "2026-08-25"', 'valid_from = "2030-01-01"', "valid_from"),
+        ('qr = "certificate-qr.svg"', 'qr = "missing.svg"', "qr"),
+    ):
+        path.write_text(original.replace(old, new))
+        content.read.cache_clear()
+        assert any(word in p and "certificate" in p for p in content.problems()), word
+    path.write_text(
+        original.replace("organic_certified = true", "organic_certified = false").replace(
+            'number = "IT-BIO-004.380-0031262.2026.004"', 'number = ""'
+        )
+    )
+    content.read.cache_clear()
+    assert content.problems() == []
+
+
+def test_organic_sentence_follows_the_switch(tree, production):
+    assert "azienda agricola biologica certificata" in content.page("it", "about")["organic"]
+    assert "certified organic farm" in content.page("en", "about")["organic"]
+    path = tree / "site.toml"
+    path.write_text(
+        path.read_text().replace("organic_certified = true", "organic_certified = false")
+    )
+    content.read.cache_clear()
+    assert "organic" not in content.page("it", "about")
+    assert "organic" not in content.page("en", "about")

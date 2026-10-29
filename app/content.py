@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import re
 import tomllib
+from datetime import date
 from functools import lru_cache
 from pathlib import Path
 
@@ -30,6 +31,7 @@ GATED = {
     "riva_dei_martin": "riva_dei_martin",
     "buyers_riva_dei_martin": "riva_dei_martin",
     "package_riva_dei_martin": "riva_dei_martin",
+    "organic": "organic_certified",
 }
 """Page keys shown only when the switch of the same name in site.toml is on."""
 
@@ -112,6 +114,9 @@ SITE_FIELDS = {
     "video": {"youtube_id": str, "cover": str},
     "switches": {"riva_dei_martin": bool, "organic_certified": bool},
 }
+CERTIFICATE_FIELDS = (
+    "number body regulation valid_from valid_until holder holder_address verify_url qr"
+).split()
 
 
 def _load(path: Path, out: list[str]) -> dict | None:
@@ -164,6 +169,31 @@ def _check_files(files: dict, out: list[str]) -> None:
             out.append(f"pdf '{filename}' ({lang}) not found in app/static/schede/")
 
 
+def _certificate_problems(settings: dict, out: list[str]) -> None:
+    """`[certificate]` must be sound while the switch `organic_certified` is on."""
+    cert = settings.get("certificate", {})
+    _typed("site.toml [certificate]", cert, dict.fromkeys(CERTIFICATE_FIELDS, str), out)
+    if not settings.get("switches", {}).get("organic_certified"):
+        return
+    name = "site.toml [certificate]"
+    for key in ("number", "body", "verify_url"):
+        if not cert.get(key) or has_marker(str(cert.get(key))):
+            out.append(f"{name}: '{key}' must be filled while organic_certified is on")
+    if not str(cert.get("verify_url", "")).startswith("https://webgate.ec.europa.eu/"):
+        out.append(f"{name}: 'verify_url' must be an https address of webgate.ec.europa.eu")
+    dates = {}
+    for key in ("valid_from", "valid_until"):
+        try:
+            dates[key] = date.fromisoformat(str(cert.get(key, "")))
+        except ValueError:
+            out.append(f"{name}: '{key}' must be a date like 2029-08-24")
+    if len(dates) == 2 and dates["valid_from"] >= dates["valid_until"]:
+        out.append(f"{name}: 'valid_from' must be before 'valid_until'")
+    qr = cert.get("qr", "")
+    if not qr or not (config.STATIC_DIR / "img" / str(qr)).is_file():
+        out.append(f"{name}: 'qr' file not found in app/static/img/ (run scripts/qr.py)")
+
+
 def problems() -> list[str]:
     out: list[str] = []
     root = config.CONTENT_DIR
@@ -172,6 +202,8 @@ def problems() -> list[str]:
         _typed(f"site.toml [{section}]", settings.get(section, {}), fields, out)
     if "it" not in settings.get("languages", {}).get("published", []):
         out.append("site.toml: Italian must be published")
+
+    _certificate_problems(settings, out)
 
     slugs = _slugs()
     orders: dict[int, str] = {}

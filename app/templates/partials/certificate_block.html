@@ -1,0 +1,18 @@
+{#- The organic certificate: sentence, certificate data, link to the European register and QR code.
+    Needs `cert` (app/certificate.py) and `sentence` (the `organic` text of the About page). -#}
+<section class="certificate" id="certificato" aria-labelledby="certificato-title">
+  <h2 id="certificato-title">{{ t('certificate.title') }}</h2>
+  {%- if sentence %}
+  <p>{{ sentence }}</p>
+  {%- endif %}
+  <p>{{ t('certificate.details', number=cert.number, body=cert.body, regulation=cert.regulation) }}
+    {%- if cert.valid_from and cert.valid_until %} {{ t('certificate.validity', start=cert.valid_from, end=cert.valid_until) }}{% endif %}
+    {%- if cert.holder %} {{ t('certificate.holder', name=cert.holder, address=cert.holder_address) }}{% endif %}</p>
+  <p><a href="{{ cert.verify_url }}" rel="noopener">{{ t('certificate.verify') }}</a></p>
+  {%- if cert.qr %}
+  <figure class="certificate-qr">
+    <img src="{{ cert.qr }}" alt="{{ t('certificate.qr_alt') }}" width="200" height="200">
+    <figcaption>{{ t('certificate.qr_caption') }}</figcaption>
+  </figure>
+  {%- endif %}
+</section>

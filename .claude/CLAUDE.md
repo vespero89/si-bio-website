@@ -58,10 +58,12 @@ tests/              pytest
 ## Rules
 - No admin panel, no "site that manages the site". Minimal configurability: if something can
   live in a file edited in the code, it lives there.
-- Content in files, not in a database. Facts not verified (DOCG, organic, region, awards, Riva dei
+- Content in files, not in a database. Facts not verified (DOCG, region, awards, Riva dei
   Martin) stay as placeholders, visible in preview and hidden in production.
-- Brand: always "Si Bio", in titles, files and emails. Never claim "bio" as an attribute without
-  the certification.
+- Brand: always "Si Bio", in titles, files and emails. "Organic" only as "azienda biologica" /
+  "organic farm", in the certificate block, the home line, the footer link, JSON-LD and llms.txt, and
+  only with `organic_certified = true`. Never "vino biologico", "olio biologico", "uve biologiche"
+  or the English twins (the certificate covers unprocessed crops, not wine or oil).
 - Code, comments, commits and docs in English; text shown on the site in Italian and English.
 - No em dashes or en dashes in any text.
 - Write code like the code around it: same naming, same comment density.
@@ -112,7 +114,7 @@ with one `h1`.
 Unknown or hidden slugs answer 404. The row of wines (`nav.wine-row`) is plain links, full page loads (the HTMX
 carousel is a later task); `aria-current="page"` on the wine of the page, `"true"` on `/vini`. The technical sheet
 (`wines.sheet`) is a `dl` built only from filled fields, in the order of `wines.SHEET`, labels `sheet.<field>`;
-a marker value is empty in production, so a field never shows empty. New fields: `style`, `training`, `bottle_aging`, `appearance`, `aroma`, `palate` (texts per language, in `content.CARD`) and `bottles_per_year` (number in the neutral file, shown grouped by `num(value, 0, true)`: 5.000 / 5,000; published on purpose). No price field; keep the sheet free of prices, of the contract winemaking and of "organic" for wines. Photo: `photo` in the neutral file is a file in
+a marker value is empty in production, so a field never shows empty. New fields: `style`, `training`, `bottle_aging`, `appearance`, `aroma`, `palate` (texts per language, in `content.CARD`) and `bottles_per_year` (number in the neutral file, shown grouped by `num(value, 0, true)`: 5.000 / 5,000; published on purpose). No price field; keep the sheet free of prices, of the contract winemaking and of "organic" for wines (the certificate block and the home line never appear on wine or oil pages; the footer link is on every page). Photo: `photo` in the neutral file is a file in
 `static/img/vini/`; while it is a marker a CSS placeholder shows. PDF: `[pdf]` table of the neutral file
 (`it = "x.pdf"`, files in `static/schede/`); page language first, else the Italian one with "(in italiano)".
 `partials/contact_block.html` (needs `subject`): address as text, `mailto` built by `mailto()` (percent-encoded UTF-8,
@@ -146,7 +148,7 @@ the buyers sentence (`buyers` of the file, else `home.buyers`) and the "Contatta
 In production the home is therefore h1, lead, family line, wines and links. Oil: h1 `oil.name`, `oil.intro`, description,
 a `dl.sheet` from `pages.OIL_SHEET` (harvest uses the label `sheet.oil_harvest`), optional PDF (`[pdf]` of `oil.toml`, same
 `wines.pdf` rule), contact block with subject `contact.subject_olio` ("Si Bio: olio" / "Si Bio: oil"). About: h1, `family`
-(who), `about.what` (fixed text: five wines from Piceno grapes and an oil, no "organic"), `why_veneto`, the family line, the
+(who), `about.what` (fixed text: wines from Piceno grapes and an oil, no "organic"), the certificate block (below), `why_veneto`, the family line, the
 Riva dei Martin sentence only with `riva_dei_martin = true` in `site.toml` (`content.GATED`; never "our winery"), the commercial
 manager role (`sales_contact`) and the contact button. Tests: `tests/test_pages.py`.
 
@@ -255,3 +257,17 @@ Provisional, to be read by Fabio and the family before launch:
 - descriptions: `home.lead`, first sentence of wine/oil description, `about.family`, `visits.buyers_text` (content files);
 - JSON-LD values: legalName, VAT, email, address, `sameAs` come from `site.toml`; name "Si Bio" and brand in `jsonld.BRAND`;
 - `llms.txt` structure and the line `visits.organizer`.
+
+## Organic certificate
+`organic_certified` (`[switches]`) and `[certificate]` in `content/site.toml` rule everything: `app/certificate.py`
+`get(lang)` returns the data (dates written per language with the `certificate.month_N` keys) or None when the switch is
+off or the settings are not sound (empty or marker number, body or address; `verify_url` not on
+`https://webgate.ec.europa.eu/`). None means no trace of "organic" anywhere. With it: the block `partials/certificate_block.html`
+(`id="certificato"`, in About after `about.what`, with the sentence `organic` of `pages/about.toml`, gated in `content.GATED`),
+one line in the home and a footer link (both to `/chi-siamo#certificato`), `hasCertification` on the Organization JSON-LD
+(`jsonld._certification`) and one line in `llms.txt`. Not on wine sheets or the oil page. The QR code is a file we generate:
+`python scripts/qr.py` writes `app/static/img/<qr>` from `verify_url` (own encoder, no library, no service; byte mode, level M);
+it encodes the operator's page in the European register, which stays valid at renewal, so the QR does not change when the
+numbers do. At renewal Fabio edits the dates and number in `[certificate]`. Run `scripts/qr.py` again only if `verify_url`
+changes (`tests/test_qr.py` fails on a stale file). Legal name of the holder: `holder` / `holder_address`. Tests:
+`tests/test_certificate.py`, `tests/test_qr.py`, `tests/test_pages.py`.

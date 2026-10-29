@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import json
 
-from app import config, content, i18n
+from app import certificate, config, content, i18n
 from app.lang import localize
 
 BRAND = "Si Bio"
@@ -39,6 +39,22 @@ def url(path: str, lang: str) -> str:
     return config.BASE_URL + localize(path, lang)
 
 
+def _certification(lang: str) -> dict:
+    """The organic certificate as schema.org Certification, or {} while the switch is off."""
+    cert = certificate.get(lang)
+    if not cert:
+        return {}
+    return {
+        "@type": "Certification",
+        "name": i18n.t(lang, "certificate.title"),
+        "certificationIdentification": cert["number"],
+        "issuedBy": {"@type": "Organization", "name": cert["body"]},
+        "url": cert["verify_url"],
+        "validFrom": cert["valid_from_iso"],
+        "expires": cert["valid_until_iso"],
+    }
+
+
 def organization(lang: str) -> dict:
     site = content.site_raw()
     company, contact, social = (site.get(k, {}) for k in ("company", "contact", "social"))
@@ -55,6 +71,7 @@ def organization(lang: str) -> dict:
         "email": contact.get("export_email"),
         "address": {"@type": "PostalAddress", "streetAddress": street} if street else "",
         "sameAs": [social.get("instagram"), social.get("facebook")],
+        "hasCertification": _certification(lang),
     }
 
 

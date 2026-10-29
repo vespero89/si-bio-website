@@ -8,7 +8,7 @@ from urllib.parse import quote
 from fastapi.templating import Jinja2Templates
 from jinja2 import pass_context
 
-from app import config, content, cookies, i18n, lang
+from app import certificate, config, content, cookies, i18n, lang
 from app.lang import of
 
 templates = Jinja2Templates(directory=str(config.TEMPLATE_DIR))
@@ -58,6 +58,12 @@ def _farm_url(context) -> str:
 
 
 @pass_context
+def _certificate(context) -> dict | None:
+    """The organic certificate in the language of the page, or None (see app/certificate.py)."""
+    return certificate.get(of(context["request"]))
+
+
+@pass_context
 def _is_current(context, path: str) -> bool:
     return context["request"].state.path.rstrip("/") == path
 
@@ -93,6 +99,7 @@ MENU = (
 templates.env.globals.update(
     alternates=_alternates,
     canonical=_canonical,
+    certificate=_certificate,
     farm_url=_farm_url,
     is_current=_is_current,
     menu=MENU,

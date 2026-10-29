@@ -8,6 +8,11 @@
   <p>{{ page.family }}</p>
   {%- endif %}
   <p>{{ t('about.what') }}</p>
+  {%- set cert = certificate() %}
+  {%- if cert %}
+  {%- set sentence = page.organic %}
+  {% include "partials/certificate_block.html" %}
+  {%- endif %}
   {%- if page.why_veneto %}
   <p>{{ page.why_veneto }}</p>
   {%- endif %}

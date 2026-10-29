@@ -78,7 +78,38 @@ def test_riva_on_shows_sentence(client, monkeypatch):
     assert "Vincenzo Aleandri also runs Riva dei Martin" in client.get("/en/chi-siamo").text
 
 
-def test_never_organic_claim(client, production):
+ORGANIC_FARM = re.compile(
+    r"azienda (agricola )?biologica|organic farm|certificat|organic cert", re.I
+)
+
+
+def test_organic_only_as_the_certified_farm(client, production):
+    """With the switch on the farm and its certificate may be called organic; a wine, the oil or
+    the grapes never (tests/test_certificate.py checks the exact phrases)."""
+    for path in PAGES:
+        for prefix in ("", "/en"):
+            text = visible_text(
+                re.sub(r"<script.*?</script>", "", client.get(prefix + path).text, flags=re.S)
+            )
+            for brand in ("Si Bio", "SI - BIO", "si-bio.it"):
+                text = text.replace(brand, "")
+            text = re.sub(r"IT-BIO-[\w.-]+", "", text)  # the certificate number
+            for found in re.findall(
+                r"[\w ]{0,30}(?:biologic|organic|\bbio\b)[\w ]{0,30}", text, re.I
+            ):
+                assert ORGANIC_FARM.search(found), (prefix + path, found)
+
+
+def test_switch_off_keeps_the_total_ban_on_organic(client, production, monkeypatch):
+    real = content.site()
+    off = {**real, "switches": {**real["switches"], "organic_certified": False}}
+    original = content.read
+
+    def read(path):
+        return off if path.name == "site.toml" else original(path)
+
+    read.cache_clear = original.cache_clear
+    monkeypatch.setattr(content, "read", read)
     for path in PAGES:
         for prefix in ("", "/en"):
             text = (

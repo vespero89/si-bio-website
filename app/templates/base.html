@@ -86,6 +86,9 @@
         </ul>
       </nav>
       {%- endif %}
+      {%- if certificate() %}
+      <p class="footer-certificate"><a href="{{ localize('/chi-siamo#certificato', request.state.lang) }}">{{ t('certificate.footer') }}</a></p>
+      {%- endif %}
       <p class="footer-cookies"><a href="{{ localize('/info/cookie', request.state.lang) }}#scelta">{{ t('footer.cookies') }}</a></p>
     </div>
   </footer>

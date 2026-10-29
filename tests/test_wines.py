@@ -25,6 +25,8 @@ def tree(tmp_path, monkeypatch):
     shutil.copytree(config.CONTENT_DIR, root)
     static = tmp_path / "static"
     (static / "schede").mkdir(parents=True)
+    (static / "img").mkdir()
+    shutil.copy(config.STATIC_DIR / "img" / "certificate-qr.svg", static / "img")
     monkeypatch.setattr(config, "CONTENT_DIR", root)
     monkeypatch.setattr(config, "STATIC_DIR", static)
     content.read.cache_clear()

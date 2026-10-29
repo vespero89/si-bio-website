@@ -11,7 +11,7 @@ from xml.sax.saxutils import escape
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import PlainTextResponse, Response
 
-from app import config, content, i18n, lang
+from app import certificate, config, content, i18n, lang
 from app.lang import of
 from app.wines import sheet
 
@@ -94,6 +94,20 @@ def llms_txt(code: str) -> str:
     )
     if _fact(visits.get("package_name")) and _fact(contact.get("partner_email")):
         lines.append(f"  - {visits['package_name']}. {t('visits.organizer')}")
+    cert = certificate.get(code)
+    if cert:
+        lines += ["", f"## {t('llms.company')}", ""]
+        lines.append(
+            "- "
+            + t(
+                "llms.organic",
+                regulation=cert["regulation"],
+                number=cert["number"],
+                body=cert["body"],
+                end=cert["valid_until"],
+                url=cert["verify_url"],
+            )
+        )
     lines += ["", f"## {t('llms.contact')}", ""]
     if _fact(contact.get("export_email")):
         lines.append(f"- {contact['export_email']}")

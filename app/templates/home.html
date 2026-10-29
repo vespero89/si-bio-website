@@ -41,8 +41,8 @@
 
   <p>{{ page.buyers or t('home.buyers') }}</p>
   <p><a class="button" href="{{ localize('/contatti', request.state.lang) }}">{{ t('home.contact_link') }}</a></p>
-  {%- if page.certification %}
-  <p>{{ page.certification }}</p>
+  {%- if certificate() %}
+  <p class="certified"><a href="{{ localize('/chi-siamo#certificato', request.state.lang) }}">{{ t('certificate.home_link') }}</a></p>
   {%- endif %}
 </div>
 {% endblock %}

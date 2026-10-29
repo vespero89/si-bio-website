@@ -32,4 +32,19 @@ cover = "[DA COMPLETARE: immagine di copertina del video]"
 
 [switches]
 riva_dei_martin = false
-organic_certified = false
+organic_certified = true   # turns on the certificate block and the sentence "organic farm"
+
+# The organic certificate (shown only while organic_certified is on). verify_url is the operator's
+# page in the European register, which always shows the current certificate; the QR code encodes it,
+# so a renewal changes nothing here but the numbers. Regenerate the QR with scripts/qr.py if
+# verify_url changes.
+[certificate]
+number = "IT-BIO-004.380-0031262.2026.004"
+body = "Suolo e Salute Srl (IT-BIO-004)"
+regulation = "Reg. (UE) 2018/848"
+valid_from = "2026-08-25"
+valid_until = "2029-08-24"
+holder = "Si Bio di Premici Silvia e Aleandri Vincenzo, società semplice agricola"
+holder_address = "Contrada San Lazzaro 118, 63073 Offida"
+verify_url = "https://webgate.ec.europa.eu/tracesnt/directory/publication/organic-operator/IT-BIO-004.380-0031262.2026.004.pdf"
+qr = "certificate-qr.svg"
