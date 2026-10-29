@@ -136,3 +136,26 @@ def test_preview_with_real_values_behaves_like_production(client, preview, monke
     patch(monkeypatch, site=READY)
     assert "<iframe" not in page(client)
     assert "<iframe" in page(client, choice="accepted")
+
+
+CREDIT = {"it": "Musica originale di Silvia Premici", "en": "Original music by Silvia Premici"}
+
+
+@pytest.mark.parametrize(("lang", "prefix"), [("it", ""), ("en", "/en")])
+def test_video_block_has_head_with_music_credit(client, production, monkeypatch, lang, prefix):
+    patch(monkeypatch, site=READY)
+    html = client.get(prefix + "/visite").text
+    block = re.search(r'<section class="video">.*?</section>', html, re.S).group(0)
+    head = re.search(r'<div class="video-head">.*?</div>\s*<p class="music-credit"', block, re.S)
+    assert head and "<h2" in head.group(0)
+    assert CREDIT[lang] in re.search(r'<p class="music-credit".*?</p>', block, re.S).group(0)
+    assert block.count('class="video-slot" id="video"') == 1
+    assert "<div" not in SLOT.search(block).group(0)[4:]
+    assert html.count(CREDIT[lang]) == 1
+
+
+def test_credit_gone_with_the_block_in_production(client, production):
+    for prefix in ("", "/en"):
+        html = client.get(prefix + "/visite").text
+        assert "Silvia Premici" not in html or "music-credit" not in html
+        assert "music-credit" not in html and 'class="video"' not in html

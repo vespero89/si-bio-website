@@ -14,13 +14,11 @@ HOOKS = {
     "cookie-choice",
     "oil-page",
     "pdf-link",
-    "visits-buyers",
-    "visits-hotel",
-    "visits-package",
-    "visits-price",
     "wines-page",
     "movement-1",  # first movement of the home row, only a hook
-    "visits-page",
+    "hotel",
+    "buyers-contact",
+    "package",
     "header-row",
     "cls",  # variable of the stave partials
 }
@@ -51,8 +49,6 @@ def test_parts_the_redesign_did_not_cover_keep_their_styles():
         "cookie-form",
         "wp",
         "wp-photo",
-        "visits-tag",
-        "visits-includes",
         "oil-scene",
         "lead",
         "legal-tabs",

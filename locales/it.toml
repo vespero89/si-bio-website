@@ -125,6 +125,7 @@ music_link = "Guarda il video"
 music_photo = "Silvia al pianoforte, ritratto 4:5, foto in arrivo"
 
 [visits]
+eyebrow = "Offida, Piceno"
 invitation = "Su invito"
 buyers_button = "Contatta la nostra responsabile commerciale"
 includes_title = "Il programma per i buyer comprende"
@@ -135,6 +136,8 @@ organizer = "Organizzato e venduto da Fuselli e Filari, agenzia di Offida."
 package_button = "Chiedi il programma"
 
 [video]
+eyebrow = "Video"
+music_credit = "Musica originale di Silvia Premici"
 title = "Video di presentazione di Si Bio"
 alt = "Copertina del video di presentazione di Si Bio"
 consent = "Per guardarlo qui, il video viene da YouTube e usa cookie di Google."

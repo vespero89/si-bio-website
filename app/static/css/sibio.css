@@ -345,8 +345,7 @@ body.has-dialog { overflow: hidden; }
 .play { position: relative; z-index: 1; width: 64px; height: 64px; border-radius: 50%; border: 1px solid var(--c-ink); background: rgb(246 244 239 / 0.85); display: grid; place-items: center; color: var(--c-ink); }
 .consent { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-4) var(--s-6); margin-top: var(--s-5); padding-block: var(--s-5); border-bottom: 1px solid var(--c-line); }
 .consent p { font-size: var(--t-sm); color: var(--c-muted); max-width: 36rem; }
-.consent form, .consent-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
-.consent .yt { font-size: var(--t-sm); }
+.consent-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
 
 /* Footer */
 .site-footer { border-top: 1px solid var(--c-line); padding-block: var(--s-8) var(--s-6); font-size: var(--t-sm); }
@@ -416,13 +415,11 @@ body.has-dialog { overflow: hidden; }
 
 /* Parts the redesign did not cover, restyled with the same tokens */
 
-/* Pages that still use the first layout until their task: lead, claim, wine page, oil, visits */
+/* Pages that still use the first layout until their task: lead, claim, oil */
 .wp.htmx-added { opacity: 0; } /* HTMX swap: the new wine fades in */
 .wp { transition: opacity 0.2s ease-out; }
 .oil-scene { width: 100%; height: auto; margin-block: var(--s-5); background: var(--c-placeholder); }
 .certified { margin-top: var(--s-5); font-weight: 600; }
-.visits-tag { color: var(--c-muted); }
-.visits-includes { margin: var(--s-2) 0 var(--s-4); padding-left: var(--s-5); list-style: disc; }
 .copy-live { position: absolute; left: -999px; }
 
 /* /vini: the row of wines (HTMX links, aria-current on the wine shown) */
@@ -436,7 +433,13 @@ body.has-dialog { overflow: hidden; }
 .wine-row .bottle-placeholder { width: 2.4rem; height: 6rem; aspect-ratio: auto; }
 
 /* Video: placeholder in preview, play mark drawn in CSS */
-.video-slot { margin-block: var(--s-5); }
+.buyers-contact { padding-bottom: var(--s-rest); }
+.package { padding-block: var(--s-rest); border-top: 1px solid var(--c-line); }
+.package h2 { font-size: var(--t-2xl); }
+.package p { margin-top: var(--s-4); max-width: var(--measure); }
+.includes .price { margin-top: var(--s-5); }
+.video-head h2 { overflow-wrap: anywhere; }
+.video-slot .yt { margin-top: var(--s-4); font-size: var(--t-sm); }
 .video-play { position: absolute; top: 50%; left: 50%; z-index: 1; width: 4.5rem; height: 4.5rem; margin: -2.25rem 0 0 -2.25rem; border-radius: 50%; border: 1px solid var(--c-ink); background: rgb(246 244 239 / 0.85); }
 .video-play::after { content: ""; position: absolute; top: 50%; left: 50%; margin: -0.8rem 0 0 -0.55rem; border-style: solid; border-width: 0.8rem 0 0.8rem 1.4rem; border-color: transparent transparent transparent var(--c-ink); }
 .video-placeholder { padding: var(--s-6) var(--s-4); background: var(--c-placeholder); color: var(--c-muted); }

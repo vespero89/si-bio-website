@@ -124,6 +124,7 @@ music_link = "Watch the video"
 music_photo = "Silvia at the piano, 4:5 portrait, photo coming soon"
 
 [visits]
+eyebrow = "Offida, Piceno"
 invitation = "By invitation"
 buyers_button = "Contact our sales manager"
 includes_title = "The buyer programme includes"
@@ -134,6 +135,8 @@ organizer = "Organised and sold by Fuselli e Filari, a travel agency in Offida."
 package_button = "Ask for the programme"
 
 [video]
+eyebrow = "Video"
+music_credit = "Original music by Silvia Premici"
 title = "Si Bio presentation video"
 alt = "Cover of the Si Bio presentation video"
 consent = "To watch it here, the video comes from YouTube and uses Google cookies."

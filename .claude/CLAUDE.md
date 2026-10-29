@@ -163,9 +163,12 @@ a `dl.sheet` from `pages.OIL_SHEET` (harvest uses the label `sheet.oil_harvest`)
 `wines.pdf` rule), contact block with subject `contact.subject_olio` ("Si Bio: olio" / "Si Bio: oil"). About (`about.html`): `div.page-head` (eyebrow `about.eyebrow`, h1, `p.lead` = `about.what`), `div.split.split-bordered` with `.prose` (`family`, `mission`, `territory`, the Riva dei Martin sentence only with `riva_dei_martin = true` in `site.toml` (`content.GATED`; never "our winery"), the commercial manager role `sales_contact`) and a 4:5 family photo placeholder; then `section.silvia#musica` (long stave watermark, 4:5 portrait placeholder, `about.music_label`, h2 `music_title`, `music` split on blank lines into paragraphs, link `about.music_link` to `/visite#video`; facts stated by Fabio, no markers, no "organic", no Veneto; left out only if `music` is empty); then the certificate block (below, `dl.sheet` + QR, only with `certificate()`); last the family line and the contact button on `section.band.band-dark`. Tests: `tests/test_pages.py`.
 
 ## Visits and package
-`/visite` (`pages.visits_page`, `visits.html`, page file `visits.toml`). h1 `title`, then two sections. Buyers (on invitation,
-`visits.invitation`): `buyers_title` ("Vieni a trovarci" / "Visit us"), `buyers_text`, `buyers_includes` (list of four, h3 `visits.includes_title`, listed in `content.LIST_KEYS`), `buyers_hotel` + `buyers_hotel_url` (Hotel Il Casale, facts from hotelcasale.it, link `visits.hotel_link`), the row "Listino su richiesta" (`visits.price_list`, mailto to `export_email` with subject `contact.subject_price`; no price or terms anywhere), the video block `partials/video.html` (see "Video"), contact block to `export_email` with subject `contact.subject_buyers` and button
-`visits.buyers_button`. Package (sold by Fuselli e Filari, no price, no programme invented): `package_name` as h2, `package_lead`,
+`/visite` (`pages.visits_page`, `visits.html`, page file `visits.toml`). `.page-head` (eyebrow `visits.eyebrow`, h1 `title`), then `section.buyers`: left column eyebrow
+`visits.invitation`, h2 `buyers_title`, `p.first` = `buyers_text`, `p.hotel` (`buyers_hotel` + `buyers_hotel_url`, Hotel Il Casale, facts from hotelcasale.it, link
+`visits.hotel_link`), Riva dei Martin line; right column `div.includes` (h3 `visits.includes_title`, `ol` of `buyers_includes`, listed in `content.LIST_KEYS`) and
+`p.price` "Listino su richiesta" (`visits.price_list`, mailto to `export_email` with subject `contact.subject_price`; no price or terms anywhere). Then the video
+block (`partials/video.html`, see "Video"), then `div.buyers-contact` with the contact block to `export_email`, subject `contact.subject_buyers`, button
+`visits.buyers_button`. Package (`section.wrap.package`, sold by Fuselli e Filari, no price, no programme invented): `package_name` as h2, `package_lead`,
 `package_text`, `package_hotel` (Hotel Il Casale), the fixed line `visits.organizer`, contact block with `contact_address` =
 `partner_email` of `site.toml`, subject `contact.subject_package` ("Richiesta programma: {name}") and button `visits.package_button`.
 The whole package section is left out in production unless `partner_email` AND `package_name` are verified (markers). The partial
@@ -185,12 +188,12 @@ puts the prefix back on the Location. `GET` is 405. The body is read by hand (no
 other tests that forbid forms or buttons strip the notice with `NOTICE`.
 
 ## Video
-`/visite` only. `pages.video()` reads `[video]` of `site.toml`: `youtube_id` (11 characters `[A-Za-z0-9_-]`) and `cover` (file name in
+`/visite` only. The partial is `section.video` (`.wrap`, `div.video-head` with eyebrow `video.eyebrow`, h2 `video.title` and `p.music-credit` = `video.music_credit`, "Musica originale di Silvia Premici" / "Original music by Silvia Premici"), then the slot; the credit lives in this block only and goes with it when the block is left out. `pages.video()` reads `[video]` of `site.toml`: `youtube_id` (11 characters `[A-Za-z0-9_-]`) and `cover` (file name in
 `static/img/`, 16:9, rendered 1280x720). While one is a marker or the id is not valid, the whole block is gone in production; in preview
 a `p.video-placeholder` shows the marker text (no URL, no iframe). `partials/video.html` renders `div.video-slot#video` (no nested div):
-a `figure.video-frame` (16:9 box) holding either the iframe or the cover plus a CSS play mark, then, unless accepted, the consent text and a
-form to `/cookie-choice` (`next` = page + `#video`): no choice gives "Accetto e guardo" / "Non ora", `rejected` gives only the accept
-button. Always the plain anchor "Guarda su YouTube" (`youtube.com/watch?v=<id>`, `target="_blank"`, `noopener noreferrer`). Only with
+a `figure.video-frame` (16:9 box) holding either the iframe or the cover plus a CSS play mark, then, unless accepted, a
+`form.consent` (text + buttons) to `/cookie-choice` (`next` = page + `#video`): no choice gives "Accetto e guardo" / "Non ora", `rejected` gives only the accept
+button. Always the plain anchor "Guarda su YouTube" (`p.yt`) (`youtube.com/watch?v=<id>`, `target="_blank"`, `noopener noreferrer`). Only with
 `cookie_choice(request) == "accepted"` the server renders `https://www.youtube-nocookie.com/embed/<id>?rel=0&hl=<lang>` (`loading="lazy"`,
 title, `referrerpolicy="strict-origin-when-cross-origin"`, `allow="encrypted-media; picture-in-picture; fullscreen"`). No JavaScript.
 Subtitles are YouTube's. Tests: `tests/test_video.py`.
