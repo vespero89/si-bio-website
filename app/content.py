@@ -25,7 +25,17 @@ CARD = (
     "awards"
 ).split()
 WINE_TEXT = {"name", "description", "claim", *CARD}
-OIL_TEXT = {"name", "description", "cultivar", "area", "harvest", "milling", "acidity", "pairings"}
+OIL_TEXT = {
+    "name",
+    "description",
+    "cultivar",
+    "area",
+    "harvest",
+    "milling",
+    "acidity",
+    "pairings",
+    "scene_alt",
+}
 LIST_KEYS = {"buyers_includes"}
 """Page keys that hold a list of texts."""
 SLUG = re.compile(r"[a-z0-9]+(-[a-z0-9]+)*$")
@@ -232,7 +242,10 @@ def problems() -> list[str]:
             orders[data["order"]] = slug
         _check_files(data.get("pdf", {}), out)
     oil_data = _load(root / "oil.toml", out) or {}
-    _typed("oil.toml", oil_data, {"photo": str, "formats": list}, out)
+    _typed("oil.toml", oil_data, {"photo": str, "scene": str, "formats": list}, out)
+    scene = oil_data.get("scene")
+    if scene and not (config.STATIC_DIR / "img" / scene).is_file():
+        out.append(f"oil.toml: scene file not found in app/static/img/: {scene}")
     _check_files(oil_data.get("pdf", {}), out)
 
     # Italian is the reference; every published language must have the same keys and files.

@@ -1,4 +1,5 @@
 # Neutral data of the olive oil. Texts are in content/<lang>/oil.toml.
+scene = "olio/olivo.jpg"   # landscape photo in app/static/img/
 photo = "[DA COMPLETARE: foto della bottiglia]"
 formats = ["[DA VERIFICARE: formati in ml]"]
 # [pdf]

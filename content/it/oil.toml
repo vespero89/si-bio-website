@@ -1,9 +1,10 @@
-# Olio (it). Every value except the name is a marker until the family confirms it.
+# Olio (it). Cultivar and acidity are markers until the family confirms it.
 name = "Olio"
-description = "[DA VERIFICARE: descrizione dell'olio]"
+description = "Il nostro Olio Extravergine d'Oliva nasce da olive coltivate nei terreni della Fattoria nel Ciafone e raccolte a mano al giusto grado di maturazione. Viene estratto a freddo entro poche ore dalla raccolta per preservarne aromi, freschezza e proprietà nutritive. Un olio dal gusto equilibrato e fruttato, espressione autentica delle colline marchigiane."
+scene_alt = "Olive sui rami di un olivo"
 cultivar = "[DA VERIFICARE: cultivar]"
-area = "[DA VERIFICARE: zona degli oliveti]"
-harvest = "[DA VERIFICARE: raccolta]"
-milling = "[DA VERIFICARE: frangitura]"
+area = "I terreni della Fattoria nel Ciafone, a Offida"
+harvest = "A mano, al giusto grado di maturazione"
+milling = "Estrazione a freddo entro poche ore dalla raccolta"
 acidity = "[DA VERIFICARE: acidità]"
-pairings = "[DA VERIFICARE: abbinamenti]"
+pairings = "Perfetto a crudo su carni, verdure e piatti della tradizione."

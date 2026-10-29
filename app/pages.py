@@ -73,6 +73,7 @@ def oil_page(request: Request):
             "oil": oil,
             "sheet": oil_sheet(oil),
             "photo": photo(oil),
+            "scene": oil.get("scene", ""),
             "pdf": pdf(oil, lang),
             "jsonld": [
                 jsonld.dumps(jsonld.product(oil, "/olio", lang, "jsonld.category_oil", photo(oil))),

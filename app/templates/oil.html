@@ -9,6 +9,9 @@
   {%- if oil.description %}
   <p>{{ oil.description }}</p>
   {%- endif %}
+  {%- if scene %}
+  <img class="oil-scene" src="/static/img/{{ scene }}" alt="{{ oil.scene_alt }}" width="1112" height="616">
+  {%- endif %}
   {%- if photo %}
   <img src="/static/img/vini/{{ photo }}" alt="{{ oil.name }}" width="300" height="600">
   {%- endif %}

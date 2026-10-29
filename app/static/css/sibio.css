@@ -210,6 +210,7 @@ ul { list-style: none; margin: 0; padding: 0; }
 
 .wine-front { display: grid; gap: 1.5rem; margin-top: 1rem; }
 .wine-photo { text-align: center; }
+.oil-scene { display: block; max-width: 100%; height: auto; margin: 1.5rem 0; }
 .wine-photo img { max-width: 100%; height: auto; max-height: 28rem; width: auto; }
 .wine-sheet h1, .wine-sheet h2 { margin-top: 0; }
 

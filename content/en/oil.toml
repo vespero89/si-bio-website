@@ -1,9 +1,10 @@
-# Olive oil (en). Every value except the name is a marker until the family confirms it.
+# Olive oil (en). Cultivar and acidity are markers until the family confirms it.
 name = "Olive oil"
-description = "[TO BE VERIFIED: description of the oil]"
+description = "Our Extra Virgin Olive Oil comes from olives grown on the lands of Fattoria nel Ciafone, handpicked at perfect ripeness. It is cold-extracted within hours of harvest to preserve its natural aroma, freshness, and nutritional value. A balanced, fruity oil, the true essence of the Marche hills."
+scene_alt = "Olives on the branches of an olive tree"
 cultivar = "[TO BE VERIFIED: cultivar]"
-area = "[TO BE VERIFIED: groves area]"
-harvest = "[TO BE VERIFIED: harvest]"
-milling = "[TO BE VERIFIED: milling]"
+area = "The lands of Fattoria nel Ciafone, in Offida"
+harvest = "By hand, at perfect ripeness"
+milling = "Cold extraction within hours of harvest"
 acidity = "[TO BE VERIFIED: acidity]"
-pairings = "[TO BE VERIFIED: pairings]"
+pairings = "Perfect raw on meats, vegetables and traditional dishes."
