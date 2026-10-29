@@ -143,7 +143,7 @@ def test_footer_farm_link_only_when_the_address_is_known(client, monkeypatch):
 
 def test_pages_have_landmarks_and_one_h1(client):
     for path in ("/", "/en/"):
-        html = client.get(path).text
+        html = re.sub(r"<template.*?</template>", "", client.get(path).text, flags=re.S)
         for tag in ("<header", "<main", "<footer"):
             assert html.count(tag) == 1
         assert len(re.findall(r"<h1\b", html)) == 1

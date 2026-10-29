@@ -11,7 +11,7 @@ VISIBLE = ["offida-pecorino", "offida-passerina", "armide", "passacaille"]
 DOCG = {"offida-pecorino", "offida-passerina"}
 CLAIM = {"armide", "passacaille"}
 # Fields the family has no data for: they stay markers, hidden in production.
-NO_DATA = {"total_acidity", "vintage", "awards"}
+NO_DATA = {"total_acidity", "vintage", "awards", "story"}
 PRICE = re.compile(r"€|\bEUR\b|\bEXW\b|\bIVA\b|\bVAT\b|prezz|\bprices?\b|listino|price list", re.I)
 ORGANIC = re.compile(r"biologic|organic|\bbio\b", re.I)
 
@@ -117,7 +117,7 @@ def test_wine_content_files_have_no_price_or_organic():
         for slug in VISIBLE:
             for key, value in raw(lang, slug).items():
                 assert not PRICE.search(value), (lang, slug, key)
-                assert not ORGANIC.search(value), (lang, slug, key)
+                assert not ORGANIC.search(value.replace("Si Bio", "")), (lang, slug, key)
 
 
 @pytest.mark.parametrize("prefix", ["", "/en"])

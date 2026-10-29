@@ -46,9 +46,11 @@ def test_page_structure(client, lang, url):
         assert after <= before + 1, f"{url}: h{before} then h{after}"
     # Photos inside the wine row sit in a link with the wine name: alt="" is right for them.
     row = "".join(re.findall(r'<nav class="wine-row".*?</nav>', html, re.S))
-    for img in attrs(html.replace(row, ""), "img"):
+    # The same holds for the bottles of the home rail (`ul.rail`).
+    rail = "".join(re.findall(r'<ul class="rail".*?</ul>', html, re.S))
+    for img in attrs(html.replace(row, "").replace(rail, ""), "img"):
         assert img.get("alt") and img.get("width") and img.get("height"), (url, img)
-    for img in attrs(row, "img"):
+    for img in attrs(row + rail, "img"):
         assert img.get("width") and img.get("height"), (url, img)
     body = re.sub(r"<script.*?</script>", "", NOTICE.sub("", html), flags=re.S)
     for match in re.finditer(r"<(a|button)\b([^>]*)>(.*?)</\1>", body, re.S):

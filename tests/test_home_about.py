@@ -86,12 +86,13 @@ def test_about_what_ends_before_the_certified_block(client, production, prefix):
 
 
 @pytest.mark.parametrize("prefix", ["", "/en"])
-def test_home_claim_without_attribution_and_tagline(client, production, prefix):
-    html = client.get(f"{prefix}/").text
+def test_home_tagline_without_attribution_and_claim_in_movement_two(client, production, prefix):
+    html = re.sub(r"<template.*?</template>", "", client.get(f"{prefix}/").text, flags=re.S)
     quote = re.search(r"<blockquote.*?</blockquote>", html, re.S).group(0)
-    assert CLAIM[prefix] in unescape(quote)
-    assert "Taste the Essence" in quote
+    assert "Taste the Essence" in quote and CLAIM[prefix] not in unescape(quote)
     assert "<footer" not in quote
+    movement = re.search(r'<li class="movement movement-2">.*?</li>', html, re.S).group(0)
+    assert CLAIM[prefix] in unescape(movement)
 
 
 def test_why_veneto_is_gone():

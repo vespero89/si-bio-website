@@ -20,7 +20,7 @@ HOOKS = {
     "visits-package",
     "visits-price",
     "wines-page",
-    "home-page",
+    "movement-1",  # first movement of the home row, only a hook
     "visits-page",
     "header-row",
     "cls",  # variable of the stave partials

@@ -93,7 +93,7 @@ Markers (`[DA VERIFICARE: ...]`, `[DA COMPLETARE: ...]`, `[DA DEFINIRE: ...]`, E
 and the like): a text holding one is shown in preview and becomes empty in production (a list becomes
 `[]`), so templates just test for an empty value. Page keys listed in `content.GATED` (the Riva dei
 Martin sentence) also need their switch in `site.toml`. `content.problems()` validates the raw files
-(required fields, types, unknown keys, same keys as Italian in each published language, pdf files,
+(required fields, `group` of visible wines in `content.GROUPS`, types, unknown keys, same keys as Italian in each published language, pdf files,
 unique `order`); `tests/test_content.py` fails if it returns anything. `content.read` is cached: tests that
 change `CONTENT_DIR` call `content.read.cache_clear()`. Texts are written, not invented: wine and oil
 facts stay markers until the family confirms them. Legal pages are exempt from hiding (see "Legal pages").
@@ -113,7 +113,7 @@ with one `h1`.
 Unknown or hidden slugs answer 404. The row of wines (`nav.wine-row`) is plain links, full page loads (the HTMX
 carousel is a later task); `aria-current="page"` on the wine of the page, `"true"` on `/vini`. The technical sheet
 (`wines.sheet`) is a `dl` built only from filled fields, in the order of `wines.SHEET`, labels `sheet.<field>`;
-a marker value is empty in production, so a field never shows empty. New fields: `style`, `training`, `bottle_aging`, `appearance`, `aroma`, `palate` (texts per language, in `content.CARD`) and `bottles_per_year` (number in the neutral file, shown grouped by `num(value, 0, true)`: 5.000 / 5,000; published on purpose). No price field; keep the sheet free of prices, of the contract winemaking and of "organic" for wines (the certificate block and the home line never appear on wine or oil pages; the footer link is on every page). Photo: `photo` in the neutral file is a file in
+a marker value is empty in production, so a field never shows empty. New wine fields: neutral `group` ("piceno" | "opera", required for visible wines; Offida Rosso is piceno); texts `subtitle` (Armide "Opera di Lully", Passacaille "Finale della stessa opera", empty elsewhere), `story_title` and `story` (Armide and Passacaille: the name; Pecorino and Passerina: markers until the family writes them; listed in `content.WINE_TEXT`). Earlier fields: `style`, `training`, `bottle_aging`, `appearance`, `aroma`, `palate` (texts per language, in `content.CARD`) and `bottles_per_year` (number in the neutral file, shown grouped by `num(value, 0, true)`: 5.000 / 5,000; published on purpose). No price field; keep the sheet free of prices, of the contract winemaking and of "organic" for wines (the certificate block and the home line never appear on wine or oil pages; the footer link is on every page). Photo: `photo` in the neutral file is a file in
 `static/img/vini/`; while it is a marker a CSS placeholder shows. PDF: `[pdf]` table of the neutral file
 (`it = "x.pdf"`, files in `static/schede/`); page language first, else the Italian one with "(in italiano)".
 `partials/contact_block.html` (needs `subject`): address as text, `mailto` built by `mailto()` (percent-encoded UTF-8,
@@ -140,10 +140,21 @@ from `sales_contact` of the `about` page file. Every value that is still a marke
 left out (shown in preview). No form, no database. The menu entry `nav.contact` already points here.
 
 ## Home, oil, about
-`app/pages.py`. Home: h1, `home.lead`, the claim as `blockquote.claim` (`claim`, shown without attribution, with the `tagline`
-"Taste the Essence" under it; on wine pages the claim is only on Armide and Passacaille, made in the Veneto near Riva dei Martin; nothing more about the Veneto is said), the About `mission` and `territory` (no "organic"), the family line with the farm
-link (`footer.family_*` keys), the visible wines as plain links in a `.wine-row` (no HTMX), links to `/olio` and `/visite`,
-the buyers sentence (`buyers` of the file, else `home.buyers`) and the "Contattaci" button. Oil: h1 `oil.name`, `oil.intro`, description,
+`app/pages.py`. Home (`home.html`): visually hidden `h1.sr-only` "Si Bio" (page `title`), then `section.wines`: `ul.rail[data-rail]` in two
+movements by the neutral field `group` (`piceno` then `opera`, wines by `order`): movement I (`home.movement_1_*`), the cards, movement II
+(eyebrow `tagline`, the `claim` of the home file as its title, `home.movement_2_text`), the cards. A card is
+`<a href="/vini/<slug>" data-wine="<slug>">` with the bottle photo (`alt=""`, the caption names the wine; `subtitle`, else `style`, under it).
+The arrows `div[data-rail-arrows][hidden]` are shown by `js/wine-dialog.js` (loaded with `defer` by the home only, through `{% block scripts %}`
+of `base.html`). After the main blocks come one `<template id="wine-<slug>">` per visible wine, the presentation the script puts in a native
+`<dialog>`: close button, photo, `header.score` (short stave, name, `subtitle`, kicker = style + denomination), description, `dl.facts`
+(grapes, abv, serving temperature), `dl.senses` (appearance, aroma, palate, pairings), `section.story` (`story_title`, `story`, and the
+claim with "Taste the Essence" on the wines that have one), buttons "Scheda tecnica completa" (wine page) and "Scrivici" (`mailto()`,
+subject `contact.subject_wine`). A field that is empty (a marker in production) leaves its row out; a wine without `story` has no story
+section. Without JS the cards are plain links. Then `section.intro` (`home.lead`, `mission`, `territory`), `figure.claim` (long stave,
+"Taste the Essence" as the only quote, the family line with the farm link), the visits tile (`/visite`), no oil link, and `section.band` (the
+buyers sentence, "Contattaci", the certificate line `p.certified` only with the switch on). The claim appears only in movement II (and in the
+Armide and Passacaille dialogs). Tests: `tests/test_home_rail.py`, `tests/test_home_about.py`.
+Oil: h1 `oil.name`, `oil.intro`, description,
 a `dl.sheet` from `pages.OIL_SHEET` (harvest uses the label `sheet.oil_harvest`), optional PDF (`[pdf]` of `oil.toml`, same
 `wines.pdf` rule), contact block with subject `contact.subject_olio` ("Si Bio: olio" / "Si Bio: oil"). About: h1, `family`
 (who), `about.what` (fixed text: wines from Piceno grapes and an oil, no "organic"), `mission` and `territory`, the certificate block (below), the family line, the

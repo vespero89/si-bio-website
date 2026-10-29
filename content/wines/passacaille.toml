@@ -1,6 +1,7 @@
 # Neutral data of Passacaille: the same in every language. Texts are in content/<lang>/wines/passacaille.toml.
 order = 4
 visible = true
+group = "opera"        # "piceno" or "opera": the movement of the home row
 photo = "passacaille.jpg"      # provisional: file in app/static/img/vini/, replaced by the photo shoot
 abv = 11.5
 bottles_per_year = 4000
