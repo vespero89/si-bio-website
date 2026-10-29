@@ -1,4 +1,4 @@
-"""Oil page: brochure texts, the olive tree photo, never called organic; no oil link on the home."""
+"""Oil page: brochure texts, the olive tree photo, never called organic; linked from the home."""
 
 import re
 
@@ -74,8 +74,13 @@ def test_oil_page_has_no_price(client, preview, prefix):
     assert "€" not in client.get(prefix + "/olio").text
 
 
-@pytest.mark.parametrize("prefix", ["", "/en"])
-def test_home_has_no_oil_link(client, prefix):
+@pytest.mark.parametrize(
+    "prefix, href, link",
+    [("", "/olio", "Scopri l'olio"), ("/en", "/en/olio", "Discover the oil")],
+)
+def test_home_links_to_the_oil_page(client, prefix, href, link):
     html = main_of(client.get(prefix + "/").text)
-    assert "/olio" not in html
-    assert "Scopri l'olio" not in html and "Discover the oil" not in html
+    assert f'href="{href}"' in html
+    assert link.replace("'", "&#39;") in html or link in html
+    tile = html[html.index(f'href="{href}"') - 400 : html.index(f'href="{href}"') + 100]
+    assert not re.search(r"organic|biologic", tile, re.I)

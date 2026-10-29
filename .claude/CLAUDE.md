@@ -155,7 +155,7 @@ of `base.html`). After the main blocks come one `<template id="wine-<slug>">` pe
 claim with "Taste the Essence" on the wines that have one), buttons "Scheda tecnica completa" (wine page) and "Scrivici" (`mailto()`,
 subject `contact.subject_wine`). A field that is empty (a marker in production) leaves its row out; a wine without `story` has no story
 section. Without JS the cards are plain links. Then `section.intro` (`home.lead`, `mission`, `territory`), `figure.claim` (long stave,
-"Taste the Essence" as the only quote, the family line with the farm link), the visits tile (`/visite`), no oil link, and `section.band` (the
+"Taste the Essence" as the only quote, the family line with the farm link), the tiles for the oil (`/olio`, keys `home.oil_*`, no "organic") and visits (`/visite`), and `section.band` (the
 buyers sentence, "Contattaci", the certificate line `p.certified` only with the switch on). The claim appears only in movement II (and in the
 Armide and Passacaille dialogs). Tests: `tests/test_home_rail.py`, `tests/test_home_about.py`.
 Oil (`oil.html`): `.page-head` (eyebrow `oil.eyebrow`, h1 `oil.name`, `p.lead` = `oil.intro`), the scene photo, `.split` with the description (`.prose`) and the
