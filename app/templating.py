@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import datetime
 import re
 from urllib.parse import quote
 
@@ -110,5 +111,6 @@ templates.env.globals.update(
     base_url=config.BASE_URL,
     localize=lang.localize,
     site=content.site,
+    this_year=lambda: datetime.date.today().year,
     x_default_lang=lambda: lang.FALLBACK if lang.FALLBACK in lang.available() else lang.DEFAULT,
 )

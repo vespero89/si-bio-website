@@ -32,6 +32,10 @@ family_link = "Fattoria nel Ciafone"
 family_after = ", farming in Offida since 1915."
 legal = "Legal information"
 cookies = "Manage cookies"
+site = "Site"
+explore = "Explore"
+contacts = "Contact"
+copyright = "© {year} Si Bio"
 
 [wines]
 title = "Our wines"

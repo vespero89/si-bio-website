@@ -100,6 +100,34 @@ def test_footer_company_data(client):
     assert "Fattoria nel Ciafone" in footer
 
 
+@pytest.mark.parametrize(
+    "prefix, explore, contacts, copy",
+    [("", "Esplora", "Contatti", "© {y} Si Bio"), ("/en", "Explore", "Contact", "© {y} Si Bio")],
+)
+def test_footer_has_three_columns_and_a_legal_row(client, prefix, explore, contacts, copy):
+    import datetime
+
+    html = client.get(prefix + "/").text
+    footer = re.search(r"<footer.*?</footer>", html, re.S).group(0)
+    pattern = r'<div class="footer-grid">.*?</div>\s*<nav class="legal"'
+    grid = re.search(pattern, footer, re.S).group(0)
+    assert re.findall(r"<h2>(.*?)</h2>", grid) == [explore, contacts]
+    assert '<p class="footer-brand">Si Bio</p>' in grid
+    site_nav = re.search(r"<nav aria-label=[^>]*>.*?</nav>", grid, re.S).group(0)
+    assert re.findall(r'href="([^"]+)"', site_nav) == [
+        f"{prefix}{path}" for path in ("/vini", "/olio", "/chi-siamo", "/visite", "/contatti")
+    ]
+    assert 'href="mailto:export.sibio@gmail.com"' in grid
+    legal = re.search(r'<nav class="legal".*?</nav>', footer, re.S).group(0)
+    assert copy.format(y=datetime.date.today().year) in legal
+    assert len(re.findall(r"<a ", legal)) == 3
+
+
+def test_language_selector_is_plain_links_without_a_list(client):
+    sel = re.search(r'<nav class="lang".*?</nav>', client.get("/").text, re.S).group(0)
+    assert "<ul" not in sel and "<li" not in sel
+
+
 def test_footer_farm_link_only_when_the_address_is_known(client, monkeypatch):
     html = client.get("/").text
     assert "Fattoria nel Ciafone" in html and "<a" in html

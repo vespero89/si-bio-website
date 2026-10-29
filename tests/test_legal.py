@@ -75,12 +75,12 @@ def test_tabs_link_the_three_pages(client, prefix):
 def test_footer_links_to_notice_and_privacy(client, prefix):
     html = client.get(f"{prefix}/contatti").text
     footer = re.search(r"<footer.*?</footer>", html, re.S).group(0)
-    legal = re.search(r'<nav class="footer-legal".*?</nav>', footer, re.S).group(0)
+    legal = re.search(r'<nav class="legal".*?</nav>', footer, re.S).group(0)
     assert re.findall(r'href="([^"]+)"', legal) == [
         f"{prefix}/info/note-legali",
         f"{prefix}/info/privacy",
+        f"{prefix}/info/cookie#scelta",
     ]
-    assert f'href="{prefix}/info/cookie#scelta"' in footer
 
 
 @pytest.mark.parametrize("prefix", ["", "/en"])

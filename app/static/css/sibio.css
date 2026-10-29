@@ -360,6 +360,7 @@ body.has-dialog { overflow: hidden; }
 .footer-family a { color: var(--c-ink); text-decoration: underline; }
 .legal { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); margin-top: var(--s-8); padding-top: var(--s-5); border-top: 1px solid var(--c-line); color: var(--c-muted); font-size: var(--t-xs); }
 .legal a { color: var(--c-muted); }
+.footer-data { margin-top: var(--s-3); } /* company lines on the contact page */
 
 /* Motion only for people who did not ask to reduce it */
 @media (prefers-reduced-motion: no-preference) {
@@ -448,11 +449,6 @@ body.has-dialog { overflow: hidden; }
 .cookie-notice p { margin-bottom: var(--s-3); }
 .cookie-form { display: flex; flex-wrap: wrap; gap: var(--s-3); }
 .cookie-form .button { min-width: 8rem; }
-
-/* Footer lines of the first layout (task 2 replaces them with .footer-grid) */
-.footer-name { font-family: var(--f-display); font-size: 1.875rem; line-height: 1; margin-bottom: var(--s-4); }
-.footer-data, .footer-certificate, .footer-cookies { margin-top: var(--s-3); }
-.footer-legal ul { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); list-style: none; margin: var(--s-3) 0 0; padding: 0; }
 
 /* Error pages */
 .error-page { padding-block: var(--s-8) var(--s-9); }

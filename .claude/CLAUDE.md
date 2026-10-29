@@ -100,10 +100,9 @@ facts stay markers until the family confirms them. Legal pages are exempt from h
 
 ## Layout
 `app/templates/base.html`: header (text wordmark "Si Bio" until the logo arrives), menu (`templating.MENU`, links
-localized by `localize`, `aria-current` on the current page), language selector (`alternates()`: one link per
+localized by `localize`, `aria-current` on the current page), language selector (`nav.lang`, plain links without a list; `alternates()`: one link per
 language that can be shown, `/path?lang=xx` so the cookie follows the choice, name of each language from
-`language.name` of its own file), footer (company data from `site.toml`; the farm link needs `farm.url`, without
-it the name is plain text; `legal_links` in the footer: legal notice and privacy; "Gestisci i cookie" link to `/info/cookie#scelta`, always shown, the page comes with the legal pages task). Head: `canonical` and `hreflang` (every language that can be shown plus `x-default` on English) from
+`language.name` of its own file), footer (`.footer-grid` in three columns: "Si Bio" with company name, registered office, VAT and the farm line; "Esplora" with the menu; "Contatti" with `export_email` and, only with the certificate, the link to `/chi-siamo#certificato`; then the `nav.legal` row: `footer.copyright` with `this_year()`, legal notice, privacy and "Gestisci i cookie" to `/info/cookie#scelta`, always shown; the farm link needs `farm.url`, without it the name is plain text). Head: `canonical` and `hreflang` (every language that can be shown plus `x-default` on English) from
 `request.state.path`, absolute from `BASE_URL`. One stylesheet, mobile first, palette only in `:root`. Fonts
 self hosted in `app/static/fonts/` with their OFL files (Cormorant Garamond 500 for headings, Source Sans 3
 400 and 600 for text, latin subset only); never Google Fonts. Pages put their text in `{% block content %}`
