@@ -123,7 +123,7 @@ def test_switch_off_keeps_the_total_ban_on_organic(client, production, monkeypat
 
 def test_home_production_content(client, production):
     html = client.get("/").text
-    assert "Dietro Si Bio c&#39;è la famiglia" in html
+    assert "Le radici di Si Bio sono alla" in html
     for slug in (
         "armide",
         "offida-pecorino",
@@ -150,7 +150,7 @@ def test_olio_mailto_subject(client):
 def test_about_production_has_family_and_company(client, production):
     html = client.get("/chi-siamo").text
     assert "<h1>Chi siamo</h1>" in html
-    assert "Dietro Si Bio c&#39;è la famiglia" in html
+    assert "Le radici di Si Bio sono alla" in html
     assert "Si Bio di Premici Silvia e Aleandri Vincenzo, società semplice agricola" in html
     assert 'aria-current="page"' in html
 

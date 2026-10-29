@@ -92,6 +92,7 @@ def test_family_line_is_on_the_dark_band(client, production, prefix):
     html = client.get(f"{prefix}/chi-siamo").text
     band = re.search(r'<section class="band band-dark".*?</section>', html, re.S).group(0)
     assert '<p class="family">' in band
+    assert ("since 1915" if prefix else "dal 1915") in band
     assert 'class="button"' in band and "/contatti" in band
     assert html.index('class="certificate"') < html.index("band-dark")
 
