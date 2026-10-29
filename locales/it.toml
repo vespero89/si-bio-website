@@ -51,6 +51,7 @@ write = "Scrivici"
 close = "Chiudi"
 prev = "Vini precedenti"
 next = "Vini successivi"
+pause = "Pausa del movimento dei vini"
 
 [sheet]
 style = "Stile"

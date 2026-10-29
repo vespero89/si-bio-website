@@ -25,6 +25,7 @@
   dialog.className = "wine-dialog";
   document.body.appendChild(dialog);
   var opener = null;
+  var fromClone = false;
 
   function close() {
     if (dialog.open) dialog.close();
@@ -33,7 +34,7 @@
   dialog.addEventListener("close", function () {
     document.body.classList.remove("has-dialog");
     dialog.replaceChildren();
-    if (opener) opener.focus();
+    if (opener) opener.focus({ preventScroll: fromClone });
   });
 
   // A click on the backdrop lands on the dialog element itself
@@ -49,6 +50,11 @@
     if (!template) return; // no presentation for this wine: follow the link
     event.preventDefault();
     opener = link;
+    // A clone of the drifting row (rail-drift.js) is hidden from assistive technology: focus goes back to the real card, without scrolling the row
+    fromClone = !!link.closest("[data-clone]");
+    if (fromClone) {
+      opener = rail.querySelector('li:not([data-clone]) a[data-wine="' + link.getAttribute("data-wine") + '"]') || link;
+    }
     dialog.replaceChildren(template.content.cloneNode(true));
     var title = dialog.querySelector("h2");
     if (title) dialog.setAttribute("aria-labelledby", title.id);

@@ -47,7 +47,7 @@ app/jsonld.py       JSON-LD builders: `clean`, `dumps`, `organization`, `website
 app/legal.py        legal pages `/info/note-legali|privacy|cookie` (templates in `templates/legal/<lang>/`, `company(lang)`)
 app/pages.py        also `video()` (id and cover from site.toml for the visits page)
 app/templates/      base.html (header, menu, selector, canonical/hreflang, footer), home.html, oil.html, about.html, wines.html (page), wine_fragment.html (HTMX), partials/stave_long|stave_short (inline SVG staves)|wine_row|wine_stage|wine_intro|contact_block.html
-app/static/         css/sibio.css (the only stylesheet), fonts/ (woff2 + OFL files), js/htmx.min.js (2.0.4, same file as ecommerce-fattoria), js/wines.js (focus), js/wine-dialog.js (home dialog and arrows, home only), js/contact.js (Copy button, loaded by base.html), img/vini (bottle photos), schede (PDF)
+app/static/         css/sibio.css (the only stylesheet), fonts/ (woff2 + OFL files), js/htmx.min.js (2.0.4, same file as ecommerce-fattoria), js/wines.js (focus), js/rail-drift.js (home drift), js/wine-dialog.js (home dialog and arrows, home only), js/contact.js (Copy button, loaded by base.html), img/vini (bottle photos), schede (PDF)
 content/            (wines: Pecorino, Passerina, Armide, Passacaille visible; Offida Rosso `visible = false` until sheet and photo; optional text `claim` on Armide and Passacaille only, shown with "Taste the Essence"; DOCG only on the two Offida wines)
 content/            site.toml (settings), wines/<slug>.toml and oil.toml (neutral), <lang>/wines, <lang>/oil.toml, <lang>/pages (texts)
 locales/            interface texts per language (it is the reference), flat keys like `nav.wines`
@@ -161,6 +161,20 @@ Armide and Passacaille dialogs). Tests: `tests/test_home_rail.py`, `tests/test_h
 Oil (`oil.html`): `.page-head` (eyebrow `oil.eyebrow`, h1 `oil.name`, `p.lead` = `oil.intro`), the scene photo, `.split` with the description (`.prose`) and the
 `dl.sheet` from `pages.OIL_SHEET` (harvest uses the label `sheet.oil_harvest`), optional PDF (`[pdf]` of `oil.toml`, same
 `wines.pdf` rule), contact block (`inline`) with subject `contact.subject_olio` ("Si Bio: olio" / "Si Bio: oil"). About (`about.html`): `div.page-head` (eyebrow `about.eyebrow`, h1, `p.lead` = `about.what`), `div.split.split-bordered` with `.prose` (`family`: two plain-fact paragraphs split on a blank line, also the meta description; `mission`, `territory`, the Riva dei Martin sentence only with `riva_dei_martin = true` in `site.toml` (`content.GATED`; never "our winery"), the commercial manager role `sales_contact`) and a 4:5 family photo placeholder; then `section.silvia#musica` (long stave watermark, 4:5 portrait placeholder, `about.music_label`, h2 `music_title`, `music` split on blank lines into paragraphs, link `about.music_link` to `/visite#video`; facts stated by Fabio, no markers, no "organic", no Veneto; left out only if `music` is empty); then the certificate block (below, `dl.sheet` + QR, only with `certificate()`); last the family line and the contact button on `section.band.band-dark`. Tests: `tests/test_pages.py`.
+
+## Home rail drift
+`app/static/js/rail-drift.js` (home only, after `wine-dialog.js`). With JS and without `prefers-reduced-motion: reduce` the whole row
+(panel I, Pecorino, Passerina, panel II, Armide, Passacaille: the movement panels are separators and stay in the row, in order) drifts
+left by itself, a card width every 7 seconds, in a loop. The motion is a CSS animation of the `ul.rail` transform (`@keyframes
+rail-drift`, `translateX(-var(--drift-distance))`, linear, infinite, inside `prefers-reduced-motion: no-preference`), no scrollLeft.
+The script wraps the rail in `div.rail-clip`, clones the sequence (`data-clone`, `aria-hidden`, links `tabindex="-1"`; a click on a clone
+opens the same dialog, focus goes back to the real card without scrolling) and sets with the CSSOM (`style.setProperty`, CSP safe)
+`--drift-distance` (one turn, measured), `--drift-duration` and `--drift-delay` (phase). `.rail.is-enhanced` turns scroll-snap off,
+`.rail.is-drifting` is the moving state (overflow visible, width max-content, no left padding). Paused by CSS on `:hover` (hover devices)
+and while `body.has-dialog`; by the script on keyboard focus (`:focus-visible`) inside the row (resumes on focus out) and with the Pause
+button (`[data-rail-toggle]`, `aria-pressed`, constant label `wines.pause`, icon swaps). Pausing turns the row back into the normal
+scrolling row at the same place (swipe, arrows, which are hidden while it moves); Play resumes from there. Without JS or with reduced
+motion none of this exists: the static scroll-snap row. Tests: `tests/test_rail_drift.py`; the motion was checked by hand in Chrome.
 
 ## Visits and package
 `/visite` (`pages.visits_page`, `visits.html`, page file `visits.toml`). `.page-head` (eyebrow `visits.eyebrow`, h1 `title`), then `section.buyers`: left column eyebrow
