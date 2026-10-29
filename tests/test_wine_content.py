@@ -144,3 +144,12 @@ def test_fixed_texts_do_not_count_the_wines():
     for lang in ("it", "en"):
         text = (config.CONTENT_DIR.parent / "locales" / f"{lang}.toml").read_text(encoding="utf-8")
         assert not re.search(r"\b(cinque|five)\b", text, re.I)
+
+
+def test_armide_vintage_2023_shown_others_hidden(client, production):
+    labels = (("it", "", "Annata in commercio"), ("en", "/en", "Vintage on sale"))
+    for lang, prefix, label in labels:
+        assert content.wine(lang, "armide")["vintage"] == "2023"
+        assert content.wine(lang, "passacaille")["vintage"] == ""
+        assert label in sheet_html(client, f"{prefix}/vini/armide")
+        assert label not in sheet_html(client, f"{prefix}/vini/passacaille")
