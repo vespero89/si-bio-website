@@ -134,13 +134,13 @@ def test_armide_presentation_it(client, production):
     body = template(client.get("/").text, "armide")
     text = flat(body)
     assert '<h2 id="dlg-armide" tabindex="-1">Armide</h2>' in body
-    assert "Opera di Lully" in text and "Bianco fermo" in text
+    assert "La forza che si arrende alla grazia" in text and "Bianco fermo" in text
     for label, value in (("Vitigni", "100% Pecorino"), ("Gradazione alcolica", "11,5 % vol")):
         assert re.search(rf"<dt[^>]*>{label}</dt>\s*<dd>{re.escape(value)}</dd>", body), label
     assert re.search(r"<dt[^>]*>Temperatura di servizio</dt>\s*<dd>10-12 °C</dd>", body)
     for label in ("Aspetto", "Profumo", "Gusto", "Abbinamenti"):
         assert f">{label}</dt>" in body
-    assert "<h3>Il nome</h3>" in body and "Jean-Baptiste Lully" in text
+    assert "<h3>Il nome</h3>" in body and "L'opera di Lully" in text
     assert CLAIM[""] in text and "Taste the Essence" in text
     assert 'href="/vini/armide"' in body and "Scheda tecnica completa" in body
     assert "mailto:export.sibio@gmail.com?subject=Si%20Bio%3A%20Armide" in body
@@ -227,8 +227,8 @@ def test_validator_knows_the_new_text_fields(tree):
     assert content.problems() == []
     for key in ("subtitle", "story_title", "story"):
         assert key in path.read_text(encoding="utf-8")
-    assert content.wine("it", "armide")["subtitle"] == "Opera di Lully"
-    assert content.wine("en", "passacaille")["subtitle"] == "Finale of the same opera"
+    assert content.wine("it", "armide")["subtitle"] == "La forza che si arrende alla grazia"
+    assert content.wine("en", "passacaille")["subtitle"] == "The dance of the bubbles"
     assert content.wine("it", "offida-pecorino")["subtitle"] == ""
 
 

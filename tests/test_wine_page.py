@@ -28,7 +28,7 @@ def test_wine_page_has_the_score_header_with_stave_and_subtitle(client, producti
     header = re.search(r'<header class="score">.*?</header>', html, re.S).group(0)
     assert '<svg class="stave"' in header
     assert '<h1 tabindex="-1">Armide</h1>' in header
-    assert '<p class="score-sub">Opera di Lully</p>' in header
+    assert '<p class="score-sub">La forza che si arrende alla grazia</p>' in header
     assert 'class="wp-body"' in html and 'class="wp-photo"' in html
 
 
