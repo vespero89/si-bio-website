@@ -127,7 +127,7 @@ a marker value is empty in production, so a field never shows empty. New wine fi
 ## Wine carousel (HTMX)
 `/vini` and `/vini/<slug>` render `wines.html`: `#wine-intro` (h1 + lead, only on `/vini`), `nav#wine-row` (links
 with `hx-get`, `hx-target="#wine-stage"`, `hx-push-url="true"` on the nav) and `#wine-stage` (the
-`.wine-front` article). With `HX-Request: true` the route returns `wine_fragment.html` instead: `<title>`
+`article.wp`). With `HX-Request: true` the route returns `wine_fragment.html` instead: `<title>`
 (htmx updates the tab title), the intro and the row as out of band swaps (`hx-swap-oob="innerHTML"`, so the new
 `aria-current` and an h1 that is only on `/vini` follow, and the row keeps its scroll position) and the
 stage. A history restore (`HX-History-Restore-Request`) gets the full page. Every wine response has
