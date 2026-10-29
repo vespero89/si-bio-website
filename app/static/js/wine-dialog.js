@@ -56,6 +56,6 @@
     dialog.showModal();
     var sheet = dialog.querySelector(".dlg-sheet");
     if (sheet) sheet.scrollTop = 0;
-    if (title) title.focus();
+    if (title) title.focus({ preventScroll: true });
   });
 })();
