@@ -26,6 +26,8 @@ CARD = (
 ).split()
 WINE_TEXT = {"name", "description", "claim", *CARD}
 OIL_TEXT = {"name", "description", "cultivar", "area", "harvest", "milling", "acidity", "pairings"}
+LIST_KEYS = {"buyers_includes"}
+"""Page keys that hold a list of texts."""
 SLUG = re.compile(r"[a-z0-9]+(-[a-z0-9]+)*$")
 GATED = {
     "riva_dei_martin": "riva_dei_martin",
@@ -146,6 +148,8 @@ def _texts(path: Path, allowed: set[str] | None, reference: set[str], out: list[
         return
     name = path.relative_to(config.CONTENT_DIR).as_posix()
     for key, value in data.items():
+        if key in LIST_KEYS and isinstance(value, list) and all(isinstance(v, str) for v in value):
+            continue
         if not isinstance(value, str):
             out.append(f"{name}: '{key}' must be text")
         elif allowed is not None and key not in allowed:

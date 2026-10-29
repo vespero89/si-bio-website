@@ -68,7 +68,7 @@ def test_visits_one_h1_and_buyers_block(client, production, prefix):
     response = client.get(prefix + "/visite")
     assert response.status_code == 200
     assert response.text.count("<h1") == 1
-    assert "mailto:export@si-bio.it?subject=Si%20Bio%3A%20" in response.text
+    assert "mailto:export.sibio@gmail.com?subject=Si%20Bio%3A%20" in response.text
     assert not re.search(
         r"DA (VERIFICARE|COMPLETARE|DEFINIRE)|TO BE (VERIFIED|COMPLETED|DEFINED)", response.text
     )
@@ -148,3 +148,68 @@ def test_preview_shows_placeholders(client, preview):
 
 def test_menu_marks_visits_current(client, production):
     assert 'aria-current="page"' in client.get("/visite").text
+
+
+INCLUDES = {
+    "it": [
+        "Incontri con importatori e partner",
+        "Ospitalità all'Hotel Il Casale, con pasti e pernottamento",
+        "Transfer da e per l'aeroporto",
+        "Degustazioni ed esperienze sul territorio",
+    ],
+    "en": [
+        "Meetings with importers and partners",
+        "Hospitality at Hotel Il Casale, with meals and overnight stay",
+        "Transfers to and from the airport",
+        "Tastings and experiences in the territory",
+    ],
+}
+HOTEL_URL = "https://www.hotelcasale.it/"
+MONEY = re.compile(r"€|\bEUR\b|\bEXW\b|\bIVA\b|\bVAT\b|prezz|\bprices?\b|anticip|prepay", re.I)
+
+
+@pytest.mark.parametrize(("lang", "prefix"), [("it", ""), ("en", "/en")])
+def test_buyers_includes_list_of_four(client, production, lang, prefix):
+    html = client.get(prefix + "/visite").text
+    block = re.search(r'<ul class="visits-includes">(.*?)</ul>', html, re.S).group(1)
+    assert re.findall(r"<li>(.*?)</li>", block, re.S) == [
+        s.replace("'", "&#39;") for s in INCLUDES[lang]
+    ]
+    assert content.page(lang, "visits")["buyers_includes"] == INCLUDES[lang]
+
+
+def test_hotel_description_and_link(client, production):
+    for prefix, name in (("", "Hotel Il Casale"), ("/en", "Hotel Il Casale")):
+        html = client.get(prefix + "/visite").text
+        para = re.search(r'<p class="visits-hotel">(.*?)</p>', html, re.S).group(1)
+        assert name in para
+        assert "Colli del Tronto" in para
+        assert f'href="{HOTEL_URL}"' in para
+        assert 'rel="noopener"' in para
+        assert "[" not in para
+
+
+def test_price_list_row_mailto(client, production):
+    it = client.get("/visite").text
+    row = re.search(r'<p class="visits-price">(.*?)</p>', it, re.S).group(1)
+    assert "Listino su richiesta" in row
+    assert "mailto:export.sibio@gmail.com?subject=Si%20Bio%3A%20listino" in row
+    en = client.get("/en/visite").text
+    row = re.search(r'<p class="visits-price">(.*?)</p>', en, re.S).group(1)
+    assert "Price list on request" in row
+    assert "mailto:export.sibio@gmail.com?subject=Si%20Bio%3A%20price%20list" in row
+
+
+@pytest.mark.parametrize("prefix", ["", "/en"])
+def test_buyers_block_has_no_price_or_terms(client, production, prefix):
+    html = client.get(prefix + "/visite").text
+    block = re.search(r'<section class="visits-buyers">.*?</section>', html, re.S).group(0)
+    text = re.sub(r"<[^>]+>", " ", block)
+    assert not MONEY.search(text.replace("Listino su richiesta", "").replace("Price list on", ""))
+    assert not re.search(r"biologic|organic|\bbio\b|conto terzi|contract", text, re.I)
+
+
+def test_package_hotel_name_unlocked(client, production):
+    page = content.page("it", "visits")
+    assert "Hotel Il Casale" in page["package_hotel"]
+    assert "Hotel Il Casale" in content.page("en", "visits")["package_hotel"]

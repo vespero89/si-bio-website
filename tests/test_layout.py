@@ -96,7 +96,7 @@ def test_footer_company_data(client):
     footer = re.search(r"<footer.*?</footer>", html, re.S).group(0)
     assert "Si Bio di Premici Silvia e Aleandri Vincenzo, società semplice agricola" in footer
     assert "02274900444" in footer
-    assert 'href="mailto:export@si-bio.it"' in footer
+    assert 'href="mailto:export.sibio@gmail.com"' in footer
     assert "Fattoria nel Ciafone" in footer
 
 

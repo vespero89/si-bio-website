@@ -13,7 +13,7 @@ pec = "[DA COMPLETARE: PEC]"
 rea = "[DA COMPLETARE: numero REA]"
 
 [contact]
-export_email = "export@si-bio.it"
+export_email = "export.sibio@gmail.com"
 # Fuselli e Filari receive the gift package requests directly, Si Bio is not in the way.
 partner_email = "[DA COMPLETARE: contatto email di Fuselli e Filari]"
 phone = "[DA COMPLETARE: telefono, solo se la responsabile commerciale lo vuole]"

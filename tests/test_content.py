@@ -115,7 +115,7 @@ def test_english_markers_are_recognised():
 
 def test_site_keeps_real_values_in_production(production):
     site = content.site()
-    assert site["contact"]["export_email"] == "export@si-bio.it"
+    assert site["contact"]["export_email"] == "export.sibio@gmail.com"
     assert site["contact"]["partner_email"] == ""
     assert site["switches"] == {"riva_dei_martin": False, "organic_certified": True}
     assert site["video"]["youtube_id"] == ""

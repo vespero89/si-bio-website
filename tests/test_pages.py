@@ -142,8 +142,8 @@ def test_home_claim_quotation_in_preview(client, preview):
 
 def test_olio_mailto_subject(client):
     html = client.get("/olio").text
-    assert "mailto:export@si-bio.it?subject=Si%20Bio%3A%20olio" in html
-    assert "mailto:export@si-bio.it?subject=Si%20Bio%3A%20oil" not in html
+    assert "mailto:export.sibio@gmail.com?subject=Si%20Bio%3A%20olio" in html
+    assert "mailto:export.sibio@gmail.com?subject=Si%20Bio%3A%20oil" not in html
     assert "subject=Si%20Bio%3A%20oil" in client.get("/en/olio").text
 
 

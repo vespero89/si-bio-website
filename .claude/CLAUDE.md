@@ -153,9 +153,9 @@ manager role (`sales_contact`) and the contact button. Tests: `tests/test_pages.
 
 ## Visits and package
 `/visite` (`pages.visits_page`, `visits.html`, page file `visits.toml`). h1 `title`, then two sections. Buyers (on invitation,
-`visits.invitation`): `buyers_title` ("Vieni a trovarci" / "Visit us"), `buyers_text`, the video block `partials/video.html` (see "Video"), contact block to `export_email` with subject `contact.subject_buyers` and button
+`visits.invitation`): `buyers_title` ("Vieni a trovarci" / "Visit us"), `buyers_text`, `buyers_includes` (list of four, h3 `visits.includes_title`, listed in `content.LIST_KEYS`), `buyers_hotel` + `buyers_hotel_url` (Hotel Il Casale, facts from hotelcasale.it, link `visits.hotel_link`), the row "Listino su richiesta" (`visits.price_list`, mailto to `export_email` with subject `contact.subject_price`; no price or terms anywhere), the video block `partials/video.html` (see "Video"), contact block to `export_email` with subject `contact.subject_buyers` and button
 `visits.buyers_button`. Package (sold by Fuselli e Filari, no price, no programme invented): `package_name` as h2, `package_lead`,
-`package_text`, `package_hotel` (Hotel Casale), the fixed line `visits.organizer`, contact block with `contact_address` =
+`package_text`, `package_hotel` (Hotel Il Casale), the fixed line `visits.organizer`, contact block with `contact_address` =
 `partner_email` of `site.toml`, subject `contact.subject_package` ("Richiesta programma: {name}") and button `visits.package_button`.
 The whole package section is left out in production unless `partner_email` AND `package_name` are verified (markers). The partial
 `contact_block.html` takes optional `contact_address` and `contact_button`. Riva dei Martin lines (`buyers_riva_dei_martin`,
@@ -190,7 +190,7 @@ and `img-src 'self' data:`; no `media-src`, no inline script.
 `app/legal.py`: `/info/note-legali`, `/info/privacy`, `/info/cookie` (and `/en/info/...`). Texts are templates, one per page and
 language (`templates/legal/it|en/{note_legali,privacy,cookie}.html`, extending `legal/base.html`: tabs `nav.legal-tabs`, h1, and
 `p.legal-provisional` "provisional text, awaiting review by a lawyer"; the English one says it is a literal translation to be
-reviewed). Only what is true for the site: no forms, no analytics, mailto to `export@si-bio.it` (and to Fuselli e Filari for the
+reviewed). Only what is true for the site: no forms, no analytics, mailto to `export_email` (the brochure's Gmail, decided by Fabio 29/10) (and to Fuselli e Filari for the
 package), server logs, cookies `lang` (1 year) and `cookie_choice` (6 months), YouTube only after consent. The cookie page lists the
 two cookies and includes `partials/cookie_choice.html` (`#scelta`). Footer: `legal_links` (notice, privacy) plus "Gestisci i cookie".
 **Placeholders are never hidden here**: company values come from `content.site_raw()` (markers kept; `legal.company(lang)` turns a

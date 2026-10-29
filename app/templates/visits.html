@@ -9,11 +9,26 @@
     <h2>{{ page.buyers_title }}</h2>
     <p class="visits-tag">{{ t('visits.invitation') }}</p>
     <p class="lead">{{ page.buyers_text }}</p>
+    {%- if page.buyers_includes %}
+    <h3>{{ t('visits.includes_title') }}</h3>
+    <ul class="visits-includes">
+      {%- for item in page.buyers_includes %}
+      <li>{{ item }}</li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+    {%- if page.buyers_hotel %}
+    <p class="visits-hotel">{{ page.buyers_hotel }}{% if page.buyers_hotel_url %} <a href="{{ page.buyers_hotel_url }}" rel="noopener">{{ t('visits.hotel_link') }}</a>{% endif %}</p>
+    {%- endif %}
     {%- if page.buyers_riva_dei_martin %}
     <p>{{ page.buyers_riva_dei_martin }}</p>
     {%- endif %}
     {%- if video %}
     {% include "partials/video.html" %}
+    {%- endif %}
+    {%- set export_address = site().get("contact", {}).get("export_email") %}
+    {%- if export_address %}
+    <p class="visits-price">{{ t('visits.price_list') }} <a href="{{ mailto(export_address, t('contact.subject_price')) }}">{{ t('visits.price_link') }}</a></p>
     {%- endif %}
     {%- set subject = t('contact.subject_buyers') %}
     {%- set contact_button = t('visits.buyers_button') %}

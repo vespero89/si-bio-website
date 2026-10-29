@@ -32,9 +32,9 @@ def test_contact_page_it(client):
     response = client.get("/contatti")
     assert response.status_code == 200
     assert response.text.count("<h1") == 1
-    assert "export@si-bio.it" in response.text
+    assert "export.sibio@gmail.com" in response.text
     href, subject = mailto_subject(response.text)
-    assert href == "mailto:export@si-bio.it?subject=Si%20Bio%3A%20informazioni"
+    assert href == "mailto:export.sibio@gmail.com?subject=Si%20Bio%3A%20informazioni"
     assert "+" not in href
     assert 'aria-current="page"' in response.text
     assert "<form" not in NOTICE.sub("", response.text)  # only the cookie choice posts
@@ -60,7 +60,7 @@ def test_placeholders_in_preview_hidden_in_production(client, production, monkey
     html = client.get("/contatti").text
     assert "DA COMPLETARE" not in html
     assert "DA DEFINIRE" not in html
-    assert "export@si-bio.it" in html
+    assert "export.sibio@gmail.com" in html
     monkeypatch.setattr(config, "PREVIEW", True)
     content.read.cache_clear()
     html = client.get("/contatti").text

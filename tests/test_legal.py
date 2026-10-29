@@ -102,7 +102,7 @@ def test_cookie_page_shows_the_current_choice(client):
 
 def test_privacy_says_only_what_is_true(client):
     html = main_of(client.get("/info/privacy").text)
-    assert "export@si-bio.it" in html
+    assert "export.sibio@gmail.com" in html
     assert "Fuselli e Filari" in html
     assert "YouTube" in html
     assert "Garante" in html

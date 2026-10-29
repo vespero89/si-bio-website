@@ -304,8 +304,8 @@ def mailto(html: str) -> str:
 def test_contact_block_has_address_text_and_mailto_with_subject(client):
     html = client.get("/vini/armide").text
     block = re.search(r'<div class="contact-block".*?</div>', html, re.S).group(0)
-    assert "export@si-bio.it" in re.sub(r"<[^>]+>", "", block)
-    assert mailto(block) == "mailto:export@si-bio.it?subject=Si%20Bio%3A%20Armide"
+    assert "export.sibio@gmail.com" in re.sub(r"<[^>]+>", "", block)
+    assert mailto(block) == "mailto:export.sibio@gmail.com?subject=Si%20Bio%3A%20Armide"
     assert "Scrivici" in block
 
 

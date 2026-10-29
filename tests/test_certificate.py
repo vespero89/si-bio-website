@@ -232,7 +232,8 @@ def test_never_a_wine_oil_or_grapes_called_organic(client, production, monkeypat
     for lang in ("it", "en"):
         for name in ("home", "about", "visits", "contact"):
             for value in content.page(lang, name).values():
-                assert not WRONG.search(value), (lang, name, value)
+                for part in [value] if isinstance(value, str) else value:
+                    assert not WRONG.search(part), (lang, name, part)
 
 
 def test_organic_detector_catches_the_forbidden_phrases():

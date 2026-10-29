@@ -166,7 +166,7 @@ def test_home_has_organization_and_website(client, production):
         == "Si Bio di Premici Silvia e Aleandri Vincenzo, società semplice agricola"
     )
     assert org["vatID"] == "IT02274900444"
-    assert org["email"] == "export@si-bio.it"
+    assert org["email"] == "export.sibio@gmail.com"
     assert "sameAs" not in org
     assert org["address"]["streetAddress"] == "Contrada San Lazzaro 118, 63073 Offida"
     assert data[1]["url"] == "https://www.si-bio.it/"
@@ -225,7 +225,7 @@ def test_llms_txt_per_language(client, production, prefix):
     assert response.headers["content-type"].startswith("text/plain")
     text = response.text
     assert text.startswith("# Si Bio")
-    assert "export@si-bio.it" in text
+    assert "export.sibio@gmail.com" in text
     for slug in SLUGS:
         assert f"https://www.si-bio.it{prefix}/vini/{slug}" in text
     assert f"https://www.si-bio.it{prefix}/olio" in text

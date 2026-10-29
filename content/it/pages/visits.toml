@@ -3,7 +3,15 @@ buyers_title = "Vieni a trovarci"
 buyers_text = "Ospitiamo buyer e importatori per qualche giorno nel Piceno: vigne, cantina, fattoria, territorio."
 package_name = "[DA DEFINIRE: nome del pacchetto, lo decide Veronica]"
 package_text = "[DA DEFINIRE: cosa include il pacchetto per appassionati]"
+buyers_includes = [
+  "Incontri con importatori e partner",
+  "Ospitalità all'Hotel Il Casale, con pasti e pernottamento",
+  "Transfer da e per l'aeroporto",
+  "Degustazioni ed esperienze sul territorio",
+]
+buyers_hotel = "L'Hotel Il Casale è un casale restaurato a Colli del Tronto, nel Piceno, tra il mare Adriatico e i Monti Sibillini. Ha suite e camere, un ristorante di cucina regionale e nazionale, piscine e palestra."
+buyers_hotel_url = "https://www.hotelcasale.it/"
 buyers_riva_dei_martin = "[DA VERIFICARE: degustazione Riva dei Martin con i premi, testo e premi da concordare con Riva dei Martin]"
 package_lead = "[DA DEFINIRE: N giorni nel Piceno, tra vigne e fattoria, durata decisa da Veronica]"
-package_hotel = "[DA VERIFICARE: Hotel Casale, struttura convenzionata di Colli del Tronto, permesso per nome e testo]"
+package_hotel = "Si soggiorna all'Hotel Il Casale, a Colli del Tronto."
 package_riva_dei_martin = "[DA VERIFICARE: estensione facoltativa sulle Colline del Prosecco, da proporre a Veronica e a Riva dei Martin]"

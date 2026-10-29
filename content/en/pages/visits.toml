@@ -3,7 +3,15 @@ buyers_title = "Visit us"
 buyers_text = "We host buyers and importers for a few days in the Piceno: vineyards, winery, farm, territory."
 package_name = "[TO BE DEFINED: package name, decided by Veronica]"
 package_text = "[TO BE DEFINED: what the package for wine lovers includes]"
+buyers_includes = [
+  "Meetings with importers and partners",
+  "Hospitality at Hotel Il Casale, with meals and overnight stay",
+  "Transfers to and from the airport",
+  "Tastings and experiences in the territory",
+]
+buyers_hotel = "Hotel Il Casale is a restored farmhouse in Colli del Tronto, in the Piceno, between the Adriatic Sea and the Sibillini Mountains. It has suites and rooms, a restaurant with regional and national cuisine, swimming pools and a gym."
+buyers_hotel_url = "https://www.hotelcasale.it/"
 buyers_riva_dei_martin = "[TO BE VERIFIED: Riva dei Martin tasting with its awards, text and awards to agree with Riva dei Martin]"
 package_lead = "[TO BE DEFINED: N days in the Piceno, among vineyards and farm, length decided by Veronica]"
-package_hotel = "[TO BE VERIFIED: Hotel Casale, partner hotel in Colli del Tronto, permission for name and text]"
+package_hotel = "Guests stay at Hotel Il Casale, in Colli del Tronto."
 package_riva_dei_martin = "[TO BE VERIFIED: optional extension in the Prosecco Hills, to propose to Veronica and Riva dei Martin]"
