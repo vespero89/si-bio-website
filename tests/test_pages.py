@@ -55,8 +55,8 @@ def test_no_placeholder_in_production(client, production, path):
 def test_preview_shows_placeholders(client, preview):
     assert "DA VERIFICARE" in client.get("/chi-siamo").text
     assert "DA VERIFICARE" in client.get("/olio").text
-    assert "DA VERIFICARE" in client.get("/").text
-    assert "TO BE VERIFIED" in client.get("/en/").text
+    assert "DA DEFINIRE" in client.get("/").text
+    assert "TO BE DEFINED" in client.get("/en/").text
 
 
 @pytest.mark.parametrize("path", PAGES)
@@ -133,7 +133,7 @@ def test_home_production_content(client, production):
         assert f'href="/vini/{slug}"' in html
     assert 'href="/vini/offida-rosso"' not in html  # hidden until sheet and photo arrive
     assert 'href="/olio"' in html and 'href="/visite"' in html and 'href="/contatti"' in html
-    assert "<blockquote" not in html  # claim is a placeholder, hidden
+    assert "<blockquote" in html and "<footer>" not in html  # the claim, with no attribution
 
 
 def test_home_claim_quotation_in_preview(client, preview):
@@ -151,5 +151,5 @@ def test_about_production_has_family_and_company(client, production):
     html = client.get("/chi-siamo").text
     assert "<h1>Chi siamo</h1>" in html
     assert "Dietro Si Bio c&#39;è la famiglia" in html
-    assert "SI - BIO di Premici &amp; Aleandri" in html
+    assert "Si Bio di Premici Silvia e Aleandri Vincenzo, società semplice agricola" in html
     assert 'aria-current="page"' in html

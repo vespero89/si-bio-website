@@ -37,7 +37,9 @@ def get(lang: str) -> dict | None:
     return {
         "number": cert["number"],
         "body": cert["body"],
-        "regulation": cert.get("regulation", ""),
+        "regulation": i18n.t(lang, "certificate.regulation", value=cert["regulation"])
+        if cert.get("regulation")
+        else "",
         "valid_from": _date(cert.get("valid_from", ""), lang),
         "valid_until": _date(cert.get("valid_until", ""), lang),
         "valid_from_iso": cert.get("valid_from", ""),

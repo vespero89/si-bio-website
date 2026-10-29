@@ -54,6 +54,7 @@ def home(request: Request):
         "home.html",
         {
             "page": content.page(lang, "home"),
+            "about": content.page(lang, "about"),
             "wines": content.wines(lang),
             "jsonld": [jsonld.dumps(jsonld.organization(lang)), jsonld.dumps(jsonld.website(lang))],
         },

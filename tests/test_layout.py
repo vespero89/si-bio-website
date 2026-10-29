@@ -94,7 +94,7 @@ def test_hreflang_follows_published_languages(client, monkeypatch):
 def test_footer_company_data(client):
     html = client.get("/").text
     footer = re.search(r"<footer.*?</footer>", html, re.S).group(0)
-    assert "SI - BIO di Premici &amp; Aleandri Società Agricola Semplice" in footer
+    assert "Si Bio di Premici Silvia e Aleandri Vincenzo, società semplice agricola" in footer
     assert "02274900444" in footer
     assert 'href="mailto:export@si-bio.it"' in footer
     assert "Fattoria nel Ciafone" in footer

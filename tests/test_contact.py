@@ -52,7 +52,8 @@ def test_contact_page_en_subject(client):
 def test_company_data_in_page(client):
     html = client.get("/contatti").text
     assert "02274900444" in html
-    assert "SI - BIO di Premici" in html
+    assert "Si Bio di Premici Silvia e Aleandri Vincenzo" in html
+    assert "Contrada San Lazzaro 118, 63073 Offida" in html
 
 
 def test_placeholders_in_preview_hidden_in_production(client, production, monkeypatch):
@@ -63,7 +64,7 @@ def test_placeholders_in_preview_hidden_in_production(client, production, monkey
     monkeypatch.setattr(config, "PREVIEW", True)
     content.read.cache_clear()
     html = client.get("/contatti").text
-    assert "DA COMPLETARE: sede legale" in html
+    assert "DA COMPLETARE: PEC" in html
     assert "DA DEFINIRE: ruolo della responsabile commerciale" in html
 
 

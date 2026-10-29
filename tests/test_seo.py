@@ -161,10 +161,14 @@ def test_home_has_organization_and_website(client, production):
     org = data[0]
     assert org["@context"] == "https://schema.org"
     assert org["name"] == "Si Bio"
-    assert org["legalName"].startswith("SI - BIO")
+    assert (
+        org["legalName"]
+        == "Si Bio di Premici Silvia e Aleandri Vincenzo, società semplice agricola"
+    )
     assert org["vatID"] == "IT02274900444"
     assert org["email"] == "export@si-bio.it"
-    assert "sameAs" not in org and "address" not in org
+    assert "sameAs" not in org
+    assert org["address"]["streetAddress"] == "Contrada San Lazzaro 118, 63073 Offida"
     assert data[1]["url"] == "https://www.si-bio.it/"
     assert blocks(client.get("/en/").text)[1]["url"] == "https://www.si-bio.it/en/"
 

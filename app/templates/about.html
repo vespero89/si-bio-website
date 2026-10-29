@@ -13,8 +13,11 @@
   {%- set sentence = page.organic %}
   {% include "partials/certificate_block.html" %}
   {%- endif %}
-  {%- if page.why_veneto %}
-  <p>{{ page.why_veneto }}</p>
+  {%- if page.mission %}
+  <p>{{ page.mission }}</p>
+  {%- endif %}
+  {%- if page.territory %}
+  <p>{{ page.territory }}</p>
   {%- endif %}
   <p class="footer-family">{{ t('footer.family_before') }}
     {%- if farm_url() %}<a href="{{ farm_url() }}" rel="noopener">{{ t('footer.family_link') }}</a>{% else %}{{ t('footer.family_link') }}{% endif %}

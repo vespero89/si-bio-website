@@ -6,9 +6,9 @@
 published = ["it", "en"]
 
 [company]
-name = "SI - BIO di Premici & Aleandri Società Agricola Semplice"
+name = "Si Bio di Premici Silvia e Aleandri Vincenzo, società semplice agricola"
 vat = "02274900444"
-address = "[DA COMPLETARE: sede legale]"
+address = "Contrada San Lazzaro 118, 63073 Offida"
 pec = "[DA COMPLETARE: PEC]"
 rea = "[DA COMPLETARE: numero REA]"
 
@@ -41,7 +41,7 @@ organic_certified = true   # turns on the certificate block and the sentence "or
 [certificate]
 number = "IT-BIO-004.380-0031262.2026.004"
 body = "Suolo e Salute Srl (IT-BIO-004)"
-regulation = "Reg. (UE) 2018/848"
+regulation = "2018/848"   # shown as "Reg. (UE) 2018/848" or "Reg. (EU) 2018/848" (certificate.regulation)
 valid_from = "2026-08-25"
 valid_until = "2029-08-24"
 holder = "Si Bio di Premici Silvia e Aleandri Vincenzo, società semplice agricola"

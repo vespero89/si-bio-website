@@ -15,7 +15,7 @@ BRACKET = re.compile(
 
 # The open points of the legal pages for the farm and the lawyer: the pre-launch check counts them.
 EXPECTED = {
-    "note-legali": 3,  # registered office, PEC, REA
+    "note-legali": 2,  # PEC, REA
     "privacy": 4,  # hosting provider, log basis, log retention, email retention
     "cookie": 0,
 }
@@ -112,7 +112,8 @@ def test_privacy_says_only_what_is_true(client):
 @pytest.mark.parametrize("prefix", ["", "/en"])
 def test_notice_has_company_data(client, prefix):
     main = main_of(client.get(f"{prefix}/info/note-legali").text)
-    assert "SI - BIO di Premici &amp; Aleandri Società Agricola Semplice" in main
+    assert "Si Bio di Premici Silvia e Aleandri Vincenzo, società semplice agricola" in main
+    assert "Contrada San Lazzaro 118, 63073 Offida" in main
     assert "02274900444" in main
 
 

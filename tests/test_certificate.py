@@ -81,7 +81,7 @@ def test_real_settings_have_the_certificate(production):
     cert = site["certificate"]
     assert cert["number"] == NUMBER
     assert cert["body"] == "Suolo e Salute Srl (IT-BIO-004)"
-    assert cert["regulation"] == "Reg. (UE) 2018/848"
+    assert cert["regulation"] == "2018/848"
     assert (cert["valid_from"], cert["valid_until"]) == ("2026-08-25", "2029-08-24")
     assert cert["verify_url"].startswith("https://webgate.ec.europa.eu/")
     assert cert["verify_url"].endswith(NUMBER + ".pdf")

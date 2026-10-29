@@ -3,8 +3,8 @@
 Working notes for this repository.
 
 ## What it is
-Website of Si Bio (brand always written "Si Bio"; registered name "SI - BIO di Premici & Aleandri
-Società Agricola Semplice"): wine and olive oil from Offida (AP). B2B first: credibility towards
+Website of Si Bio (brand always written "Si Bio"; registered name "Si Bio di Premici Silvia e
+Aleandri Vincenzo, società semplice agricola"): wine and olive oil from Offida (AP). B2B first: credibility towards
 buyers, importers and restaurants, in Italian and English. Contacts by `mailto` (no form). The
 spec and task list live outside the repo, in the notes folder of the communication project.
 
@@ -141,14 +141,13 @@ from `sales_contact` of the `about` page file. Every value that is still a marke
 left out (shown in preview). No form, no database. The menu entry `nav.contact` already points here.
 
 ## Home, oil, about
-`app/pages.py`. Home: h1, `home.lead`, the claim as `blockquote.claim` (`claim`, optional `claim_by` as its source; both
-markers until the DOCG and Veneto check, so no quotation in production), `who` when verified, the family line with the farm
-link (`footer.family_*` keys), the five wines as plain links in a `.wine-row` (no HTMX), links to `/olio` and `/visite`,
-the buyers sentence (`buyers` of the file, else `home.buyers`) and the "Contattaci" button; `certification` only when filled.
-In production the home is therefore h1, lead, family line, wines and links. Oil: h1 `oil.name`, `oil.intro`, description,
+`app/pages.py`. Home: h1, `home.lead`, the claim as `blockquote.claim` (`claim`, shown without attribution, with the `tagline`
+"Taste the Essence" under it; on wine pages the claim is only on Armide and Passacaille, made in the Veneto near Riva dei Martin; nothing more about the Veneto is said), the About `mission` and `territory` (no "organic"), the family line with the farm
+link (`footer.family_*` keys), the visible wines as plain links in a `.wine-row` (no HTMX), links to `/olio` and `/visite`,
+the buyers sentence (`buyers` of the file, else `home.buyers`) and the "Contattaci" button. Oil: h1 `oil.name`, `oil.intro`, description,
 a `dl.sheet` from `pages.OIL_SHEET` (harvest uses the label `sheet.oil_harvest`), optional PDF (`[pdf]` of `oil.toml`, same
 `wines.pdf` rule), contact block with subject `contact.subject_olio` ("Si Bio: olio" / "Si Bio: oil"). About: h1, `family`
-(who), `about.what` (fixed text: wines from Piceno grapes and an oil, no "organic"), the certificate block (below), `why_veneto`, the family line, the
+(who), `about.what` (fixed text: wines from Piceno grapes and an oil, no "organic"), `mission` and `territory`, the certificate block (below), the family line, the
 Riva dei Martin sentence only with `riva_dei_martin = true` in `site.toml` (`content.GATED`; never "our winery"), the commercial
 manager role (`sales_contact`) and the contact button. Tests: `tests/test_pages.py`.
 
@@ -268,6 +267,6 @@ one line in the home and a footer link (both to `/chi-siamo#certificato`), `hasC
 (`jsonld._certification`) and one line in `llms.txt`. Not on wine sheets or the oil page. The QR code is a file we generate:
 `python scripts/qr.py` writes `app/static/img/<qr>` from `verify_url` (own encoder, no library, no service; byte mode, level M);
 it encodes the operator's page in the European register, which stays valid at renewal, so the QR does not change when the
-numbers do. At renewal Fabio edits the dates and number in `[certificate]`. Run `scripts/qr.py` again only if `verify_url`
+numbers do. At renewal Fabio edits the dates and number in `[certificate]`. Run `scripts/qr.py` again only if `verify_url` `regulation` is the bare number ("2018/848"); the locale key `certificate.regulation` writes "Reg. (UE)" or "Reg. (EU)".
 changes (`tests/test_qr.py` fails on a stale file). Legal name of the holder: `holder` / `holder_address`. Tests:
 `tests/test_certificate.py`, `tests/test_qr.py`, `tests/test_pages.py`.

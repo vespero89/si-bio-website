@@ -7,11 +7,14 @@
   {%- if page.claim %}
   <blockquote class="claim">
     <p>{{ page.claim }}</p>
-    {%- if page.claim_by %}<footer>{{ page.claim_by }}</footer>{% endif %}
+    {%- if page.tagline %}<p>{{ page.tagline }}</p>{% endif %}
   </blockquote>
   {%- endif %}
-  {%- if page.who %}
-  <p>{{ page.who }}</p>
+  {%- if about.mission %}
+  <p>{{ about.mission }}</p>
+  {%- endif %}
+  {%- if about.territory %}
+  <p>{{ about.territory }}</p>
   {%- endif %}
   <p class="footer-family">{{ t('footer.family_before') }}
     {%- if farm_url() %}<a href="{{ farm_url() }}" rel="noopener">{{ t('footer.family_link') }}</a>{% else %}{{ t('footer.family_link') }}{% endif %}
