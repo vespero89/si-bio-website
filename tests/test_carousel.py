@@ -56,7 +56,7 @@ def test_row_links_carry_htmx_attributes(client):
     nav = re.search(r'<nav class="wine-row".*?</nav>', html, re.S).group(0)
     assert 'hx-target="#wine-stage"' in nav and 'hx-push-url="true"' in nav
     links = re.findall(r'<a href="([^"]+)"[^>]*hx-get="([^"]+)"', nav)
-    assert len(links) == 5 and all(href == get for href, get in links)
+    assert len(links) == 4 and all(href == get for href, get in links)
     assert 'id="wine-stage"' in html
 
 

@@ -36,9 +36,11 @@ cookies = "Gestisci i cookie"
 
 [wines]
 title = "I nostri vini"
-intro = "Cinque vini da uve del Piceno. Scegli un vino per vedere la scheda."
+intro = "I nostri vini da uve del Piceno. Scegli un vino per vedere la scheda."
 row = "I nostri vini"
 photo_missing = "Foto in arrivo"
+photo_alt = "{name} in vigna"
+tagline = "Taste the Essence"
 
 [sheet]
 style = "Stile"
@@ -98,7 +100,7 @@ contact_link = "Contattaci"
 intro = "L'olio della famiglia Premici e Aleandri, a Offida."
 
 [about]
-what = "Cinque vini da uve del Piceno e un olio."
+what = "I nostri vini da uve del Piceno e un olio."
 
 [visits]
 invitation = "Su invito"

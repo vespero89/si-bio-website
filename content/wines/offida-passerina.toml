@@ -1,8 +1,9 @@
 # Neutral data of Offida Passerina: the same in every language. Texts are in content/<lang>/wines/offida-passerina.toml.
 order = 2
 visible = true
-photo = "[DA COMPLETARE: foto della bottiglia]"
-abv = "[DA VERIFICARE: gradazione alcolica]"
-formats = ["[DA VERIFICARE: formati in ml]"]
+photo = "offida-passerina.jpg"      # provisional: file in app/static/img/vini/, replaced by the photo shoot
+abv = 13.5
+bottles_per_year = 5000
+formats = ["750 ml"]
 # [pdf]
 # it = "offida-passerina-it.pdf"   # file in app/static/schede/

@@ -1,7 +1,7 @@
 <article class="wine-front">
   <div class="wine-photo">
     {%- if photo %}
-    <img src="/static/img/vini/{{ photo }}" alt="{{ wine.name }}" width="300" height="600">
+    <img src="/static/img/vini/{{ photo }}" alt="{{ t('wines.photo_alt', name=wine.name) }}" width="687" height="515">
     {%- else %}
     <span class="bottle-placeholder" role="img" aria-label="{{ t('wines.photo_missing') }}"></span>
     {%- endif %}
@@ -14,6 +14,12 @@
     {%- endif %}
     {%- if wine.description %}
     <p>{{ wine.description }}</p>
+    {%- endif %}
+    {%- if wine.claim %}
+    <blockquote class="claim">
+      <p>{{ wine.claim }}</p>
+      <p>{{ t('wines.tagline') }}</p>
+    </blockquote>
     {%- endif %}
     {%- if sheet %}
     <dl class="sheet">

@@ -35,9 +35,11 @@ cookies = "Manage cookies"
 
 [wines]
 title = "Our wines"
-intro = "Five wines from grapes of the Piceno. Choose a wine to see its sheet."
+intro = "Our wines from grapes of the Piceno. Choose a wine to see its sheet."
 row = "Our wines"
 photo_missing = "Photo coming soon"
+photo_alt = "{name} in the vineyard"
+tagline = "Taste the Essence"
 
 [sheet]
 style = "Style"
@@ -97,7 +99,7 @@ contact_link = "Contact us"
 intro = "The olive oil of the Premici and Aleandri family, in Offida."
 
 [about]
-what = "Five wines from Piceno grapes and an olive oil."
+what = "Our wines from Piceno grapes and an olive oil."
 
 [visits]
 invitation = "By invitation"

@@ -23,7 +23,7 @@ CARD = (
     "total_acidity residual_sugar serving_temperature appearance aroma palate pairings vintage "
     "awards"
 ).split()
-WINE_TEXT = {"name", "description", *CARD}
+WINE_TEXT = {"name", "description", "claim", *CARD}
 OIL_TEXT = {"name", "description", "cultivar", "area", "harvest", "milling", "acidity", "pairings"}
 SLUG = re.compile(r"[a-z0-9]+(-[a-z0-9]+)*$")
 GATED = {

@@ -1,8 +1,9 @@
 # Neutral data of Armide: the same in every language. Texts are in content/<lang>/wines/armide.toml.
-order = 4
+order = 3
 visible = true
-photo = "[DA COMPLETARE: foto della bottiglia]"
-abv = "[DA VERIFICARE: gradazione alcolica]"
-formats = ["[DA VERIFICARE: formati in ml]"]
+photo = "armide.jpg"      # provisional: file in app/static/img/vini/, replaced by the photo shoot
+abv = 11.5
+bottles_per_year = 4000
+formats = ["750 ml"]
 # [pdf]
 # it = "armide-it.pdf"   # file in app/static/schede/

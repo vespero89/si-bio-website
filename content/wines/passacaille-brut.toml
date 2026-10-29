@@ -1,8 +1,0 @@
-# Neutral data of Passacaille Brut: the same in every language. Texts are in content/<lang>/wines/passacaille-brut.toml.
-order = 5
-visible = true
-photo = "[DA COMPLETARE: foto della bottiglia]"
-abv = "[DA VERIFICARE: gradazione alcolica]"
-formats = ["[DA VERIFICARE: formati in ml]"]
-# [pdf]
-# it = "passacaille-brut-it.pdf"   # file in app/static/schede/

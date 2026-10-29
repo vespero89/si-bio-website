@@ -96,11 +96,11 @@ def test_home_production_content(client, production):
     for slug in (
         "armide",
         "offida-pecorino",
-        "offida-rosso",
         "offida-passerina",
-        "passacaille-brut",
+        "passacaille",
     ):
         assert f'href="/vini/{slug}"' in html
+    assert 'href="/vini/offida-rosso"' not in html  # hidden until sheet and photo arrive
     assert 'href="/olio"' in html and 'href="/visite"' in html and 'href="/contatti"' in html
     assert "<blockquote" not in html  # claim is a placeholder, hidden
 

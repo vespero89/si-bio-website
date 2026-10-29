@@ -11,7 +11,7 @@ from app.main import app
 SM = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
 XH = "{http://www.w3.org/1999/xhtml}"
 MARKER = re.compile(r"\[(?:DA |TO BE )[A-Z ]+\b")
-SLUGS = ["armide", "offida-passerina", "offida-pecorino", "offida-rosso", "passacaille-brut"]
+SLUGS = ["armide", "offida-passerina", "offida-pecorino", "passacaille"]
 STATIC_PAGES = ["/", "/vini", "/olio", "/chi-siamo", "/visite", "/contatti"]
 LEGAL = ["/info/note-legali", "/info/privacy", "/info/cookie"]
 
@@ -78,7 +78,8 @@ def test_sitemap_leaves_out_hidden_wines(client, production, monkeypatch):
         content, "wines", lambda lang: [w for w in real(lang) if w["slug"] != "armide"]
     )
     assert "/vini/armide" not in client.get("/sitemap.xml").text
-    assert "/vini/offida-rosso" in client.get("/sitemap.xml").text
+    assert "/vini/offida-pecorino" in client.get("/sitemap.xml").text
+    assert "/vini/offida-rosso" not in client.get("/sitemap.xml").text
 
 
 def test_sitemap_only_in_italian_root(client, production):
@@ -120,11 +121,12 @@ def test_head_has_title_description_open_graph(client, production, lang, prefix)
 
 def test_description_comes_from_the_content_with_fallback(client, production, monkeypatch):
     monkeypatch.setattr(config, "BASE_URL", "http://x")
-    # Armide's description is still a marker in production: the locale fallback is used.
+    real = content.wine
+    # A description still a marker is empty in production: the locale fallback is used.
+    monkeypatch.setattr(content, "wine", lambda lang, s: {**real(lang, s), "description": ""})
     html = client.get("/vini/armide").text
     fallback = i18n.t("it", "meta.default")
     assert f'<meta name="description" content="{fallback}">' in html
-    real = content.wine
 
     def with_text(lang, slug):
         w = real(lang, slug)
@@ -136,8 +138,9 @@ def test_description_comes_from_the_content_with_fallback(client, production, mo
 
 
 def test_wine_image_in_open_graph_only_when_there_is_a_photo(client, production, monkeypatch):
-    assert 'property="og:image"' not in client.get("/vini/armide").text
     real = content.wine
+    monkeypatch.setattr(content, "wine", lambda lang, s: {**real(lang, s), "photo": ""})
+    assert 'property="og:image"' not in client.get("/vini/armide").text
     monkeypatch.setattr(content, "wine", lambda lang, s: {**real(lang, s), "photo": "a.png"})
     html = client.get("/vini/armide").text
     assert 'property="og:image" content="https://www.si-bio.it/static/img/vini/a.png"' in html

@@ -4,7 +4,7 @@ import pytest
 
 from app import config, content
 
-SLUGS = ["offida-pecorino", "offida-passerina", "offida-rosso", "armide", "passacaille-brut"]
+SLUGS = ["offida-pecorino", "offida-passerina", "armide", "passacaille"]
 
 
 @pytest.fixture
@@ -28,6 +28,13 @@ def production(monkeypatch):
     monkeypatch.setattr(config, "PREVIEW", False)
 
 
+def show_rosso(tree):
+    """Offida Rosso (all placeholders) made visible, to test the placeholder rules."""
+    path = tree / "wines" / "offida-rosso.toml"
+    path.write_text(path.read_text().replace("visible = false", "visible = true"))
+    content.read.cache_clear()
+
+
 def strings(value):
     if isinstance(value, str):
         yield value
@@ -43,7 +50,7 @@ def test_real_content_is_valid():
     assert content.problems() == []
 
 
-def test_five_wines_in_file_order():
+def test_four_wines_in_file_order():
     assert [w["slug"] for w in content.wines("it")] == SLUGS
     assert [w["slug"] for w in content.wines("en")] == SLUGS
 
@@ -78,14 +85,16 @@ def test_production_hides_every_marker(production):
                 assert not content.has_marker(text), text
 
 
-def test_production_wine_card_has_only_filled_fields(production):
-    wine = content.wine("it", "armide")
+def test_production_wine_card_has_only_filled_fields(tree, production):
+    show_rosso(tree)
+    wine = content.wine("it", "offida-rosso")
     assert wine["denomination"] == ""
     assert wine["abv"] == "" and wine["formats"] == []
 
 
-def test_preview_shows_markers(preview):
-    wine = content.wine("it", "armide")
+def test_preview_shows_markers(tree, preview):
+    show_rosso(tree)
+    wine = content.wine("it", "offida-rosso")
     assert wine["denomination"].startswith("[DA VERIFICARE")
     assert content.has_marker(content.site()["contact"]["partner_email"])
 
@@ -143,7 +152,7 @@ def test_validator_flags_missing_pdf_and_duplicate_order(tree):
     text = path.read_text()
     path.write_text(text + '\n[pdf]\nit = "nope.pdf"\n')
     other = tree / "wines" / "offida-rosso.toml"
-    other.write_text(other.read_text().replace("order = 3", "order = 4"))
+    other.write_text(other.read_text().replace("order = 5", "order = 4"))
     content.read.cache_clear()
     found = " ".join(content.problems())
     assert "nope.pdf" in found and "order" in found

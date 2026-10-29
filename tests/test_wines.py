@@ -10,7 +10,7 @@ from app.main import app
 
 NOTICE = re.compile(r'<section class="cookie-notice".*?</section>', re.S)
 
-SLUGS = ["offida-pecorino", "offida-passerina", "offida-rosso", "armide", "passacaille-brut"]
+SLUGS = ["offida-pecorino", "offida-passerina", "armide", "passacaille"]
 
 
 @pytest.fixture
@@ -30,6 +30,15 @@ def tree(tmp_path, monkeypatch):
     content.read.cache_clear()
     yield root
     content.read.cache_clear()
+
+
+@pytest.fixture
+def rosso(tree):
+    """Offida Rosso (still all placeholders) made visible, to test the placeholder rules."""
+    path = tree / "wines" / "offida-rosso.toml"
+    path.write_text(path.read_text(encoding="utf-8").replace("visible = false", "visible = true"))
+    content.read.cache_clear()
+    return tree
 
 
 @pytest.fixture
@@ -67,7 +76,7 @@ def test_every_wine_page_answers_200_in_both_languages(client):
             assert client.get(f"{prefix}/vini/{slug}").status_code == 200
 
 
-def test_row_lists_the_five_wines_in_order_with_aria_current_on_the_selected(client):
+def test_row_lists_the_four_wines_in_order_with_aria_current_on_the_selected(client):
     html = client.get("/vini/armide").text
     anchors = attrs(row(html), "a")
     assert [a["href"] for a in anchors] == [f"/vini/{s}" for s in SLUGS]
@@ -106,58 +115,60 @@ def test_unknown_slug_is_404(client):
 def test_hidden_wine_is_404_and_not_in_the_row(client, tree):
     edit(tree / "wines" / "armide.toml", "visible = true", "visible = false")
     assert client.get("/vini/armide").status_code == 404
-    html = client.get("/vini/offida-rosso").text
+    html = client.get("/vini/offida-passerina").text
     assert [a["href"] for a in attrs(row(html), "a")] == [
         f"/vini/{s}" for s in SLUGS if s != "armide"
     ]
 
 
-def test_production_shows_no_placeholder_and_no_empty_labelled_row(client, production):
-    html = client.get("/vini/armide").text
+def test_production_shows_no_placeholder_and_no_empty_labelled_row(client, rosso, production):
+    html = client.get("/vini/offida-rosso").text
     assert "[DA " not in html and "[TO BE" not in html
     assert "<dt" not in html
     assert "Denominazione" not in html
 
 
-def test_preview_shows_placeholders(client, preview):
-    html = client.get("/vini/armide").text
+def test_preview_shows_placeholders(client, rosso, preview):
+    html = client.get("/vini/offida-rosso").text
     assert "[DA VERIFICARE: denominazione]" in html
     assert "<dt>Denominazione</dt>" in html
 
 
-def test_sheet_shows_only_filled_fields(client, tree, production):
+def test_sheet_shows_only_filled_fields(client, rosso, production):
     edit(
-        tree / "it" / "wines" / "armide.toml",
+        rosso / "it" / "wines" / "offida-rosso.toml",
         'grapes = "[DA VERIFICARE: vitigni]"',
         'grapes = "Pecorino 100%"',
     )
-    html = client.get("/vini/armide").text
+    html = client.get("/vini/offida-rosso").text
     assert re.findall(r"<dt>(.*?)</dt>", html) == ["Vitigni"]
     assert "<dd>Pecorino 100%</dd>" in html
 
 
-def test_sheet_in_english_uses_english_labels(client, tree, production):
+def test_sheet_in_english_uses_english_labels(client, rosso, production):
     edit(
-        tree / "en" / "wines" / "armide.toml",
+        rosso / "en" / "wines" / "offida-rosso.toml",
         'grapes = "[TO BE VERIFIED: grapes]"',
         'grapes = "Pecorino"',
     )
-    assert re.findall(r"<dt>(.*?)</dt>", client.get("/en/vini/armide").text) == ["Grapes"]
+    assert re.findall(r"<dt>(.*?)</dt>", client.get("/en/vini/offida-rosso").text) == ["Grapes"]
 
 
-def test_abv_and_formats_are_in_the_sheet_when_filled(client, tree, production):
+def test_abv_and_formats_are_in_the_sheet_when_filled(client, rosso, production):
     edit(
-        tree / "wines" / "armide.toml", 'abv = "[DA VERIFICARE: gradazione alcolica]"', "abv = 13.5"
+        rosso / "wines" / "offida-rosso.toml",
+        'abv = "[DA VERIFICARE: gradazione alcolica]"',
+        "abv = 13.5",
     )
     edit(
-        tree / "wines" / "armide.toml",
+        rosso / "wines" / "offida-rosso.toml",
         'formats = ["[DA VERIFICARE: formati in ml]"]',
         'formats = ["750 ml", "1500 ml"]',
     )
-    html = client.get("/vini/armide").text
+    html = client.get("/vini/offida-rosso").text
     assert "<dd>13,5 % vol</dd>" in html
     assert "<dd>750 ml, 1500 ml</dd>" in html
-    assert "13.5% vol" in client.get("/en/vini/armide").text
+    assert "13.5% vol" in client.get("/en/vini/offida-rosso").text
 
 
 NEW_FIELDS = ["style", "training", "bottle_aging", "appearance", "aroma", "palate"]
@@ -174,8 +185,8 @@ NEW_TEXT = {
 }
 
 
-def fill_new_fields(tree, lang: str, values: list[str]) -> None:
-    path = tree / lang / "wines" / "armide.toml"
+def fill_new_fields(rosso, lang: str, values: list[str]) -> None:
+    path = rosso / lang / "wines" / "offida-rosso.toml"
     path.write_text(
         path.read_text(encoding="utf-8")
         + "".join(f'{k} = "{v}"\n' for k, v in zip(NEW_FIELDS, values, strict=True)),
@@ -184,12 +195,14 @@ def fill_new_fields(tree, lang: str, values: list[str]) -> None:
     content.read.cache_clear()
 
 
-def test_new_sheet_fields_show_in_order_with_italian_labels(client, tree, production):
-    fill_new_fields(tree, "it", NEW_TEXT["it"])
+def test_new_sheet_fields_show_in_order_with_italian_labels(client, rosso, production):
+    fill_new_fields(rosso, "it", NEW_TEXT["it"])
     edit(
-        tree / "wines" / "armide.toml", 'abv = "[DA VERIFICARE: gradazione alcolica]"', "abv = 11.5"
+        rosso / "wines" / "offida-rosso.toml",
+        'abv = "[DA VERIFICARE: gradazione alcolica]"',
+        "abv = 11.5",
     )
-    html = client.get("/vini/armide").text
+    html = client.get("/vini/offida-rosso").text
     assert re.findall(r"<dt>(.*?)</dt>", html) == [
         "Stile",
         "Allevamento",
@@ -202,45 +215,45 @@ def test_new_sheet_fields_show_in_order_with_italian_labels(client, tree, produc
     assert "<dd>Bianco fermo</dd>" in html
 
 
-def test_new_sheet_fields_in_english(client, tree, production):
-    fill_new_fields(tree, "en", NEW_TEXT["en"])
-    labels = re.findall(r"<dt>(.*?)</dt>", client.get("/en/vini/armide").text)
+def test_new_sheet_fields_in_english(client, rosso, production):
+    fill_new_fields(rosso, "en", NEW_TEXT["en"])
+    labels = re.findall(r"<dt>(.*?)</dt>", client.get("/en/vini/offida-rosso").text)
     assert labels == ["Style", "Training", "Bottle ageing", "Appearance", "Aroma", "Palate"]
 
 
-def test_bottles_per_year_is_grouped_by_language(client, tree, production):
-    edit(tree / "wines" / "armide.toml", 'photo = "', 'bottles_per_year = 5000\nphoto = "')
-    html = client.get("/vini/armide").text
+def test_bottles_per_year_is_grouped_by_language(client, rosso, production):
+    edit(rosso / "wines" / "offida-rosso.toml", 'photo = "', 'bottles_per_year = 5000\nphoto = "')
+    html = client.get("/vini/offida-rosso").text
     assert re.findall(r"<dt>(.*?)</dt>", html) == ["Bottiglie all&#39;anno"]
-    assert "<dd>5.000</dd>" in client.get("/vini/armide").text
-    assert "<dd>5,000</dd>" in client.get("/en/vini/armide").text
+    assert "<dd>5.000</dd>" in client.get("/vini/offida-rosso").text
+    assert "<dd>5,000</dd>" in client.get("/en/vini/offida-rosso").text
 
 
 def test_new_fields_with_a_marker_are_hidden_in_production_and_shown_in_preview(
-    client, tree, production, monkeypatch
+    client, rosso, production, monkeypatch
 ):
     edit(
-        tree / "wines" / "armide.toml",
+        rosso / "wines" / "offida-rosso.toml",
         'photo = "',
         'bottles_per_year = "[DA VERIFICARE: bottiglie]"\nphoto = "',
     )
-    fill_new_fields(tree, "it", ["[DA VERIFICARE: x]"] * 6)
-    html = client.get("/vini/armide").text
+    fill_new_fields(rosso, "it", ["[DA VERIFICARE: x]"] * 6)
+    html = client.get("/vini/offida-rosso").text
     assert "<dt>" not in html and "DA VERIFICARE: x" not in html
     monkeypatch.setattr(config, "PREVIEW", True)
-    html = client.get("/vini/armide").text
+    html = client.get("/vini/offida-rosso").text
     assert "Stile" in html and "DA VERIFICARE: bottiglie" in html
 
 
-def test_new_fields_are_valid_in_the_validator(tree):
-    fill_new_fields(tree, "it", NEW_TEXT["it"])
-    fill_new_fields(tree, "en", NEW_TEXT["en"])
-    edit(tree / "wines" / "armide.toml", 'photo = "', 'bottles_per_year = 4000\nphoto = "')
+def test_new_fields_are_valid_in_the_validator(rosso):
+    fill_new_fields(rosso, "it", NEW_TEXT["it"])
+    fill_new_fields(rosso, "en", NEW_TEXT["en"])
+    edit(rosso / "wines" / "offida-rosso.toml", 'photo = "', 'bottles_per_year = 4000\nphoto = "')
     assert content.problems() == []
 
 
-def test_bottles_per_year_must_be_a_number_or_text(tree):
-    edit(tree / "wines" / "armide.toml", 'photo = "', 'bottles_per_year = [1]\nphoto = "')
+def test_bottles_per_year_must_be_a_number_or_text(rosso):
+    edit(rosso / "wines" / "offida-rosso.toml", 'photo = "', 'bottles_per_year = [1]\nphoto = "')
     assert any("bottles_per_year" in p for p in content.problems())
 
 
@@ -295,8 +308,8 @@ def test_contact_block_has_address_text_and_mailto_with_subject(client):
 
 
 def test_mailto_subject_follows_the_wine(client):
-    assert mailto(client.get("/vini/passacaille-brut").text).endswith(
-        "?subject=Si%20Bio%3A%20Passacaille%20Brut"
+    assert mailto(client.get("/vini/passacaille").text).endswith(
+        "?subject=Si%20Bio%3A%20Passacaille"
     )
     assert mailto(client.get("/en/vini/armide").text).endswith("?subject=Si%20Bio%3A%20Armide")
 
@@ -327,18 +340,19 @@ def test_no_inline_script_and_no_form(client):
     assert "<form" not in NOTICE.sub("", html)  # only the cookie choice posts
 
 
-def test_wine_without_photo_shows_a_graphic_placeholder(client, production):
-    html = client.get("/vini/armide").text
-    assert 'class="bottle-placeholder"' in html
-    assert "<img" not in html
+def test_wine_without_photo_shows_a_graphic_placeholder(client, rosso, production):
+    html = client.get("/vini/offida-rosso").text
+    stage = re.search(r'<div class="wine-photo">.*?</div>', html, re.S).group(0)
+    assert 'class="bottle-placeholder"' in stage
+    assert "<img" not in stage
 
 
-def test_wine_photo_is_an_img_with_alt_and_size(client, tree, production):
+def test_wine_photo_is_an_img_with_alt_and_size(client, rosso, production):
     edit(
-        tree / "wines" / "armide.toml",
+        rosso / "wines" / "offida-rosso.toml",
         'photo = "[DA COMPLETARE: foto della bottiglia]"',
-        'photo = "armide.jpg"',
+        'photo = "offida-rosso.jpg"',
     )
-    img = [a for a in attrs(client.get("/vini/armide").text, "img") if a.get("alt")]
-    assert img and img[0]["src"] == "/static/img/vini/armide.jpg"
-    assert img[0]["alt"] == "Armide" and img[0]["width"] and img[0]["height"]
+    img = [a for a in attrs(client.get("/vini/offida-rosso").text, "img") if a.get("alt")]
+    assert img and img[0]["src"] == "/static/img/vini/offida-rosso.jpg"
+    assert img[0]["alt"] == "Offida Rosso in vigna" and img[0]["width"] and img[0]["height"]
