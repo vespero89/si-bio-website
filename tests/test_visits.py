@@ -213,3 +213,22 @@ def test_package_hotel_name_unlocked(client, production):
     page = content.page("it", "visits")
     assert "Hotel Il Casale" in page["package_hotel"]
     assert "Hotel Il Casale" in content.page("en", "visits")["package_hotel"]
+
+
+@pytest.mark.parametrize("prefix", ["", "/en"])
+def test_llms_txt_lists_the_four_programme_items(client, production, prefix):
+    items = content.page("en" if prefix else "it", "visits")["buyers_includes"]
+    assert len(items) == 4
+    text = client.get(f"{prefix}/llms.txt").text
+    for item in items:
+        assert f"  - {item}" in text
+    assert text.index(items[0]) > text.index("/visite")
+
+
+@pytest.mark.parametrize("mode", ["production", "preview"])
+def test_llms_txt_never_prints_a_programme_marker(client, request, monkeypatch, mode):
+    request.getfixturevalue(mode)
+    patch(monkeypatch, visits={"buyers_includes": ["Transfer", "[DA COMPLETARE: voce]"]})
+    text = client.get("/llms.txt").text
+    assert "DA COMPLETARE" not in text
+    assert ("  - Transfer" in text) == (mode == "preview")

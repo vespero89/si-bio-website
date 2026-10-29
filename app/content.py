@@ -115,8 +115,8 @@ def page(lang: str, name: str) -> dict:
     return _resolve(data)
 
 
-# Validator: runs on the raw files, so a marker is not a problem here (scripts/check_content.py,
-# planned, lists them). Returns one line per problem; empty means the content is sound.
+# Validator: runs on the raw files, so a marker is not a problem here (scripts/check_content.py
+# lists them). Returns one line per problem; empty means the content is sound.
 
 SITE_FIELDS = {
     "company": {"name": str, "vat": str, "address": str, "pec": str, "rea": str},

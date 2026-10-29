@@ -10,10 +10,10 @@
   <p>{{ oil.description }}</p>
   {%- endif %}
   {%- if scene %}
-  <img class="oil-scene" src="/static/img/{{ scene }}" alt="{{ oil.scene_alt }}" width="1112" height="616">
+  <img class="oil-scene" src="/static/img/{{ scene }}" alt="{{ oil.scene_alt }}" width="1112" height="616"{% set sources = srcset(scene) %}{% if sources %} srcset="{{ sources }}" sizes="(min-width: 1112px) 1112px, 100vw"{% endif %}>
   {%- endif %}
   {%- if photo %}
-  <img src="/static/img/vini/{{ photo }}" alt="{{ oil.name }}" width="300" height="600">
+  <img src="/static/img/vini/{{ photo }}" alt="{{ oil.name }}" width="300" height="600"{% set sources = srcset('vini/' ~ photo) %}{% if sources %} srcset="{{ sources }}" sizes="300px"{% endif %}>
   {%- endif %}
   {%- if sheet %}
   <dl class="sheet">

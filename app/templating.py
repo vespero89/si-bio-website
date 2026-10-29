@@ -8,7 +8,7 @@ from urllib.parse import quote
 from fastapi.templating import Jinja2Templates
 from jinja2 import pass_context
 
-from app import certificate, config, content, cookies, i18n, lang
+from app import certificate, config, content, cookies, i18n, lang, photos
 from app.lang import of
 
 templates = Jinja2Templates(directory=str(config.TEMPLATE_DIR))
@@ -106,6 +106,7 @@ templates.env.globals.update(
     mailto=_mailto,
     cookie_choice=cookies.choice,
     has_marker=content.has_marker,
+    srcset=photos.srcset,
     base_url=config.BASE_URL,
     localize=lang.localize,
     site=content.site,

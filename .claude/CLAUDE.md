@@ -51,7 +51,7 @@ app/static/         css/sibio.css (the only stylesheet), fonts/ (woff2 + OFL fil
 content/            (wines: Pecorino, Passerina, Armide, Passacaille visible; Offida Rosso `visible = false` until sheet and photo; optional text `claim` on Armide and Passacaille only, shown with "Taste the Essence"; DOCG only on the two Offida wines)
 content/            site.toml (settings), wines/<slug>.toml and oil.toml (neutral), <lang>/wines, <lang>/oil.toml, <lang>/pages (texts)
 locales/            interface texts per language (it is the reference), flat keys like `nav.wines`
-scripts/            photos, pre-launch content check (planned)
+scripts/            qr.py, photos.py (photo sizes), check_content.py (pre-launch check)
 tests/              pytest
 ```
 
@@ -270,3 +270,6 @@ it encodes the operator's page in the European register, which stays valid at re
 numbers do. At renewal Fabio edits the dates and number in `[certificate]`. Run `scripts/qr.py` again only if `verify_url` `regulation` is the bare number ("2018/848"); the locale key `certificate.regulation` writes "Reg. (UE)" or "Reg. (EU)".
 changes (`tests/test_qr.py` fails on a stale file). Legal name of the holder: `holder` / `holder_address`. Tests:
 `tests/test_certificate.py`, `tests/test_qr.py`, `tests/test_pages.py`.
+
+## Photos and pre-launch check
+`python scripts/photos.py <source.jpg> <name> [folder]` writes `app/static/img/<folder>/<name>.jpg` and, only if the source is wider than 600 px, `<name>-600.jpg` (1200 only for sources wider than 1200: never an enlargement; resizing with `sips`, macOS). Originals stay out of git. `photos.srcset(name)` (template global `srcset`) builds the `srcset` from the files on disk, empty without the variant; the `<img>` keeps `alt`, `width` and `height`. `python scripts/check_content.py` lists the placeholders left per language and file (hidden wines and switched-off page keys do not count), exits 1 if any is left or the validator fails, checks that `export_email` is `export.sibio@gmail.com` (the old `export@si-bio.it` must not appear) and prints a WARNING when the organic certificate expires in 60 days or less (no effect on the exit code). `llms.txt` lists the four programme items (`buyers_includes`) under the visits link. Tests: `tests/test_photos.py`, `tests/test_check_content.py`, `tests/test_visits.py`.

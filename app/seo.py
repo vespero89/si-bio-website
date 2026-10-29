@@ -92,6 +92,7 @@ def llms_txt(code: str) -> str:
     lines.append(
         f"- [{_fact(visits.get('title')) or t('llms.visits')}]({absolute('/visite', code)})"
     )
+    lines += [f"  - {_fact(item)}" for item in visits.get("buyers_includes", []) if _fact(item)]
     if _fact(visits.get("package_name")) and _fact(contact.get("partner_email")):
         lines.append(f"  - {visits['package_name']}. {t('visits.organizer')}")
     cert = certificate.get(code)
