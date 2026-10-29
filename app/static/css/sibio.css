@@ -174,7 +174,8 @@ img { display: block; max-width: 100%; height: auto; }
   scroll-padding-inline: max(var(--gutter), calc((100% - var(--max)) / 2 + var(--gutter)));
   scrollbar-width: thin; scrollbar-color: var(--c-line) transparent;
 }
-.wine { flex: 0 0 min(82vw, 34rem); scroll-snap-align: start; }
+/* Card width from the viewport height (2:3 photo, cap on the photo): one card fits under the header, the next one peeks in */
+.wine { flex: 0 0 min(74vw, max(15rem, calc((100svh - 14rem) * 2 / 3)), 26rem); scroll-snap-align: start; }
 .wine a { position: relative; display: block; overflow: hidden; text-decoration: none; color: var(--c-ink); }
 .wine-cap {
   position: absolute; left: 0; right: 0; bottom: 0;
