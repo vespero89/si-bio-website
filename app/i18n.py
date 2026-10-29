@@ -50,7 +50,15 @@ def t(lang: str, key: str, **values) -> str:
     return text.format(**values) if values else text
 
 
-def num(lang: str, value: float, decimals: int | None = None) -> str:
-    """Number with the decimal separator of the language: 13.5 -> '13,5' (it), '13.5' (en)."""
-    text = str(value) if decimals is None else f"{value:.{decimals}f}"
-    return text.replace(".", load(lang).get("number.decimal", "."))
+def num(lang: str, value: float, decimals: int | None = None, group: bool = False) -> str:
+    """Number with the decimal separator of the language: 13.5 -> '13,5' (it), '13.5' (en).
+    With `group` the thousands are separated too: 5000 -> '5.000' (it), '5,000' (en)."""
+    text = f"{value:,}" if group and decimals is None else str(value)
+    if decimals is not None:
+        text = f"{value:,.{decimals}f}" if group else f"{value:.{decimals}f}"
+    marks = load(lang)
+    return text.translate(
+        str.maketrans(
+            {".": marks.get("number.decimal", "."), ",": marks.get("number.thousands", ",")}
+        )
+    )

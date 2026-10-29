@@ -2,6 +2,7 @@
 
 [number]
 decimal = "."
+thousands = ","
 
 [skip]
 content = "Skip to content"
@@ -39,6 +40,13 @@ row = "Our wines"
 photo_missing = "Photo coming soon"
 
 [sheet]
+style = "Style"
+training = "Training"
+bottle_aging = "Bottle ageing"
+appearance = "Appearance"
+aroma = "Aroma"
+palate = "Palate"
+bottles_per_year = "Bottles per year"
 denomination = "Denomination"
 grapes = "Grapes"
 vineyard_area = "Vineyard area"

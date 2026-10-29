@@ -160,6 +160,90 @@ def test_abv_and_formats_are_in_the_sheet_when_filled(client, tree, production):
     assert "13.5% vol" in client.get("/en/vini/armide").text
 
 
+NEW_FIELDS = ["style", "training", "bottle_aging", "appearance", "aroma", "palate"]
+NEW_TEXT = {
+    "it": [
+        "Bianco fermo",
+        "Guyot",
+        "Minimo 6 mesi",
+        "Giallo paglierino",
+        "Frutta gialla",
+        "Morbido",
+    ],
+    "en": ["Still white", "Guyot", "Minimum 6 months", "Straw yellow", "Yellow fruit", "Smooth"],
+}
+
+
+def fill_new_fields(tree, lang: str, values: list[str]) -> None:
+    path = tree / lang / "wines" / "armide.toml"
+    path.write_text(
+        path.read_text(encoding="utf-8")
+        + "".join(f'{k} = "{v}"\n' for k, v in zip(NEW_FIELDS, values, strict=True)),
+        encoding="utf-8",
+    )
+    content.read.cache_clear()
+
+
+def test_new_sheet_fields_show_in_order_with_italian_labels(client, tree, production):
+    fill_new_fields(tree, "it", NEW_TEXT["it"])
+    edit(
+        tree / "wines" / "armide.toml", 'abv = "[DA VERIFICARE: gradazione alcolica]"', "abv = 11.5"
+    )
+    html = client.get("/vini/armide").text
+    assert re.findall(r"<dt>(.*?)</dt>", html) == [
+        "Stile",
+        "Allevamento",
+        "Affinamento in bottiglia",
+        "Gradazione alcolica",
+        "Aspetto",
+        "Profumo",
+        "Gusto",
+    ]
+    assert "<dd>Bianco fermo</dd>" in html
+
+
+def test_new_sheet_fields_in_english(client, tree, production):
+    fill_new_fields(tree, "en", NEW_TEXT["en"])
+    labels = re.findall(r"<dt>(.*?)</dt>", client.get("/en/vini/armide").text)
+    assert labels == ["Style", "Training", "Bottle ageing", "Appearance", "Aroma", "Palate"]
+
+
+def test_bottles_per_year_is_grouped_by_language(client, tree, production):
+    edit(tree / "wines" / "armide.toml", 'photo = "', 'bottles_per_year = 5000\nphoto = "')
+    html = client.get("/vini/armide").text
+    assert re.findall(r"<dt>(.*?)</dt>", html) == ["Bottiglie all&#39;anno"]
+    assert "<dd>5.000</dd>" in client.get("/vini/armide").text
+    assert "<dd>5,000</dd>" in client.get("/en/vini/armide").text
+
+
+def test_new_fields_with_a_marker_are_hidden_in_production_and_shown_in_preview(
+    client, tree, production, monkeypatch
+):
+    edit(
+        tree / "wines" / "armide.toml",
+        'photo = "',
+        'bottles_per_year = "[DA VERIFICARE: bottiglie]"\nphoto = "',
+    )
+    fill_new_fields(tree, "it", ["[DA VERIFICARE: x]"] * 6)
+    html = client.get("/vini/armide").text
+    assert "<dt>" not in html and "DA VERIFICARE: x" not in html
+    monkeypatch.setattr(config, "PREVIEW", True)
+    html = client.get("/vini/armide").text
+    assert "Stile" in html and "DA VERIFICARE: bottiglie" in html
+
+
+def test_new_fields_are_valid_in_the_validator(tree):
+    fill_new_fields(tree, "it", NEW_TEXT["it"])
+    fill_new_fields(tree, "en", NEW_TEXT["en"])
+    edit(tree / "wines" / "armide.toml", 'photo = "', 'bottles_per_year = 4000\nphoto = "')
+    assert content.problems() == []
+
+
+def test_bottles_per_year_must_be_a_number_or_text(tree):
+    edit(tree / "wines" / "armide.toml", 'photo = "', 'bottles_per_year = [1]\nphoto = "')
+    assert any("bottles_per_year" in p for p in content.problems())
+
+
 def pdf_setup(tree, langs):
     edit(
         tree / "wines" / "armide.toml",

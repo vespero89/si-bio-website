@@ -69,6 +69,10 @@ def test_numbers_use_the_decimal_separator_of_the_language():
     assert i18n.num("it", 13.5, 2) == "13,50"
     assert i18n.num("en", 14, 1) == "14.0"
     assert i18n.num("it", 14) == "14"
+    assert i18n.num("it", 5000, 0, group=True) == "5.000"
+    assert i18n.num("en", 5000, 0, group=True) == "5,000"
+    assert i18n.num("en", 1234567.5, 1, group=True) == "1,234,567.5"
+    assert i18n.num("it", 999, 0, group=True) == "999"
 
 
 def test_missing_key_in_a_language_shows_the_key_outside_preview(locales, monkeypatch):

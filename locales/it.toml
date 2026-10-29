@@ -3,6 +3,7 @@
 
 [number]
 decimal = ","
+thousands = "."
 
 [skip]
 content = "Vai al contenuto"
@@ -40,6 +41,13 @@ row = "I nostri vini"
 photo_missing = "Foto in arrivo"
 
 [sheet]
+style = "Stile"
+training = "Allevamento"
+bottle_aging = "Affinamento in bottiglia"
+appearance = "Aspetto"
+aroma = "Profumo"
+palate = "Gusto"
+bottles_per_year = "Bottiglie all'anno"
 denomination = "Denominazione"
 grapes = "Vitigni"
 vineyard_area = "Zona dei vigneti"

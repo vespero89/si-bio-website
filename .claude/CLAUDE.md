@@ -39,7 +39,7 @@ app/main.py         FastAPI app, static files, routers
 app/contact.py      route `/contatti` (mailto block, company data, sales manager role)
 app/pages.py        routes `/`, `/olio`, `/chi-siamo` (helper `oil_sheet`)
 app/wines.py        routes `/vini` and `/vini/<slug>` (fragment for HTMX, `Vary`), helpers `sheet`, `photo`, `pdf` for the wine page
-app/templating.py   Jinja2 environment, globals `t(key, **values)` and `num(value, decimals)` (language of the request), `canonical()`, `alternates()` (selector and hreflang), `farm_url()`, `menu`, `localize`, `site()`, `mailto(address, subject)`, `has_marker`
+app/templating.py   Jinja2 environment, globals `t(key, **values)` and `num(value, decimals, group)` (language of the request), `canonical()`, `alternates()` (selector and hreflang), `farm_url()`, `menu`, `localize`, `site()`, `mailto(address, subject)`, `has_marker`
 app/cookies.py      cookie choice (POST /cookie-choice, `choice(request)`)
 app/errors.py       error pages (404, 405, 410, 500), `SecurityHeadersMiddleware` (headers, CSP, cache)
 app/seo.py          `/robots.txt`, `/sitemap.xml`, `/llms.txt` (per language), `NoindexMiddleware` (preview)
@@ -111,7 +111,7 @@ with one `h1`.
 Unknown or hidden slugs answer 404. The row of wines (`nav.wine-row`) is plain links, full page loads (the HTMX
 carousel is a later task); `aria-current="page"` on the wine of the page, `"true"` on `/vini`. The technical sheet
 (`wines.sheet`) is a `dl` built only from filled fields, in the order of `wines.SHEET`, labels `sheet.<field>`;
-a marker value is empty in production, so a field never shows empty. Photo: `photo` in the neutral file is a file in
+a marker value is empty in production, so a field never shows empty. New fields: `style`, `training`, `bottle_aging`, `appearance`, `aroma`, `palate` (texts per language, in `content.CARD`) and `bottles_per_year` (number in the neutral file, shown grouped by `num(value, 0, true)`: 5.000 / 5,000; published on purpose). No price field; keep the sheet free of prices, of the contract winemaking and of "organic" for wines. Photo: `photo` in the neutral file is a file in
 `static/img/vini/`; while it is a marker a CSS placeholder shows. PDF: `[pdf]` table of the neutral file
 (`it = "x.pdf"`, files in `static/schede/`); page language first, else the Italian one with "(in italiano)".
 `partials/contact_block.html` (needs `subject`): address as text, `mailto` built by `mailto()` (percent-encoded UTF-8,

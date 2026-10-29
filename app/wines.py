@@ -14,8 +14,9 @@ from app.templating import templates
 router = APIRouter()
 
 SHEET = (
-    "denomination grapes vineyard_area harvest vinification aging abv total_acidity "
-    "residual_sugar serving_temperature pairings formats vintage awards"
+    "style denomination grapes training vineyard_area harvest vinification aging bottle_aging abv "
+    "total_acidity residual_sugar serving_temperature appearance aroma palate pairings "
+    "bottles_per_year formats vintage awards"
 ).split()
 """Fields of the technical sheet, in the order shown; the labels are the keys `sheet.<field>`."""
 

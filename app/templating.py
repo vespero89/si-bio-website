@@ -20,8 +20,8 @@ def _t(context, key: str, **values) -> str:
 
 
 @pass_context
-def _num(context, value: float, decimals: int | None = None) -> str:
-    return i18n.num(of(context["request"]), value, decimals)
+def _num(context, value: float, decimals: int | None = None, group: bool = False) -> str:
+    return i18n.num(of(context["request"]), value, decimals, group)
 
 
 templates.env.globals.update(

@@ -19,8 +19,9 @@ MARKER = re.compile(
 )
 PAGES = ("home", "about", "visits", "contact")
 CARD = (
-    "denomination grapes vineyard_area harvest vinification aging total_acidity residual_sugar "
-    "serving_temperature pairings vintage awards"
+    "style denomination grapes training vineyard_area harvest vinification aging bottle_aging "
+    "total_acidity residual_sugar serving_temperature appearance aroma palate pairings vintage "
+    "awards"
 ).split()
 WINE_TEXT = {"name", "description", *CARD}
 OIL_TEXT = {"name", "description", "cultivar", "area", "harvest", "milling", "acidity", "pairings"}
@@ -185,6 +186,8 @@ def problems() -> list[str]:
                 out.append(f"{name}: missing '{key}'")
         if not isinstance(data.get("abv", 0), (int, float, str)):
             out.append(f"{name}: 'abv' must be a number or text")
+        if not isinstance(data.get("bottles_per_year", 0), (int, float, str)):
+            out.append(f"{name}: 'bottles_per_year' must be a number or text")
         if not isinstance(data.get("formats", []), list):
             out.append(f"{name}: 'formats' must be a list")
         if isinstance(data.get("order"), int):
