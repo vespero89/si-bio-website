@@ -16,8 +16,8 @@ def client():
 
 def test_htmx_request_gets_the_fragment_only(client):
     html = client.get("/vini/armide", headers=HX).text
-    assert "<html" not in html and "<header" not in html and "<footer" not in html
-    assert 'class="wine-front"' in html
+    assert "<html" not in html and "site-header" not in html and "<footer" not in html
+    assert 'class="wp"' in html
     assert "<h1" in html and "Armide" in html
     assert "<title>" in html and "| Si Bio" in html
     assert "subject=Si%20Bio%3A" in html
@@ -25,7 +25,7 @@ def test_htmx_request_gets_the_fragment_only(client):
 
 def test_plain_request_gets_the_full_page(client):
     html = client.get("/vini/armide").text
-    assert "<html" in html and "<footer" in html and 'class="wine-front"' in html
+    assert "<html" in html and "<footer" in html and 'class="wp"' in html
 
 
 def test_fragment_requested_without_hx_header_is_the_full_page(client):

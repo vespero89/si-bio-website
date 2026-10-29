@@ -417,11 +417,8 @@ body.has-dialog { overflow: hidden; }
 /* Parts the redesign did not cover, restyled with the same tokens */
 
 /* Pages that still use the first layout until their task: lead, claim, wine page, oil, visits */
-.wine-front { display: grid; gap: var(--s-5); margin-top: var(--s-4); transition: opacity 0.2s ease-out; }
-.wine-front.htmx-added { opacity: 0; } /* HTMX swap: the new wine fades in */
-.wine-photo { text-align: center; }
-.wine-photo img { max-width: 100%; height: auto; max-height: 28rem; width: auto; margin-inline: auto; }
-.wine-sheet h1, .wine-sheet h2 { margin-top: 0; }
+.wp.htmx-added { opacity: 0; } /* HTMX swap: the new wine fades in */
+.wp { transition: opacity 0.2s ease-out; }
 .oil-scene { width: 100%; height: auto; margin-block: var(--s-5); background: var(--c-placeholder); }
 .certified { margin-top: var(--s-5); font-weight: 600; }
 .visits-tag { color: var(--c-muted); }
@@ -472,6 +469,5 @@ body.has-dialog { overflow: hidden; }
 .legal-table thead th { font-weight: 600; }
 
 @media (min-width: 45.0625em) {
-  .wine-front { grid-template-columns: 1fr 2fr; gap: var(--s-8); }
   .wine-row ul { justify-content: center; }
 }

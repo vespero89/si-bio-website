@@ -111,7 +111,11 @@ with one `h1`.
 ## Wine pages
 `/vini` shows the first wine in front with its own h1 ("I nostri vini") and intro; `/vini/<slug>` has the wine name as h1.
 Unknown or hidden slugs answer 404. The row of wines (`nav.wine-row`) is plain links, full page loads (the HTMX
-carousel is a later task); `aria-current="page"` on the wine of the page, `"true"` on `/vini`. The technical sheet
+carousel is a later task); `aria-current="page"` on the wine of the page, `"true"` on `/vini`. The stage (`partials/wine_stage.html`) is `article.wp`: `.wp-photo` (photo with `srcset`, `alt`, size, or the CSS placeholder), then
+`.wp-body`: `header.score` (short stave partial with `cls="stave"`, the name as h1 on `/vini/<slug>` and h2 on `/vini`, `p.score-sub` =
+`subtitle`, `p.kicker` = `style`), `p.desc`, `section.story` (h2 `story_title`, `story`, and the `blockquote.story-claim` with "Taste the Essence"
+inside it when the wine has a `claim`; no section while `story` is empty or a marker, so Pecorino and Passerina have none in production),
+h2 `wines.sheet_title`, the sheet, PDF link and contact block. The other wines are the `nav.wine-row` (the `.others` rules of the stylesheet are not used). The technical sheet
 (`wines.sheet`) is a `dl` built only from filled fields, in the order of `wines.SHEET`, labels `sheet.<field>`;
 a marker value is empty in production, so a field never shows empty. New wine fields: neutral `group` ("piceno" | "opera", required for visible wines; Offida Rosso is piceno); texts `subtitle` (Armide "Opera di Lully", Passacaille "Finale della stessa opera", empty elsewhere), `story_title` and `story` (Armide and Passacaille: the name; Pecorino and Passerina: markers until the family writes them; listed in `content.WINE_TEXT`). Earlier fields: `style`, `training`, `bottle_aging`, `appearance`, `aroma`, `palate` (texts per language, in `content.CARD`) and `bottles_per_year` (number in the neutral file, shown grouped by `num(value, 0, true)`: 5.000 / 5,000; published on purpose). No price field; keep the sheet free of prices, of the contract winemaking and of "organic" for wines (the certificate block and the home line never appear on wine or oil pages; the footer link is on every page). Photo: `photo` in the neutral file is a file in
 `static/img/vini/`; while it is a marker a CSS placeholder shows. PDF: `[pdf]` table of the neutral file

@@ -28,7 +28,7 @@ def production(monkeypatch):
 
 def sheet_html(client, path: str) -> str:
     html = client.get(path).text
-    return re.search(r'<article class="wine-front".*?</article>', html, re.S).group(0)
+    return re.search(r'<article class="wp".*?</article>', html, re.S).group(0)
 
 
 def raw(lang: str, slug: str) -> dict:

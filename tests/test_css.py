@@ -50,9 +50,8 @@ def test_parts_the_redesign_did_not_cover_keep_their_styles():
     wanted = {
         "cookie-notice",
         "cookie-form",
-        "wine-front",
-        "wine-photo",
-        "wine-sheet",
+        "wp",
+        "wp-photo",
         "visits-tag",
         "visits-includes",
         "oil-scene",

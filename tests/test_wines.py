@@ -107,7 +107,7 @@ def test_vini_shows_first_wine_in_front_with_its_own_h1(client):
 def test_wine_page_has_one_h1_with_the_wine_name(client):
     html = client.get("/vini/armide").text
     assert re.findall(r"<h1\b[^>]*>(.*?)</h1>", html, re.S) == ["Armide"]
-    assert 'class="wine-front"' in html
+    assert 'class="wp"' in html
 
 
 def test_unknown_slug_is_404(client):
@@ -345,7 +345,7 @@ def test_no_inline_script_and_no_form(client):
 
 def test_wine_without_photo_shows_a_graphic_placeholder(client, rosso, production):
     html = client.get("/vini/offida-rosso").text
-    stage = re.search(r'<div class="wine-photo">.*?</div>', html, re.S).group(0)
+    stage = re.search(r'<div class="wp-photo">.*?</div>', html, re.S).group(0)
     assert 'class="bottle-placeholder"' in stage
     assert "<img" not in stage
 
