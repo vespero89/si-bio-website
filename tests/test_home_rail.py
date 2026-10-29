@@ -258,3 +258,14 @@ def test_new_locale_keys_in_both_languages():
     ):
         for lang in ("it", "en"):
             assert i18n.load(lang).get(key), (lang, key)
+
+
+def test_movement_2_text_is_the_score_line():
+    from app import i18n
+
+    assert i18n.load("it")["home.movement_2_text"] == (
+        "Due vini, una sola partitura: il momento in cui la maga esita, e la danza che ne nasce."
+    )
+    assert i18n.load("en")["home.movement_2_text"] == (
+        "Two wines, one score: the moment the sorceress hesitates, and the dance that follows."
+    )
