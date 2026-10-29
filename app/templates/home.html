@@ -28,9 +28,12 @@
       <p class="eyebrow">{{ t('home.wines_label') }}</p>
       <h2 id="wines-title">{{ t('home.wines') }}</h2>
     </div>
-    <div class="arrows" data-rail-arrows hidden>
-      <button class="icon-btn" type="button" data-rail-step="-1" aria-label="{{ t('wines.prev') }}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true" focusable="false"><path d="M16 10H4M9 5l-5 5 5 5"/></svg></button>
-      <button class="icon-btn" type="button" data-rail-step="1" aria-label="{{ t('wines.next') }}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true" focusable="false"><path d="M4 10h12M11 5l5 5-5 5"/></svg></button>
+    <div class="head-tools">
+      <div class="arrows" data-rail-arrows hidden>
+        <button class="icon-btn" type="button" data-rail-step="-1" aria-label="{{ t('wines.prev') }}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true" focusable="false"><path d="M16 10H4M9 5l-5 5 5 5"/></svg></button>
+        <button class="icon-btn" type="button" data-rail-step="1" aria-label="{{ t('wines.next') }}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true" focusable="false"><path d="M4 10h12M11 5l5 5-5 5"/></svg></button>
+      </div>
+      <button class="icon-btn" type="button" data-rail-toggle aria-pressed="false" aria-label="{{ t('wines.pause') }}" hidden><svg class="icon-pause" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true" focusable="false"><path d="M7 4v12M13 4v12"/></svg><svg class="icon-play" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true" focusable="false"><path d="M6 4l10 6-10 6z"/></svg></button>
     </div>
   </div>
   <ul class="rail" data-rail>
@@ -161,4 +164,5 @@
 {% endblock %}
 {% block scripts %}
   <script src="/static/js/wine-dialog.js" defer></script>
+  <script src="/static/js/rail-drift.js" defer></script>
 {%- endblock %}

@@ -50,6 +50,7 @@ write = "Write to us"
 close = "Close"
 prev = "Previous wines"
 next = "Next wines"
+pause = "Pause the moving wines"
 
 [sheet]
 style = "Style"
